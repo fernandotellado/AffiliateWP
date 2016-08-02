@@ -30,7 +30,6 @@ function affwp_remove_query_args( $query_args ) {
 	$to_remove = array(
 		// General
 		'affwp_notice',
-		'action',
 		'action2',
 		'settings-updated',
 
@@ -40,6 +39,17 @@ function affwp_remove_query_args( $query_args ) {
 		// Core
 		'_wpnonce'
 	);
+
+	$edit_actions = array(
+		'edit_affiliate',
+		'edit_referral',
+		'edit_creative',
+	);
+
+	// Only remove 'action' if not editing an affiliate, referral, or creative.
+	if ( isset( $_GET['action'] ) && ! in_array( sanitize_key( $_GET['action'] ), $edit_actions, true ) ) {
+		$to_remove[] = 'action';
+	}
 
 	return array_merge( $query_args, $to_remove );
 }
