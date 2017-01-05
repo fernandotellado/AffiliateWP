@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AffiliateWP\n"
 "Report-Msgid-Bugs-To: https://affiliatewp.com/support/\n"
 "POT-Creation-Date: 2017-01-04 20:36:31+00:00\n"
-"PO-Revision-Date: 2016-09-27 18:11+0200\n"
+"PO-Revision-Date: 2017-01-05 09:42+0100\n"
 "Last-Translator: Fernando Tellado <fernando@tellado.es>\n"
 "Language-Team: Fernando Tellado <admin@ayudawordpress.com>\n"
 "Language: es_ES\n"
@@ -51,8 +51,7 @@ msgstr "Falló la verificación nonce"
 #: includes/admin/affiliates/actions.php:138
 #: includes/admin/affiliates/actions.php:142
 #: includes/admin/class-addon-updater.php:283
-#: includes/admin/class-notices.php:422
-#: includes/admin/creatives/actions.php:16
+#: includes/admin/class-notices.php:422 includes/admin/creatives/actions.php:16
 #: includes/admin/creatives/actions.php:44
 #: includes/admin/creatives/actions.php:48
 #: includes/admin/creatives/actions.php:52
@@ -216,7 +215,7 @@ msgstr ""
 
 #: includes/REST/v1/class-rest-controller.php:64
 msgid "object_type must be defined by the extending class: %s"
-msgstr ""
+msgstr "Debe definirse el object_type a través de la clase que lo amplía: %s"
 
 #: includes/REST/v1/class-rest-controller.php:94
 msgid "The number of items to query for. Use -1 for all."
@@ -422,8 +421,7 @@ msgstr "No tienes permisos para borrar cuentas de afiliados"
 
 #: includes/admin/affiliates/actions.php:56
 #: includes/admin/affiliates/actions.php:142
-#: includes/admin/class-notices.php:422
-#: includes/admin/creatives/actions.php:48
+#: includes/admin/class-notices.php:422 includes/admin/creatives/actions.php:48
 #: includes/admin/referrals/actions.php:20
 #: includes/admin/referrals/actions.php:51
 #: includes/admin/referrals/actions.php:82
@@ -434,8 +432,8 @@ msgstr "La revisión de seguridad falló"
 msgid "No affiliate IDs specified for deletion"
 msgstr "Ningún ID de afiliado selecionado para eliminación"
 
-#: includes/admin/affiliates/affiliates.php:56
-#: includes/admin/class-menu.php:11 includes/admin/class-menu.php:13
+#: includes/admin/affiliates/affiliates.php:56 includes/admin/class-menu.php:11
+#: includes/admin/class-menu.php:13
 #: includes/admin/reports/tabs/class-affiliates-reports-tab.php:23
 msgid "Affiliates"
 msgstr "Afiliados"
@@ -674,8 +672,7 @@ msgstr ""
 "nombre. Esto puede cambiarse en la <a href=\"%1$s\" alt=\"%2$s\">pantalla de "
 "edición del usuario</a>."
 
-#: includes/admin/affiliates/edit.php:34
-#: includes/admin/affiliates/edit.php:117
+#: includes/admin/affiliates/edit.php:34 includes/admin/affiliates/edit.php:117
 msgid "A link to the user edit screen for this user."
 msgstr "Un enlace a la pantalla de edición de usuario de este usuario."
 
@@ -1523,16 +1520,14 @@ msgid "Apply"
 msgstr "Aplicar"
 
 #: includes/admin/referrals/class-list-table.php:471
-#: includes/admin/referrals/referrals.php:52
-#: includes/admin/tools/tools.php:295 includes/admin/visits/visits.php:52
-#: includes/class-graph.php:408
+#: includes/admin/referrals/referrals.php:52 includes/admin/tools/tools.php:295
+#: includes/admin/visits/visits.php:52 includes/class-graph.php:408
 msgid "From - mm/dd/yyyy"
 msgstr "Desde - mm/dd/yyyy"
 
 #: includes/admin/referrals/class-list-table.php:472
-#: includes/admin/referrals/referrals.php:53
-#: includes/admin/tools/tools.php:296 includes/admin/visits/visits.php:53
-#: includes/class-graph.php:410
+#: includes/admin/referrals/referrals.php:53 includes/admin/tools/tools.php:296
+#: includes/admin/visits/visits.php:53 includes/class-graph.php:410
 msgid "To - mm/dd/yyyy"
 msgstr "Hasta - mm/dd/yyyy"
 
@@ -2438,7 +2433,7 @@ msgstr ""
 
 #: includes/admin/settings/class-settings.php:680
 msgid "Opt into beta versions?"
-msgstr ""
+msgstr "¿Suscripción a versiones begta?"
 
 #: includes/admin/settings/class-settings.php:681
 msgid ""
@@ -2446,6 +2441,9 @@ msgid ""
 "releases. When beta versions are available, an update notification will be "
 "shown in your Plugins page."
 msgstr ""
+"Marca esta casilla si te gustaría recibir avisos de actualizaciones de "
+"versiones beta. Cuando haya versiones beta disponibles se mostrará un aviso "
+"de actuaización en tu página de plugins."
 
 #: includes/admin/settings/class-settings.php:685
 msgid "Remove Data on Uninstall?"
@@ -3727,7 +3725,7 @@ msgstr "La URL a la que llegó el cliente y que hizo que se crease el referido "
 
 #: includes/emails/class-affwp-emails.php:492
 msgid "The name of the campaign associated with the referral (if any)."
-msgstr ""
+msgstr "El nombre de la campaña asociada al referido (si la hubiera)."
 
 #: includes/emails/functions.php:121
 msgid "No reason provided"
@@ -4210,7 +4208,7 @@ msgstr "Yen Japonés (&yen;)"
 
 #: includes/misc-functions.php:50
 msgid "Kazakhstani Tenge"
-msgstr ""
+msgstr "Kazakhstani Tenge"
 
 #: includes/misc-functions.php:51
 msgid "Lao Kip"
@@ -4503,6 +4501,8 @@ msgid ""
 "To see the Affiliate Area, log in as an existing affiliate, or add your "
 "account as an affiliate."
 msgstr ""
+"Para ver el área de afiliado accede como afiliado o crea una cuenta de "
+"afiliado."
 
 #: templates/no-access.php:4
 msgid "The affiliate area is available only for registered affiliates."
