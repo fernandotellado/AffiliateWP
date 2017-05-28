@@ -623,7 +623,7 @@ msgid ""
 "These add-ons <em><strong>add functionality</strong></em> to your "
 "AffiliateWP-powered site."
 msgstr ""
-"Estos añadidos <em><strong>añaden funcionalidades</strong></em> a tu sitio "
+"Estas extensiones <em><strong>añaden funcionalidades</strong></em> a tu sitio "
 "con AffiliateWP."
 
 #: includes/admin/add-ons.php:45
@@ -656,7 +656,7 @@ msgid ""
 "There was an error retrieving the add-ons list from the server. Please try "
 "again later."
 msgstr ""
-"Ocurrió un error al mostrar la lista de añadidos desde el servidor. Por "
+"Ocurrió un error al mostrar la lista de extensiones desde el servidor. Por "
 "favor, inténtalo más tarde."
 
 #: includes/admin/affiliates/actions.php:20
@@ -2464,7 +2464,7 @@ msgstr "Excluye los impuestos de los cálculos de referidos."
 
 #: includes/admin/settings/class-settings.php:528
 msgid "Cookie Expiration"
-msgstr "Expiración de la cookie"
+msgstr "Caducidad de la cookie"
 
 #: includes/admin/settings/class-settings.php:529
 msgid "Enter how many days the referral tracking cookie should be valid for."
