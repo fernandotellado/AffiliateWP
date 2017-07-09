@@ -5407,7 +5407,6 @@ msgid "Reports"
 msgstr "Informes"
 
 #: includes/admin/visits/class-list-table.php:234
-#, fuzzy
 msgctxt "visit context"
 msgid "None"
 msgstr "Ninguno"
@@ -5510,17 +5509,14 @@ msgstr "Directo"
 #~ msgid "Login"
 #~ msgstr "Acceder"
 
-#, fuzzy
 #~ msgctxt "Paid Earnings column table header"
 #~ msgid "Paid Earnings"
 #~ msgstr "Ingresos pagados"
 
-#, fuzzy
 #~ msgctxt "Unpaid Referrals column table header"
 #~ msgid "Unpaid Referrals"
 #~ msgstr "Referidos sin pagar"
 
-#, fuzzy
 #~ msgctxt "Unpaid Earnings column table header"
 #~ msgid "Unpaid Earnings"
 #~ msgstr "Ingresos sin pagar"
@@ -5528,7 +5524,6 @@ msgstr "Directo"
 #~ msgid "Affiliate added successfully"
 #~ msgstr "Afiliado añadido correctamente"
 
-#, fuzzy
 #~ msgid "What&#8217;s new in AffiliateWP"
 #~ msgstr "Que hay de nuevo en AffiliateWP"
 
@@ -5538,7 +5533,6 @@ msgstr "Directo"
 #~ msgid "The people that build AffiliateWP"
 #~ msgstr "La gente que creó AffiliateWP"
 
-#, fuzzy
 #~ msgid "What&#8217;s New"
 #~ msgstr "Que hay de nuevo"
 
@@ -5564,18 +5558,15 @@ msgstr "Directo"
 #~ msgid "New Integrations"
 #~ msgstr "Nuevas integraciones"
 
-#, fuzzy
 #~ msgid ""
 #~ "We’ve made AffiliateWP more accessible and more valuable to more users "
 #~ "with three new integrations:"
 #~ msgstr ""
-#~ "Para hacer \n"
 #~ "Hemos hecho que AffiliateWP sea mas accesible y valioso para mas "
 #~ "usuarios, con estas tres nuevas integraciones:"
 
-#, fuzzy
 #~ msgid "Improved Integrations"
-#~ msgstr "Integraciones"
+#~ msgstr "Integraciones mejoradas"
 
 #~ msgid ""
 #~ "Per-membership commission rates are now supported in Restrict Content Pro"
@@ -5630,13 +5621,11 @@ msgstr "Directo"
 #~ "La página de resumen te da un breve resumen de la actividad reciente de "
 #~ "afiliados, incluyendo registros recientes, referidos y visitas "
 
-#, fuzzy
 #~ msgid ""
 #~ "It also provides a quick summary of your affiliates&#8217; referral "
 #~ "earnings."
 #~ msgstr "Ademas ofrece un resumen rápido de los referidos de tus afiliados."
 
-#, fuzzy
 #~ msgid ""
 #~ "If you allow affiliate registrations, you can also easily accept or "
 #~ "reject affiliate&#8217;s applications directly from the Overview page"
@@ -5748,15 +5737,14 @@ msgstr "Directo"
 #~ msgid "Phenomenal Support"
 #~ msgstr "Soporte fenomenal"
 
-#, fuzzy
 #~ msgid ""
 #~ "We do our best to provide the best support we can. If you encounter a "
 #~ "problem or have a question, visit our <a href=\"https://affiliatewp.com/"
 #~ "support\">support</a> page to open a ticket."
 #~ msgstr ""
-#~ "Hacemos lo mejor para proveer el mejor soporte que podemos. Si encuentras "
+#~ "Hacemos lo mejor que podemos para ofrecer el mejor soporte que podemos. Si encuentras "
 #~ "un problema o tienes alguna pregunta, visita nuestra página de <a href="
-#~ "\"http://affiliatewp.com/support\">soporte</a> para abrir un ticket."
+#~ "\"https://affiliatewp.com/support\">soporte</a> para abrir un ticket."
 
 #~ msgid "Thank you for updating to the latest version!"
 #~ msgstr "Gracias por actualizar a la ultima versión!"
@@ -5776,45 +5764,38 @@ msgstr "Directo"
 #~ msgid "Add New Referral"
 #~ msgstr "Añadir nuevo referido"
 
-#, fuzzy
 #~ msgid "Application Rejected Email Subject"
 #~ msgstr "Asunto del mensaje para solicitud rechazada"
 
-#, fuzzy
 #~ msgid ""
 #~ "Enter the subject line for rejected application emails sent to affiliates "
 #~ "when their account is rejected."
 #~ msgstr ""
 #~ "Introduce el asunto para los correos electrónicos enviados a los "
-#~ "afiliados cuando su cuenta es aprobada."
+#~ "afiliados cuando su cuenta es rechazada."
 
-#, fuzzy
 #~ msgid "Affiliate Application Rejected"
-#~ msgstr "Solicitud de afiliación aceptada"
+#~ msgstr "Solicitud de afiliación rechazada"
 
-#, fuzzy
 #~ msgid "Application Rejected Email Content"
 #~ msgstr "Contenido del mensaje para solicitudes rechazadas"
 
-#, fuzzy
 #~ msgid ""
 #~ "Enter the email to send when an application is rejected. HTML is "
 #~ "rejected. Available template tags:"
 #~ msgstr ""
-#~ "Introduce el mensaje a enviar cuando una solicitud es rechazada. Puedes "
+#~ "Introduce el mensaje a enviar cuando una solicitud es rechazada. No puedes "
 #~ "usar HTML. Etiquetas para plantillas disponibles:"
 
-#, fuzzy
 #~ msgid "Hello {name}!"
-#~ msgstr "¡Hola {nombre}!"
+#~ msgstr "¡Hola {name}!"
 
-#, fuzzy
 #~ msgid ""
 #~ "We regret to inform you that your affiliate application on %s has been "
 #~ "rejected."
 #~ msgstr ""
-#~ "Lamentamos informarte que tu registro como afiliado en {nombre_sitio_web} "
-#~ "fue rechazada."
+#~ "Lamentamos informarte que tu solicitud como afiliado en %s ha sido "
+#~ "rechazada."
 
 #~ msgid "Configurable emails"
 #~ msgstr "Correos electrónicos configurables"
@@ -5867,17 +5848,15 @@ msgstr "Directo"
 #~ msgid "Affiliate Export Improvements"
 #~ msgstr "Mejoras en la exportación de afiliados"
 
-#, fuzzy
 #~ msgid ""
 #~ "The affiliate's username is now included in the exported affiliate .csv "
 #~ "file."
 #~ msgstr ""
-#~ "El área de afiliados esta disponible para afiliados registrados "
-#~ "unicamente."
+#~ "El nombre de usuario del afiliado esta ahora incluido en el archivo .csv de afiliados "
+#~ "exportado."
 
-#, fuzzy
 #~ msgid "New Affiliate Meta Class"
-#~ msgstr "Nuevo afiliado"
+#~ msgstr "Nueva clase meta de afiliado"
 
 #~ msgid ""
 #~ "We've introduced a new metadata API for afiliate accounts that provides "
@@ -5909,14 +5888,11 @@ msgstr "Directo"
 #~ "Los afiliados pendientes ya no podrán acceder al panel de afiliados hasta "
 #~ "que hayan sido aprobados. "
 
-#, fuzzy
 #~ msgid "Accept Affiliate"
-#~ msgstr "Nuevo afiliado"
+#~ msgstr "Aceptar afiliado"
 
-#, fuzzy
 #~ msgid "Reject Affiliate"
-#~ msgstr "Nuevo afiliado"
+#~ msgstr "Rechazar afiliado"
 
-#, fuzzy
 #~ msgid "AffiliateWP"
-#~ msgstr "Afiliado"
+#~ msgstr "AffiliateWP"
