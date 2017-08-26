@@ -6040,7 +6040,7 @@ msgstr "Directo"
 
 #, fuzzy
 #~ msgid "Improved Integrations"
-#~ msgstr "Integraciones"
+#~ msgstr "Integraciones mejoradas"
 
 #~ msgid ""
 #~ "Per-membership commission rates are now supported in Restrict Content Pro"
@@ -6251,11 +6251,11 @@ msgstr "Directo"
 #~ "when their account is rejected."
 #~ msgstr ""
 #~ "Introduce el asunto para los correos electrónicos enviados a los "
-#~ "afiliados cuando su cuenta es aprobada."
+#~ "afiliados cuando su cuenta es rechazada."
 
 #, fuzzy
 #~ msgid "Affiliate Application Rejected"
-#~ msgstr "Solicitud de afiliación aceptada"
+#~ msgstr "Solicitud de afiliación rechazada"
 
 #, fuzzy
 #~ msgid "Application Rejected Email Content"
@@ -6271,14 +6271,14 @@ msgstr "Directo"
 
 #, fuzzy
 #~ msgid "Hello {name}!"
-#~ msgstr "¡Hola {nombre}!"
+#~ msgstr "¡Hola {name}!"
 
 #, fuzzy
 #~ msgid ""
 #~ "We regret to inform you that your affiliate application on %s has been "
 #~ "rejected."
 #~ msgstr ""
-#~ "Lamentamos informarte que tu registro como afiliado en {nombre_sitio_web} "
+#~ "Lamentamos informarte que tu registro como afiliado en %s "
 #~ "fue rechazada."
 
 #~ msgid "Configurable emails"
@@ -6337,12 +6337,12 @@ msgstr "Directo"
 #~ "The affiliate's username is now included in the exported affiliate .csv "
 #~ "file."
 #~ msgstr ""
-#~ "El área de afiliados esta disponible para afiliados registrados "
-#~ "unicamente."
+#~ "El nombre de usuario del afiliado ahora se incluye en el archivo .csv de afiliados "
+#~ "exportados."
 
 #, fuzzy
 #~ msgid "New Affiliate Meta Class"
-#~ msgstr "Nuevo afiliado"
+#~ msgstr "Nueva clase meta de afiliado"
 
 #~ msgid ""
 #~ "We've introduced a new metadata API for afiliate accounts that provides "
@@ -6376,12 +6376,12 @@ msgstr "Directo"
 
 #, fuzzy
 #~ msgid "Accept Affiliate"
-#~ msgstr "Nuevo afiliado"
+#~ msgstr "Aceptar afiliado"
 
 #, fuzzy
 #~ msgid "Reject Affiliate"
-#~ msgstr "Nuevo afiliado"
+#~ msgstr "Rechazar afiliado"
 
 #, fuzzy
 #~ msgid "AffiliateWP"
-#~ msgstr "Afiliado"
+#~ msgstr "AffiliateWP"
