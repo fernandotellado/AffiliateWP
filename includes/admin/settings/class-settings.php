@@ -627,6 +627,21 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Disable all email notifications.', 'affiliate-wp' ),
 						'type' => 'checkbox'
 					),
+					'disable_application_accepted_emails' => array(
+						'name' => __( 'Disable Application Accepted Emails', 'affiliate-wp' ),
+						'desc' => __( 'Disable email notifications sent to affiliates when their affiliate application is accepted.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
+					'disable_new_referral_emails' => array(
+						'name' => __( 'Disable New Referral Emails', 'affiliate-wp' ),
+						'desc' => __( 'Disable email notifications sent to affiliates when they receive a new referral.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
+					'registration_notifications' => array(
+						'name' => __( 'Notify Admin', 'affiliate-wp' ),
+						'desc' => __( 'Notify site admin of new affiliate registrations.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
 					'email_logo' => array(
 						'name' => __( 'Logo', 'affiliate-wp' ),
 						'desc' => __( 'Upload or choose a logo to be displayed at the top of emails.', 'affiliate-wp' ),
@@ -649,11 +664,6 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'The email address to send emails from. This will act as the "from" and "reply-to" address.', 'affiliate-wp' ),
 						'type' => 'text',
 						'std' => get_bloginfo( 'admin_email' )
-					),
-					'registration_notifications' => array(
-						'name' => __( 'Notify Admin', 'affiliate-wp' ),
-						'desc' => __( 'Notify site admin of new affiliate registrations.', 'affiliate-wp' ),
-						'type' => 'checkbox'
 					),
 					'registration_subject' => array(
 						'name' => __( 'Registration Email Subject', 'affiliate-wp' ),
