@@ -632,6 +632,16 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Disable email notifications sent to affiliates when their affiliate application is accepted.', 'affiliate-wp' ),
 						'type' => 'checkbox'
 					),
+					'disable_application_pending_emails' => array(
+						'name' => __( 'Disable Application Pending Emails', 'affiliate-wp' ),
+						'desc' => __( 'Disable email notifications sent to affiliates when their affiliate application is pending.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
+					'disable_application_rejected_emails' => array(
+						'name' => __( 'Disable Application Rejected Emails', 'affiliate-wp' ),
+						'desc' => __( 'Disable email notifications sent to affiliates when their affiliate application is rejected.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
 					'disable_new_referral_emails' => array(
 						'name' => __( 'Disable New Referral Emails', 'affiliate-wp' ),
 						'desc' => __( 'Disable email notifications sent to affiliates when they receive a new referral.', 'affiliate-wp' ),
