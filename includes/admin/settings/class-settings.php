@@ -655,15 +655,15 @@ class Affiliate_WP_Settings {
 						'type' => 'text',
 						'std' => get_bloginfo( 'admin_email' )
 					),
-					'registration_notifications' => array(
-						'name' => __( 'Notify Admin', 'affiliate-wp' ),
-						'desc' => __( 'Notify site admin of new affiliate registrations.', 'affiliate-wp' ),
-						'type' => 'checkbox'
-					),
 					'registration_options_header' => array(
 						'name' => '<strong>' . __( 'Registration Email Options', 'affiliate-wp' ) . '</strong>',
 						'desc' => '',
 						'type' => 'header'
+					),
+					'registration_notifications' => array(
+						'name' => __( 'Notify Admin', 'affiliate-wp' ),
+						'desc' => __( 'Notify site admin of new affiliate registrations.', 'affiliate-wp' ),
+						'type' => 'checkbox'
 					),
 					'registration_subject' => array(
 						'name' => __( 'Registration Email Subject', 'affiliate-wp' ),
