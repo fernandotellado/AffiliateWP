@@ -112,6 +112,10 @@ class Affiliate_WP_Tracking {
 		AFFWP.expiration = <?php echo $this->get_expiration_time(); ?>;
 		AFFWP.debug = <?php echo absint( $this->debug ); ?>;
 
+<?php if ( $cookie_domain = $this->get_cookie_domain() ) : ?>
+		AFFWP.cookie_domain = '<?php echo esc_js( $cookie_domain ); ?>';
+<?php endif; ?>
+
 <?php if( 1 !== (int) get_option( 'affwp_js_works' ) )  : ?>
 		jQuery(document).ready(function($) {
 			// Check if JS is working properly. If it is, we update an update in the DB
@@ -664,7 +668,7 @@ class Affiliate_WP_Tracking {
 	 * @since 1.0
 	 */
 	public function set_visit_id( $visit_id = 0 ) {
-		setcookie( 'affwp_ref_visit_id', $visit_id, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, COOKIE_DOMAIN );
+		setcookie( 'affwp_ref_visit_id', $visit_id, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, $this->get_cookie_domain() );
 	}
 
 	/**
@@ -747,7 +751,23 @@ class Affiliate_WP_Tracking {
 	 * @since 1.0
 	 */
 	public function set_affiliate_id( $affiliate_id = 0 ) {
-		setcookie( 'affwp_ref', $affiliate_id, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, COOKIE_DOMAIN );
+		setcookie( 'affwp_ref', $affiliate_id, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, $this->get_cookie_domain() );
+	}
+
+	/**
+	 * Get the cookie domain
+	 * @return bool|string
+	 */
+	public function get_cookie_domain() {
+
+		// COOKIE_DOMAIN is false by default
+		$cookie_domain = COOKIE_DOMAIN;
+
+		if ( ! $cookie_domain && affiliate_wp()->settings->get( 'cookie_sharing', false ) ) {
+			$cookie_domain = parse_url( get_home_url(), PHP_URL_HOST );
+		}
+
+		return apply_filters( 'affwp_tracking_cookie_domain', $cookie_domain );
 	}
 
 	/**
