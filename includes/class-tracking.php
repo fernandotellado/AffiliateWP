@@ -755,18 +755,30 @@ class Affiliate_WP_Tracking {
 	}
 
 	/**
-	 * Get the cookie domain
-	 * @return bool|string
+	 * Get the cookie domain.
+	 *
+	 * @return bool|string false if a cookie domain isn't set, string hostname (host.tld) otherwise
 	 */
 	public function get_cookie_domain() {
 
 		// COOKIE_DOMAIN is false by default
 		$cookie_domain = COOKIE_DOMAIN;
 
-		if ( ! $cookie_domain && affiliate_wp()->settings->get( 'cookie_sharing', false ) ) {
+		$share_cookies = affiliate_wp()->settings->get( 'cookie_sharing', false );
+
+		// providing a domain to jQuery.cookie or PHP's setcookie results prefixes the cookie domain
+		// with a dot, indicating it should be shared with sub-domains
+		if ( ! $cookie_domain && $share_cookies ) {
 			$cookie_domain = parse_url( get_home_url(), PHP_URL_HOST );
 		}
 
+		/**
+		 * Filters the tracking cookie domain.
+		 *
+		 * @since 2.x.x
+		 *
+		 * @param string $cookie_domain cookie domain
+		 */
 		return apply_filters( 'affwp_tracking_cookie_domain', $cookie_domain );
 	}
 

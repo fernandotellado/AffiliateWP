@@ -368,12 +368,18 @@ jQuery(document).ready( function($) {
 	}
 
 	/**
-	 * Set a cookie, with optional domain if set.
+	 * Set a cookie, with optional domain if set. Note that providing *any* domain will
+	 * set the cookie domain with a leading dot, indicating it should be sent to sub-domains.
 	 *
-	 * @since
+	 * example: host.tld
 	 *
-	 * @param {string} name
-	 * @param {string} value
+	 * - $.cookie( 'some_cookie', ...) = cookie domain: host.tld
+	 * - $.cookie ('some_cookie', ... domain: 'host.tld' ) = .host.tld
+	 *
+	 * @since 2.x.x
+	 *
+	 * @param {string} name cookie name, e.g. affwp_ref
+	 * @param {string} value cookie value
 	 */
 	function affwp_set_cookie( name, value ) {
 
