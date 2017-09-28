@@ -61,7 +61,11 @@ class UnitTestCase extends \WP_UnitTestCase {
 		unset( $GLOBALS['wp_user_roles'] );
 		global $wp_roles;
 		if ( is_object( $wp_roles ) ) {
-			$wp_roles->_init();
+			if ( method_exists( $wp_roles, 'for_site' ) ) {
+				$wp_roles->for_site();
+			} else {
+				$wp_roles->_init();
+			}
 		}
 	}
 

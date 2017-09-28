@@ -323,6 +323,8 @@ function affwp_currency_filter( $amount ) {
 				break;
 			case "IRR" :
 				$formatted = $amount . '&#65020;';
+			case "RUB" :
+				$formatted = $amount . '&#8381;';
 				break;
 			default :
 			    $formatted = $amount . ' ' . $currency;
