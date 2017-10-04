@@ -556,4 +556,39 @@ class Tests extends UnitTestCase {
 		) );
 	}
 
+	/**
+	 * @covers ::affwp_maybe_unserialize()
+	 */
+	public function test_maybe_unserialize_with_non_serialized_string_should_return_original() {
+		$result = affwp_maybe_unserialize( 'foo' );
+
+		$this->assertSame( 'foo', $result );
+	}
+
+	/**
+	 * @covers ::affwp_maybe_unserialize()
+	 */
+	public function test_maybe_unserialize_with_serialized_stdClass_object_should_return_that_object() {
+		$object = new \stdClass();
+		$object->is_stdClass = true;
+
+		$serialized_object = maybe_serialize( $object );
+
+		$result = affwp_maybe_unserialize( $serialized_object );
+
+		$this->assertEquals( $object, $result );
+	}
+
+	/**
+	 * @covers ::affwp_maybe_unserialize()
+	 */
+	public function test_maybe_unserialize_with_serialized_non_stdClass_object_should_return_empty_string() {
+		$affiliate = $this->factory->affiliate->create_and_get();
+		$serialized_affiliate = maybe_serialize( $affiliate );
+
+		$result = affwp_maybe_unserialize( $serialized_affiliate );
+
+		$this->assertSame( '', $result );
+	}
+
 }

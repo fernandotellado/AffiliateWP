@@ -181,6 +181,6 @@ class Affiliate_WP_Stripe extends Affiliate_WP_Base {
 
 }
 
-if ( class_exists( 'Stripe_Checkout' ) || class_exists( 'Stripe_Checkout_Pro' ) ) {
+if ( class_exists( 'Stripe_Checkout' ) || class_exists( 'Stripe_Checkout_Pro' ) || class_exists( '\SimplePay\SimplePay' ) ) {
 	new Affiliate_WP_Stripe;
 }

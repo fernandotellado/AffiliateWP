@@ -41,6 +41,20 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 		$affiliate_discount = false;
 
+		$member           = new RCP_Member( $user_id );
+		$subscription_key = rcp_get_subscription_key( $user_id );
+		$subscription     = rcp_get_subscription( $user_id );
+
+		$key = $member->get_pending_subscription_key();
+		if( empty( $key ) ) {
+			$key = $subscription_key;
+		}
+
+		$pending_subscription = $member->get_pending_subscription_name();
+		if( ! empty( $pending_subscription ) ) {
+			$subscription = $pending_subscription;
+		}
+
 		if( function_exists( 'rcp_get_registration' ) ) {
 
 			global $rcp_levels_db;
@@ -71,21 +85,13 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 			$affiliate_id  = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM $wpdb->usermeta WHERE meta_key = %s", 'affwp_discount_rcp_' . $discount_obj->id ) );
 			$aff_user_id   = affwp_get_affiliate_user_id( $affiliate_id );
 			$discount_aff  = get_user_meta( $aff_user_id, 'affwp_discount_rcp_' . $discount_obj->id, true );
-
-			$subscription_key = rcp_get_subscription_key( $user_id );
-			$subscription = rcp_get_subscription( $user_id );
-			$visit_id    = affiliate_wp()->tracking->get_visit_id();
+			$visit_id      = affiliate_wp()->tracking->get_visit_id();
 
 			if( $discount_aff && affiliate_wp()->tracking->is_valid_affiliate( $affiliate_id ) ) {
 
 				$affiliate_discount = true;
 
 				$this->affiliate_id = $affiliate_id;
-
-				$key = get_user_meta( $user_id, 'rcp_pending_subscription_key', true );
-				if( empty( $key ) ) {
-					$key = $subscription_key;
-				}
 
 				$amount = $this->calculate_referral_amount( $price, $key, absint( $_POST['rcp_level'] ) );
 
@@ -118,14 +124,6 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
 				return; // Customers cannot refer themselves
-			}
-
-			$subscription_key = rcp_get_subscription_key( $user_id );
-			$subscription     = rcp_get_subscription( $user_id );
-
-			$key = get_user_meta( $user_id, 'rcp_pending_subscription_key', true );
-			if( empty( $key ) ) {
-				$key = $subscription_key;
 			}
 
 			$total = $this->calculate_referral_amount( $price, $key, $subscription_id );

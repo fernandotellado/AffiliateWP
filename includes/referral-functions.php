@@ -22,10 +22,6 @@ function affwp_get_referral( $referral = null ) {
 		$referral->products = maybe_unserialize( maybe_unserialize( $referral->products ) );
 	}
 
-	if ( ! empty( $referral->custom ) ) {
-		$referral->custom = maybe_unserialize( maybe_unserialize( $referral->custom ) );
-	}
-
 	return $referral;
 }
 

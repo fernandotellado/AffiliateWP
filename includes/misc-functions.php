@@ -323,6 +323,8 @@ function affwp_currency_filter( $amount ) {
 				break;
 			case "IRR" :
 				$formatted = $amount . '&#65020;';
+			case "RUB" :
+				$formatted = $amount . '&#8381;';
 				break;
 			default :
 			    $formatted = $amount . ' ' . $currency;
@@ -1215,3 +1217,29 @@ function affwp_required_field_attr( $field ) {
 
 	return $required;
 }
+
+/**
+ * Helper to unserialize values based on an object whitelist.
+ *
+ * @since 2.1.4.2
+ *
+ * @param string $original  Maybe unserialized original, if is needed.
+ * @return mixed Unserialized data can be any type.
+ */
+function affwp_maybe_unserialize( $original ) {
+	$value = $original;
+
+	if ( is_serialized( $original ) ) {
+
+		preg_match( '/[oO]\s*:\s*\d+\s*:\s*"\s*(?!(?i)(stdClass))/', $original, $matches );
+
+		if ( ! empty( $matches ) ) {
+			$value = '';
+		} else {
+			$value = maybe_unserialize( $original );
+		}
+	}
+
+	return $value;
+}
+

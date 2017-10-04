@@ -142,6 +142,72 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
+	 * @covers ::affwp_get_referral()
+	 */
+	public function test_get_referral_with_non_whitelisted_class_serialized_in_custom_should_retrieve_empty_custom() {
+		$referral = $this->factory->referral->create_and_get( array(
+			'affiliate_id' => self::$_affiliate_id,
+			'custom'       => $this->factory->affiliate->create_and_get()
+		) );
+
+		$this->assertSame( '', $referral->custom );
+
+		// Clean up.
+		affwp_delete_referral( $referral );
+	}
+
+	/**
+	 * @covers ::affwp_get_referral()
+	 */
+	public function test_get_referral_with_array_non_whitelisted_custom_should_retrieve_empty_custom() {
+		$referral = $this->factory->referral->create_and_get( array(
+			'affiliate_id' => self::$_affiliate_id,
+			'custom'       => array( $this->factory->affiliate->create_and_get() )
+		) );
+
+		$this->assertSame( '', $referral->custom );
+
+		// Clean up.
+		affwp_delete_referral( $referral );
+	}
+
+	/**
+	 * @covers ::affwp_get_referral()
+	 */
+	public function test_get_referral_with_stdclass_custom_should_retrieve_the_serialized_object() {
+		$object = new \stdClass();
+		$object->foo = 'bar';
+
+		$referral = $this->factory->referral->create_and_get( array(
+			'affiliate_id' => self::$_affiliate_id,
+			'custom'       => $object,
+		) );
+
+		$this->assertEquals( $object, $referral->custom );
+
+		// Clean up.
+		affwp_delete_referral( $referral );
+	}
+
+	/**
+	 * @covers ::affwp_get_referral()
+	 */
+	public function test_get_referral_with_array_stdclass_custom_should_retrieve_the_serialized_object() {
+		$object = new \stdClass();
+		$object->foo = 'bar';
+
+		$referral = $this->factory->referral->create_and_get( array(
+			'affiliate_id' => self::$_affiliate_id,
+			'custom'       => array( $object ),
+		) );
+
+		$this->assertEquals( array( $object ), $referral->custom );
+
+		// Clean up.
+		affwp_delete_referral( $referral );
+	}
+
+	/**
 	 * @covers ::affwp_get_referral_status()
 	 */
 	public function test_get_referral_status_with_invalid_referral_id_should_return_false() {

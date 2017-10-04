@@ -189,6 +189,11 @@ final class Referral extends Base_Object {
 		if ( in_array( $field, array( 'referral_id', 'affiliate_id', 'visit_id', 'ID' ) ) ) {
 			$value = (int) $value;
 		}
+
+		if ( 'custom' === $field ) {
+			$value = affwp_maybe_unserialize( affwp_maybe_unserialize( $value ) );
+		}
+
 		return $value;
 	}
 

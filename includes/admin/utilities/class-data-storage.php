@@ -30,7 +30,7 @@ class Data_Storage {
 			$value = $default;
 		}
 
-		return empty( $value ) ? false : maybe_unserialize( $value );
+		return empty( $value ) ? false : affwp_maybe_unserialize( $value );
 	}
 
 	/**

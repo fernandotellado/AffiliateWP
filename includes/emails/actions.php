@@ -82,6 +82,10 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
  */
 function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
+	if( affiliate_wp()->settings->get( 'disable_application_accepted_emails' ) ) {
+		return;
+	}
+
 	if( empty( $affiliate_id ) || 'active' !== $status ) {
 		return;
 	}
@@ -150,6 +154,10 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
  */
 function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $status = '', $args ) {
 
+	if( affiliate_wp()->settings->get( 'disable_application_pending_emails' ) ) {
+		return;
+	}
+
 	if ( empty( $affiliate_id ) ) {
 		return;
 	}
@@ -189,6 +197,10 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_regis
  */
 function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
+	if( affiliate_wp()->settings->get( 'disable_application_rejected_emails' ) ) {
+		return;
+	}
+
 	if ( empty( $affiliate_id ) ) {
 		return;
 	}
@@ -224,6 +236,10 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_re
  * @param array $referral
  */
 function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
+
+	if( affiliate_wp()->settings->get( 'disable_new_referral_emails' ) ) {
+		return;
+	}
 
 	$user_id = affwp_get_affiliate_user_id( $affiliate_id );
 

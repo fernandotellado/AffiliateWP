@@ -298,7 +298,7 @@ class Affiliate_WP_Admin_Notices {
 
 				case 'license-expired' :
 
-					$class = 'expired';
+					$class = 'error';
 					$message = sprintf(
 						__( 'Your license key expired on %s. Please <a href="%s" target="_blank">renew your license key</a>.', 'affiliate-wp' ),
 						date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) ),

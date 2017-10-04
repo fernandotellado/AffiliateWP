@@ -1980,4 +1980,110 @@ class Tests extends UnitTestCase {
 			affwp_delete_payout( $payout );
 		}
 	}
+
+	/**
+	 * @covers ::affwp_get_affiliate_meta()
+	 */
+	public function test_get_affiliate_meta_single_should_return_single_value_only() {
+		affwp_add_affiliate_meta( self::$affiliates[0], 'foo', 'bar' );
+
+		$results = affwp_get_affiliate_meta( self::$affiliates[0], 'foo', true );
+
+		$this->assertSame( 'bar', $results );
+
+		// Clean up.
+		affwp_delete_affiliate_meta( self::$affiliates[0], 'foo', 'bar' );
+	}
+
+	/**
+	 * @covers ::affwp_get_affiliate_meta()
+	 */
+	public function test_get_affiliate_meta_not_single_should_return_all_values() {
+		$expected = array( 'bar', 'baz' );
+
+		affwp_add_affiliate_meta( self::$affiliates[0], 'foo', 'bar' );
+		affwp_add_affiliate_meta( self::$affiliates[0], 'foo', 'baz' );
+
+		$results = affwp_get_affiliate_meta( self::$affiliates[0], 'foo' );
+
+		$this->assertEqualSets( $expected, $results );
+
+		// Clean up.
+		affwp_delete_affiliate_meta( self::$affiliates[0], 'foo' );
+	}
+
+	/**
+	 * @covers ::affwp_get_affiliate_meta()
+	 */
+	public function test_get_affiliate_meta_single_with_serialized_stdClass_object_should_return_that_object() {
+		$object = new \stdClass();
+		$object->is_object = true;
+
+		affwp_add_affiliate_meta( self::$affiliates[1], 'objects', $object );
+
+		$results = affwp_get_affiliate_meta( self::$affiliates[1], 'objects', true );
+
+		$this->assertEquals( $object, $results );
+
+		// Clean up.
+		affwp_delete_affiliate_meta( self::$affiliates[1], 'objects' );
+	}
+
+	/**
+	 * @covers ::affwp_get_affiliate_meta()
+	 */
+	public function test_get_affiliate_meta_single_with_serialized_non_stdClass_object_should_return_empty_string() {
+		$referral = $this->factory->referral->create_and_get();
+
+		affwp_add_affiliate_meta( self::$affiliates[1], 'objects', $referral );
+
+		$results = affwp_get_affiliate_meta( self::$affiliates[1], 'objects', true );
+
+		$this->assertSame( '', $results );
+
+		// Clean up.
+		affwp_delete_affiliate_meta( self::$affiliates[1], 'objects' );
+	}
+
+	/**
+	 * @covers ::affwp_get_affiliate_meta()
+	 */
+	public function test_get_affiliate_meta_not_single_with_serialized_array_of_stdClass_objects_should_return_those_objects() {
+		$object1 = new \stdClass();
+		$object1->first = true;
+
+		$object2 = new \stdClass();
+		$object2->first = false;
+
+		$meta_value = array( $object1, $object2 );
+
+		affwp_add_affiliate_meta( self::$affiliates[1], 'objects', $meta_value );
+
+		$results = affwp_get_affiliate_meta( self::$affiliates[1], 'objects' );
+
+		$this->assertEqualSets( array( $meta_value ), $results );
+
+		// Clean up.
+		affwp_delete_affiliate_meta( self::$affiliates[1], 'objects' );
+	}
+
+	/**
+	 * @covers ::affwp_get_affiliate_meta()
+	 */
+	public function test_get_affiliate_meta_not_single_with_serialized_array_of_non_stdClass_objects_should_return_empty_array() {
+		$affiliate1 = $this->factory->affiliate->create_and_get();
+		$affiliate2 = $this->factory->affiliate->create_and_get();
+
+		$meta_value = array( $affiliate1, $affiliate2 );
+
+		affwp_add_affiliate_meta( self::$affiliates[1], 'objects', $meta_value );
+
+		$results = affwp_get_affiliate_meta( self::$affiliates[1], 'objects' );
+
+		$this->assertSame( array( '' ), $results );
+
+		// Clean up.
+		affwp_delete_affiliate_meta( self::$affiliates[1], 'objects' );
+	}
+
 }

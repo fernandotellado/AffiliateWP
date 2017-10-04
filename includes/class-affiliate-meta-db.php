@@ -27,6 +27,7 @@ class Affiliate_WP_Affiliate_Meta_DB extends Affiliate_WP_DB {
 		$this->version     = '1.0';
 
 		add_action( 'plugins_loaded', array( $this, 'register_table' ), 11 );
+		add_filter( 'get_affiliate_metadata', array( $this, 'sanitize_meta' ), 100, 4 );
 	}
 
 	/**
@@ -129,6 +130,40 @@ class Affiliate_WP_Affiliate_Meta_DB extends Affiliate_WP_DB {
 	 */
 	function delete_meta( $affiliate_id = 0, $meta_key = '', $meta_value = '' ) {
 		return delete_metadata( 'affiliate', $affiliate_id, $meta_key, $meta_value );
+	}
+
+	/**
+	 * Sanitizes serialized affiliate meta values when retrieved.
+	 *
+	 * @since 2.1.4.2
+	 *
+	 * @param null   $value        The value get_metadata() should return - a single metadata value,
+	 *                             or an array of values.
+	 * @param int    $affiliate_id Affiliate ID.
+	 * @param string $meta_key     Meta key.
+	 * @param bool   $single       Whether to return only the first value of the specified $meta_key.
+	 */
+	public function sanitize_meta( $value, $affiliate_id, $meta_key, $single ) {
+
+		$meta_cache = wp_cache_get( $affiliate_id, 'affiliate_meta' );
+
+		if ( ! $meta_cache ) {
+			$meta_cache = update_meta_cache( 'affiliate', array( $affiliate_id ) );
+			$meta_cache = $meta_cache[ $affiliate_id ];
+		}
+
+		// Bail and let get_metadata() handle it if there's no cache.
+		if ( ! $meta_cache || ! isset( $meta_cache[ $meta_key ] ) ) {
+			return $value;
+		}
+
+		$value = $meta_cache[ $meta_key ];
+
+		foreach ( $value as $index => $_value ) {
+			$value[ $index ] = affwp_maybe_unserialize( $_value );
+		}
+
+		return $value;
 	}
 
 	/**
