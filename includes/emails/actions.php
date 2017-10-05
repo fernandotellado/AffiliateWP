@@ -12,7 +12,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
 
 
 /**
- * Send email on affiliate registration
+ * Sends an admin email on affiliate registration
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -73,7 +73,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
 
 
 /**
- * Send email on affiliate approval
+ * Sends affiliate an email on affiliate approval
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -145,7 +145,7 @@ function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status 
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
 
 /**
- * Send email on pending affiliate registration
+ * Sends affiliate an email on pending affiliate registration
  *
  * @since 1.6.1
  * @param int $affiliate_id The ID of the registered affiliate
@@ -188,7 +188,7 @@ add_action( 'affwp_register_user', 'affwp_notify_on_pending_affiliate_registrati
 add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_registration', 10, 3 );
 
 /**
- * Send email on rejected affiliate registration
+ * Sends affiliate an email on rejected affiliate registration
  *
  * @since 1.6.1
  * @param int $affiliate_id The ID of the registered affiliate
@@ -229,7 +229,7 @@ function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $st
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_registration', 10, 3 );
 
 /**
- * Send email on new referrals
+ * Sends affilaite an email on new referrals
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
