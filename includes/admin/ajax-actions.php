@@ -161,7 +161,7 @@ function affwp_process_batch_request() {
 
 	// Garbage collect any old temporary data.
 	if ( $step < 2 ) {
-		$process->finish();
+		$process->finish( $batch_id );
 	}
 
 	$using_prefetch = ( $process instanceof \AffWP\Utils\Batch_Process\With_PreFetch );
@@ -209,7 +209,7 @@ function affwp_process_batch_request() {
 			}
 
 			// Once all calculations have finished, run cleanup.
-			$process->finish();
+			$process->finish( $batch_id );
 		} else {
 			$response_data['done'] = false;
 			$response_data['percentage'] = $process->get_percentage_complete();

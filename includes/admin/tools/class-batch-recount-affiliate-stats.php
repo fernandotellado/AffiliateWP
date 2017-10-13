@@ -341,10 +341,12 @@ class Recount_Affiliate_Stats extends Utils\Batch_Process implements Batch\With_
 	 *
 	 * @access public
 	 * @since  2.0
+	 *
+	 * @param string $batch_id Batch process ID.
 	 */
-	public function finish() {
+	public function finish( $batch_id ) {
 		// Clean up.
-		parent::finish();
+		parent::finish( $batch_id );
 
 		// Invalidate the affiliates cache.
 		wp_cache_set( 'last_changed', microtime(), 'affiliates' );

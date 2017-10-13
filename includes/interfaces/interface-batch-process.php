@@ -52,7 +52,9 @@ Interface Base {
 	 *
 	 * @access public
 	 * @since  2.0
+	 *
+	 * @param string $batch_id Batch process ID.
 	 */
-	public function finish();
+	public function finish( $batch_id );
 
 }

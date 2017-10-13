@@ -328,12 +328,14 @@ class Import_Affiliates extends Batch\Import\CSV implements Batch\With_PreFetch 
 	 *
 	 * @access public
 	 * @since  2.1
+	 *
+	 * @param string $batch_id Batch process ID.
 	 */
-	public function finish() {
+	public function finish( $batch_id ) {
 		// Invalidate the affiliates cache.
 		wp_cache_set( 'last_changed', microtime(), 'affiliates' );
 
-		parent::finish();
+		parent::finish( $batch_id );
 	}
 
 }
