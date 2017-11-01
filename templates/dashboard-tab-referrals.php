@@ -29,7 +29,7 @@ $affiliate_id = affwp_get_affiliate_id();
 	do_action( 'affwp_referrals_dashboard_before_table', $affiliate_id );
 	?>
 
-	<table id="affwp-affiliate-dashboard-referrals" class="affwp-table">
+	<table id="affwp-affiliate-dashboard-referrals" class="affwp-table affwp-table-responsive">
 		<thead>
 			<tr>
 				<th class="referral-amount"><?php _e( 'Amount', 'affiliate-wp' ); ?></th>
@@ -50,10 +50,10 @@ $affiliate_id = affwp_get_affiliate_id();
 
 				<?php foreach ( $referrals as $referral ) : ?>
 					<tr>
-						<td class="referral-amount"><?php echo affwp_currency_filter( affwp_format_amount( $referral->amount ) ); ?></td>
-						<td class="referral-description"><?php echo wp_kses_post( nl2br( $referral->description ) ); ?></td>
-						<td class="referral-status <?php echo $referral->status; ?>"><?php echo affwp_get_referral_status_label( $referral ); ?></td>
-						<td class="referral-date"><?php echo date_i18n( get_option( 'date_format' ), strtotime( $referral->date ) ); ?></td>
+						<td class="referral-amount" data-th="<?php _e( 'Amount', 'affiliate-wp' ); ?>"><?php echo affwp_currency_filter( affwp_format_amount( $referral->amount ) ); ?></td>
+						<td class="referral-description" data-th="<?php _e( 'Description', 'affiliate-wp' ); ?>"><?php echo wp_kses_post( nl2br( $referral->description ) ); ?></td>
+						<td class="referral-status <?php echo $referral->status; ?>" data-th="<?php _e( 'Status', 'affiliate-wp' ); ?>"><?php echo affwp_get_referral_status_label( $referral ); ?></td>
+						<td class="referral-date" data-th="<?php _e( 'Date', 'affiliate-wp' ); ?>"><?php echo date_i18n( get_option( 'date_format' ), strtotime( $referral->date ) ); ?></td>
 						<?php
 						/**
 						 * Fires within the table data of the dashboard referrals template.
@@ -67,7 +67,7 @@ $affiliate_id = affwp_get_affiliate_id();
 			<?php else : ?>
 
 				<tr>
-					<td colspan="4"><?php _e( 'You have not made any referrals yet.', 'affiliate-wp' ); ?></td>
+					<td class="affwp-table-no-data" colspan="4"><?php _e( 'You have not made any referrals yet.', 'affiliate-wp' ); ?></td>
 				</tr>
 
 			<?php endif; ?>

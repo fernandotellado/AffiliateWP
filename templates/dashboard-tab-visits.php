@@ -21,7 +21,7 @@
 	);
 	?>
 
-	<table id="affwp-affiliate-dashboard-visits" class="affwp-table" aria-describedby="affwp-table-summary">
+	<table id="affwp-affiliate-dashboard-visits" class="affwp-table affwp-table-responsive" aria-describedby="affwp-table-summary">
 		<thead>
 			<tr>
 				<th class="visit-url"><?php _e( 'URL', 'affiliate-wp' ); ?></th>
@@ -36,19 +36,19 @@
 
 				<?php foreach ( $visits as $visit ) : ?>
 					<tr>
-						<td>
+						<td data-th="<?php _e( 'URL', 'affiliate-wp' ); ?>">
 							<a href="<?php echo esc_url( $visit->url ); ?>" title="<?php echo esc_attr( $visit->url ); ?>">
 								<?php echo affwp_make_url_human_readable( $visit->url ); ?>
 							</a>
 						</td>
-						<td><?php echo ! empty( $visit->referrer ) ? $visit->referrer : __( 'Direct traffic', 'affiliate-wp' ); ?></td>
-						<td>
+						<td data-th="<?php _e( 'Referring URL', 'affiliate-wp' ); ?>"><?php echo ! empty( $visit->referrer ) ? $visit->referrer : __( 'Direct traffic', 'affiliate-wp' ); ?></td>
+						<td data-th="<?php _e( 'Converted', 'affiliate-wp' ); ?>">
 							<?php $converted = ! empty( $visit->referral_id ) ? 'yes' : 'no'; ?>
 							<span class="visit-converted <?php echo esc_attr( $converted ); ?>" aria-label="<?php printf( esc_attr__( 'Visit converted: %s', 'affiliate-wp' ), $converted ); ?>">
 								<i></i>
 							</span>
 						</td>
-						<td>
+						<td data-th="<?php _e( 'Date', 'affiliate-wp' ); ?>">
 							<?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $visit->date ) ) ); ?>
 						</td>
 					</tr>
@@ -57,7 +57,7 @@
 			<?php else : ?>
 
 				<tr>
-					<td colspan="4"><?php _e( 'You have not received any visits yet.', 'affiliate-wp' ); ?></td>
+					<td class="affwp-table-no-data" colspan="4"><?php _e( 'You have not received any visits yet.', 'affiliate-wp' ); ?></td>
 				</tr>
 
 			<?php endif; ?>
