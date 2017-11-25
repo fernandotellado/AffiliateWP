@@ -110,7 +110,7 @@ class Database extends \Affiliate_WP_DB {
 	 *                                     array of fields. Default '*' (all).
 	 * }
 	 * @param bool  $count Optional. Whether to return only the total number of results found. Default false.
-	 * @return array|int Array of consumer objects (if found) or integer if `$count` is true.
+	 * @return array|int Array of consumer objects or field(s) (if found) or integer if `$count` is true.
 	 */
 	public function get_consumers( $args = array(), $count = false ) {
 		global $wpdb;

@@ -22,6 +22,9 @@ class Referrals_DB_Tests extends UnitTestCase {
 	 * Set up fixtures once.
 	 */
 	public static function wpSetUpBeforeClass() {
+		update_option( 'gmt_offset', -5 );
+		affiliate_wp()->utils->_refresh_wp_offset();
+
 		self::$affiliate_id = parent::affwp()->affiliate->create();
 
 		for ( $i = 0; $i <= 3; $i++ ) {
@@ -110,6 +113,48 @@ class Referrals_DB_Tests extends UnitTestCase {
 		);
 
 		$this->assertEqualSets( $expected, $columns );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Referrals_DB::add()
+	 * @group dates
+	 */
+	public function test_add_without_date_registered_should_use_current_date_and_time() {
+		$referral_id = affiliate_wp()->referrals->add( array(
+			'affiliate_id' => self::$affiliate_id,
+		) );
+
+		$referral = affwp_get_referral( $referral_id );
+
+		// Explicitly dropping seconds from the date strings for comparison.
+		$expected = gmdate( 'Y-m-d H:i' );
+		$actual   = gmdate( 'Y-m-d H:i', strtotime( $referral->date ) );
+
+		$this->assertSame( $expected, $actual );
+
+		// Clean up.
+		affwp_delete_referral( $referral_id );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Referrals_DB::add()
+	 * @group dates
+	 */
+	public function test_add_with_date_registered_should_assume_local_time_and_remove_offset_on_add() {
+		$referral_id = affiliate_wp()->referrals->add( array(
+			'affiliate_id' => self::$affiliate_id,
+			'date'         => '05/04/2017',
+		) );
+
+		$referral = affwp_get_referral( $referral_id );
+
+		$expected_date = gmdate( 'Y-m-d H:i', strtotime( '05/04/2017' ) - affiliate_wp()->utils->wp_offset );
+		$actual        = gmdate( 'Y-m-d H:i', strtotime( $referral->date ) );
+
+		$this->assertSame( $expected_date, $actual );
+
+		// Clean up.
+		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -340,6 +385,75 @@ class Referrals_DB_Tests extends UnitTestCase {
 		foreach ( array( $referral_A, $referral_B, $referral_C ) as $referral_id ) {
 			affwp_delete_referral( $referral_id );
 		}
+	}
+
+	/**
+	 * @covers Affiliate_WP_Referrals_DB::get_referrals()
+	 * @group dates
+	 */
+	public function test_get_referrals_with_date_no_start_end_should_retrieve_referrals_for_today() {
+		$results = affiliate_wp()->referrals->get_referrals( array(
+			'date'   => 'today',
+			'fields' => 'ids',
+		) );
+
+		$this->assertEqualSets( self::$referrals, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Referrals_DB::get_referrals()
+	 * @group dates
+	 */
+	public function test_get_referrals_with_today_referrals_yesterday_date_no_start_end_should_return_empty() {
+		$results = affiliate_wp()->referrals->get_referrals( array(
+			'date'   => 'yesterday',
+			'fields' => 'ids',
+		) );
+
+		$this->assertEqualSets( array(), $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Referrals_DB::get_referrals()
+	 * @group dates
+	 */
+	public function test_get_referrals_date_start_should_only_retrieve_referrals_created_after_that_date() {
+		$referrals = $this->factory->referral->create_many( 3, array(
+			'date' => '2016-01-01',
+		) );
+
+		$results = affiliate_wp()->referrals->get_referrals( array(
+			'date'   => array(
+				'start' => '2016-01-02'
+			),
+			'fields' => 'ids',
+		) );
+
+		$this->assertEqualSets( self::$referrals, $results );
+
+		// Clean up.
+		$this->factory->referral->delete_many( $referrals );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Referrals_DB::get_referrals()
+	 * @group dates
+	 */
+	public function test_get_referrals_date_end_should_only_retrieve_referrals_created_before_that_date() {
+		$referral = $this->factory->referral->create( array(
+			'date' => '+1 day',
+		) );
+
+		$results = affiliate_wp()->referrals->get_referrals( array(
+			'date'   => array( 'end' => 'today' ),
+			'fields' => 'ids',
+		) );
+
+		// Should catch all but the one just created +1 day.
+		$this->assertEqualSets( self::$referrals, $results );
+
+		// Clean up.
+		$this->factory->referral->delete( $referral );
 	}
 
 	/**
@@ -646,6 +760,45 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// Clean up.
 		affwp_delete_referral( $referral_id );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Referrals_DB::update_referral()
+	 * @group dates
+	 */
+	public function test_update_referral_same_date_should_register_no_change() {
+		$original_date = affwp_get_referral( self::$referrals[0] )->date;
+
+		affiliate_wp()->referrals->update_referral( self::$referrals[0], array(
+			'date' => $original_date
+		) );
+
+		$referral = affwp_get_referral( self::$referrals[0] );
+
+		$this->assertSame( $original_date, $referral->date );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Referrals_DB::update_referral()
+	 * @group dates
+	 */
+	public function test_update_referral_new_date_should_save_it_minus_wp_offset() {
+		$original_date = affwp_get_referral( self::$referrals[0] )->date;
+
+		affiliate_wp()->referrals->update_referral( self::$referrals[0], array(
+			'date' => '01/01/2001'
+		) );
+
+		$referral = affwp_get_referral( self::$referrals[0] );
+		$expected = gmdate( 'Y-m-d H:i:s', strtotime( '01/01/2001' ) - affiliate_wp()->utils->wp_offset );
+
+		$this->assertSame( $expected, $referral->date );
+
+		// Clean up.
+		affiliate_wp()->referrals->update_referral( self::$referrals, array(
+			// Add the offset here as it will be removed.
+			'date' => gmdate( 'Y-m-d H:i:s', strtotime( $original_date ) + affiliate_wp()->utils->wp_offset )
+		) );
 	}
 
 	/**

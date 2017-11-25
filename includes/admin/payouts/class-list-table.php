@@ -386,7 +386,7 @@ class AffWP_Payouts_Table extends List_Table {
 	 * @return string Localized payout date.
 	 */
 	public function column_date( $payout ) {
-		$value = date_i18n( get_option( 'date_format' ), strtotime( $payout->date ) );
+		$value = $payout->date_i18n();
 
 		/**
 		 * Filters the value of the 'Date' column in the payouts list table.

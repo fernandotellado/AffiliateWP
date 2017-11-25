@@ -53,7 +53,7 @@
 				<?php foreach ( $payouts as $payout ) : ?>
 					<tr>
 						<td data-th="<?php _e( 'Date', 'affiliate-wp' ); ?>">
-							<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $payout->date ) ) ); ?>
+							<?php echo esc_html( $payout->date_i18n( 'datetime' ) ); ?>
 						</td>
 						<td data-th="<?php _e( 'Amount', 'affiliate-wp' ); ?>">
 							<?php echo affwp_currency_filter( affwp_format_amount( $payout->amount ) ); ?>

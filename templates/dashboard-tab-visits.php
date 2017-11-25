@@ -49,7 +49,7 @@
 							</span>
 						</td>
 						<td data-th="<?php _e( 'Date', 'affiliate-wp' ); ?>">
-							<?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $visit->date ) ) ); ?>
+							<?php echo esc_html( $visit->date_i18n( 'datetime' ) ); ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
