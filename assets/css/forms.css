@@ -224,3 +224,54 @@ p.affwp-error {
 	border: 0;
 	word-wrap: normal !important;
 }
+
+/* Responsive table styling for mobile resolutions */
+.affwp-table-responsive td:before {
+	content: attr(data-th) ":\00a0";
+	font-weight: bold;
+}
+
+.affwp-table-responsive td:before {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	
+	#affwp-affiliate-dashboard-campaign-stats .affwp-table-responsive td.affwp-table-no-data {
+		display: block;
+	}
+
+	#affwp-affiliate-dashboard-visits .affwp-table-responsive td.affwp-table-no-data:before,
+	#affwp-affiliate-dashboard-payouts .affwp-table-responsive td.affwp-table-no-data:before,
+	#affwp-affiliate-dashboard-referrals .affwp-table-responsive td.affwp-table-no-data:before {
+		display: none;
+	}
+
+	.affwp-table-responsive td:last-child {
+		margin-bottom: 20px;
+	}
+
+	.affwp-table-responsive td:first-child {
+		background-color: #fafafa;
+	}
+	
+	.affwp-table-responsive td:before {
+		display: inline-block;
+	}
+	
+	.affwp-table-responsive th {
+		display: none;
+	}
+
+	.affwp-table-responsive td {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
+		-webkit-box-pack: justify;
+		-webkit-justify-content: space-between;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+	}
+
+}

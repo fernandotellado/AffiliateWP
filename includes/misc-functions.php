@@ -647,16 +647,6 @@ function affwp_make_url_human_readable( $url ) {
 }
 
 /**
- * Show a tab in the Affiliate Area
- *
- * @since  1.8
- * @return boolean
- */
-function affwp_affiliate_area_show_tab( $tab = '' ) {
-	return apply_filters( 'affwp_affiliate_area_show_tab', true, $tab );
-}
-
-/**
  * Cleans the cache for a given object.
  *
  * @since 1.9

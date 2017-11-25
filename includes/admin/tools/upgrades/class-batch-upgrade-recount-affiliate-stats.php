@@ -72,11 +72,13 @@ class Upgrade_Recount_Stats extends Recount_Affiliate_Stats {
 	 *
 	 * @access public
 	 * @since  2.0
+	 *
+	 * @param string $batch_id Batch process ID.
 	 */
-	public function finish() {
+	public function finish( $batch_id ) {
 		affwp_set_upgrade_complete( 'upgrade_v20_recount_unpaid_earnings' );
 
 		// Clean up.
-		parent::finish();
+		parent::finish( $batch_id );
 	}
 }

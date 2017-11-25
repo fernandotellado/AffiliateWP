@@ -131,4 +131,34 @@ class Tests extends UnitTestCase {
 		$this->assertFalse( self::$utils->data->get( self::$storage_key ) );
 	}
 
+	/**
+	 * @covers \AffWP\Utils\Data_Storage::delete_by_match()
+	 */
+	public function test_delete_by_match_should_return_false_if_pattern_is_vanilla() {
+		$this->assertFalse( self::$utils->data->delete_by_match( '' ) );
+	}
+
+	/**
+	 * @covers \AffWP\Utils\Data_Storage::delete_by_match()
+	 */
+	public function test_delete_by_match_should_return_zero_if_non_vanilla_pattern_and_no_matched_records() {
+		$this->assertSame( 0, self::$utils->data->delete_by_match( "^bar[0-9a-z\_]+" ) );
+	}
+
+	/**
+	 * @covers \AffWP\Utils\Data_Storage::delete_by_match()
+	 */
+	public function test_delete_by_match_should_only_delete_rows_matching_the_given_pattern() {
+		self::$utils->data->write( 'foo_something', 'foo' );
+		self::$utils->data->write( 'bar_something', 'bar' );
+		self::$utils->data->write( 'bar_something_else', 'bar' );
+
+		$result = self::$utils->data->delete_by_match( "^bar[0-9a-z\_]+" );
+
+		$this->assertSame( 2, $result );
+
+		// Clean up.
+		self::$utils->data->delete( 'foo_something' );
+	}
+
 }

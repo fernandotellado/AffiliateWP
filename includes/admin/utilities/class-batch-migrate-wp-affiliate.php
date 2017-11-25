@@ -228,12 +228,14 @@ class Migrate_WP_Affiliate extends Utils\Batch_Process implements Batch\With_Pre
 	 *
 	 * @access public
 	 * @since  2.0
+	 *
+	 * @param string $batch_id Batch process ID.
 	 */
-	public function finish() {
+	public function finish( $batch_id ) {
 		// Clean up.
 		delete_option( 'affwp_migrate_direct_affiliates' );
 
-		parent::finish();
+		parent::finish( $batch_id );
 	}
 
 }

@@ -191,4 +191,22 @@ class Tests extends UnitTestCase {
 		$this->assertFalse( self::$utils->batch->get( self::$batch_id ) );
 	}
 
+	/**
+	 * @covers \AffWP\Utils\Batch_Process::$batch_id
+	 */
+	public function test_core_batch_processes_should_have_batch_id_property_defined() {
+		foreach ( self::$utils->batch->get_items() as $id => $process ) {
+			if ( ! class_exists( $process['class'] ) ) {
+				require_once $process['file'];
+			}
+
+			$class = new $process['class']( 1 );
+
+			$this->assertNotNull( $class->batch_id );
+
+			// Clean up just in case.
+			$class->finish( $id );
+		}
+	}
+
 }

@@ -155,10 +155,21 @@ abstract class Affiliate_WP_Base {
 
 			$referral = affwp_get_referral( $reference_or_referral );
 
+			if ( empty( $referral ) ) {
+
+				affiliate_wp()->utils->log( 'Referral could not be retrieved during complete_referral(). Value given: ' . print_r( $reference_or_referral, true ) );
+
+				return false;
+			}
+
 		} else {
 
 			$referral = affiliate_wp()->referrals->get_by( 'reference', $reference_or_referral, $this->context );
 
+			if ( empty( $referral ) ) {
+				// Bail: This is a non-referral sale.
+				return false;
+			}
 		}
 
 		if ( empty( $referral ) ) {

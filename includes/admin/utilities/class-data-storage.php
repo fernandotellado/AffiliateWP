@@ -113,11 +113,16 @@ class Data_Storage {
 	public function delete_by_match( $pattern ) {
 		global $wpdb;
 
-		return $wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $wpdb->options WHERE option_name REGEXP %s", $pattern
-			)
-		);
+		// Double check to make sure the batch_id got included before proceeding.
+		if ( "^[0-9a-z\\_]+" !== $pattern && ! empty( $pattern ) ) {
+			$query = "DELETE FROM $wpdb->options WHERE option_name REGEXP %s";
+
+			$result = $wpdb->query( $wpdb->prepare( $query, $pattern ) );
+		} else {
+			$result = false;
+		}
+
+		return $result;
 	}
 
 }

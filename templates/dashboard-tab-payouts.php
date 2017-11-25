@@ -28,7 +28,7 @@
 	 */
 	do_action( 'affwp_payouts_dashboard_before_table', $affiliate_id ); ?>
 
-	<table id="affwp-affiliate-dashboard-payouts" class="affwp-table" aria-describedby="affwp-table-summary">
+	<table id="affwp-affiliate-dashboard-payouts" class="affwp-table affwp-table-responsive" aria-describedby="affwp-table-summary">
 		<thead>
 			<tr>
 				<th class="payout-date"><?php _e( 'Date', 'affiliate-wp' ); ?></th>
@@ -52,16 +52,16 @@
 
 				<?php foreach ( $payouts as $payout ) : ?>
 					<tr>
-						<td>
+						<td data-th="<?php _e( 'Date', 'affiliate-wp' ); ?>">
 							<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $payout->date ) ) ); ?>
 						</td>
-						<td>
+						<td data-th="<?php _e( 'Amount', 'affiliate-wp' ); ?>">
 							<?php echo affwp_currency_filter( affwp_format_amount( $payout->amount ) ); ?>
 						</td>
-						<td>
+						<td data-th="<?php _e( 'Payout Method', 'affiliate-wp' ); ?>">
 							<?php echo esc_html( $payout->payout_method ); ?>
 						</td>
-						<td>
+						<td data-th="<?php _e( 'Status', 'affiliate-wp' ); ?>">
 							<?php echo esc_html( affwp_get_payout_status_label( $payout ) ); ?>
 						</td>
 						<?php
@@ -79,7 +79,7 @@
 			<?php else : ?>
 
 				<tr>
-					<td colspan="4"><?php _e( 'None of your referrals have been paid out yet.', 'affiliate-wp' ); ?></td>
+					<td class="affwp-table-no-data" colspan="4"><?php _e( 'None of your referrals have been paid out yet.', 'affiliate-wp' ); ?></td>
 				</tr>
 
 			<?php endif; ?>

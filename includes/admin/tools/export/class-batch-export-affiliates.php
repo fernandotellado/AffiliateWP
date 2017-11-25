@@ -91,7 +91,8 @@ class Export_Affiliates extends Batch\Export\CSV implements Batch\With_PreFetch 
 		return array(
 			'affiliate_id'    => __( 'Affiliate ID', 'affiliate-wp' ),
 			'email'           => __( 'Email', 'affiliate-wp' ),
-			'name'            => __( 'Name', 'affiliate-wp' ),
+			'first_name'      => __( 'First Name', 'affiliate-wp' ),
+			'last_name'       => __( 'Last Name', 'affiliate-wp' ),
 			'payment_email'   => __( 'Payment Email', 'affiliate-wp' ),
 			'username'        => __( 'Username', 'affiliate-wp' ),
 			'rate'            => __( 'Rate', 'affiliate-wp' ),
@@ -146,7 +147,8 @@ class Export_Affiliates extends Batch\Export\CSV implements Batch\With_PreFetch 
 				$data[] = array(
 					'affiliate_id'    => $affiliate->ID,
 					'email'           => affwp_get_affiliate_email( $affiliate->ID ),
-					'name'            => affwp_get_affiliate_name( $affiliate->ID ),
+					'first_name'      => affwp_get_affiliate_first_name( $affiliate->ID ),
+					'last_name'       => affwp_get_affiliate_last_name( $affiliate->ID ),
 					'payment_email'   => affwp_get_affiliate_payment_email( $affiliate->ID ),
 					'username'        => affwp_get_affiliate_login( $affiliate->ID ),
 					'rate'            => affwp_get_affiliate_rate( $affiliate->ID ),

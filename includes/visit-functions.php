@@ -100,7 +100,7 @@ function affwp_sanitize_visit_url( $url ) {
 	// Fallback for pretty permalinks
 	if( $original_url === $url ) {
 		if( strpos( $url, $referral_var ) ) {
-			$url = preg_replace( '/(\/' . $referral_var . ')[\/](\w*)/', '', $url );
+			$url = preg_replace( '/(\/' . $referral_var . ')[\/](\w\-*)+/', '', $url );
 		}
 	}
 

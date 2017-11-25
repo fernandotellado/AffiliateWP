@@ -710,6 +710,23 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Enter the email to send on new referrals. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
 						'type' => 'rich_editor',
 						'std' => __( 'Congratulations {name}!', 'affiliate-wp' ) . "\n\n" . __( 'You have been awarded a new referral of', 'affiliate-wp' ) . ' {amount} ' . sprintf( __( 'on %s!', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Log into your affiliate area to view your earnings or disable these notifications:', 'affiliate-wp' ) . ' {login_url}'
+					),
+					'admin_referral_notifications' => array(
+						'name' => __( 'Notify Admin of Referrals', 'affiliate-wp' ),
+						'desc' => __( 'Notify site admin when new referrals are earned.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
+					'new_admin_referral_subject' => array(
+						'name' => __( 'New Referral Admin Email Subject', 'affiliate-wp' ),
+						'desc' => __( 'Enter the subject line for the email sent to site the site administrator when affiliates earn referrals.', 'affiliate-wp' ),
+						'type' => 'text',
+						'std' => __( 'Referral Earned!', 'affiliate-wp' )
+					),
+					'new_admin_referral_email' => array(
+						'name' => __( 'New Referral Admin Email Content', 'affiliate-wp' ),
+						'desc' => __( 'Enter the email to send to site administrators when new referrals are earned. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
+						'type' => 'rich_editor',
+						'std' => __( '{name} has been awarded a new referral of {amount} on {site_name}.', 'affiliate-wp' )
 					)
 				)
 			),
