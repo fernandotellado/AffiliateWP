@@ -88,9 +88,6 @@ class Tests extends UnitTestCase {
 		$stored = affiliate_wp()->referrals->get_column( 'description', $referral_id );
 
 		$this->assertSame( wp_unslash( $description ), $stored );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**

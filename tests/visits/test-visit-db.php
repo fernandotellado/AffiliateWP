@@ -317,9 +317,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$visits, $results );
-
-		// Clean up.
-		$this->factory->visit->delete_many( $visits );
 	}
 
 	/**
@@ -338,9 +335,6 @@ class Tests extends UnitTestCase {
 
 		// Should catch all but the one just created +1 day.
 		$this->assertEqualSets( self::$visits, $results );
-
-		// Clean up.
-		$this->factory->visit->delete( $visit );
 	}
 
 	/**
@@ -365,9 +359,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( 'affwp-test', $visit->context );
-
-		// Clean up.
-		affiliate_wp()->visits->delete( $visit->ID );
 	}
 
 	/**
@@ -382,9 +373,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( substr( $context, 0, 50 ), $visit->context );
-
-		// Clean up.
-		affiliate_wp()->visits->delete( $visit->ID );
 	}
 
 	/**
@@ -397,9 +385,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEmpty( $visit->context );
-
-		// Clean up.
-		affiliate_wp()->visits->delete( $visit->ID );
 	}
 
 	/**
@@ -418,9 +403,6 @@ class Tests extends UnitTestCase {
 		$actual   = gmdate( 'Y-m-d H:i', strtotime( $visit->date ) );
 
 		$this->assertSame( $expected, $actual );
-
-		// Clean up.
-		affwp_delete_visit( $visit_id );
 	}
 
 	/**
@@ -439,9 +421,6 @@ class Tests extends UnitTestCase {
 		$actual        = gmdate( 'Y-m-d H:i', strtotime( $visit->date ) );
 
 		$this->assertSame( $expected_date, $actual );
-
-		// Clean up.
-		affwp_delete_visit( $visit_id );
 	}
 
 	/**
@@ -490,9 +469,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertNotSame( 1, $visit->date );
-
-		// Clean up.
-		$this->factory->visit->delete( $visit->ID );
 	}
 
 	/**

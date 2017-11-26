@@ -275,9 +275,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( array_merge( self::$creatives, array( $creative ) ), $results );
-
-		// Clean up.
-		affwp_delete_creative( $creative );
 	}
 
 	/**
@@ -371,9 +368,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$creatives, $results );
-
-		// Clean up.
-		$this->factory->creative->delete_many( $creatives );
 	}
 
 	/**
@@ -392,9 +386,6 @@ class Tests extends UnitTestCase {
 
 		// Should catch all but the one just created +1 day.
 		$this->assertEqualSets( self::$creatives, $results );
-
-		// Clean up.
-		$this->factory->creative->delete( $creative );
 	}
 
 	/**
@@ -435,9 +426,6 @@ class Tests extends UnitTestCase {
 
 		$this->assertNotFalse( $result );
 		$this->assertTrue( is_numeric( $result ) );
-
-		// Clean up.
-		affwp_delete_creative( $result );
 	}
 
 	/**
@@ -454,9 +442,6 @@ class Tests extends UnitTestCase {
 		$actual   = gmdate( 'Y-m-d H:i', strtotime( $creative->date ) );
 
 		$this->assertSame( $expected, $actual );
-
-		// Clean up.
-		affwp_delete_creative( $creative_id );
 	}
 
 	/**
@@ -474,9 +459,6 @@ class Tests extends UnitTestCase {
 		$actual        = gmdate( 'Y-m-d H:i', strtotime( $creative->date ) );
 
 		$this->assertSame( $expected_date, $actual );
-
-		// Clean up.
-		affwp_delete_creative( $creative_id );
 	}
 
 }

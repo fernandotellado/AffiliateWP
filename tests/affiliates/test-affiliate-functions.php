@@ -213,9 +213,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( '', affwp_get_affiliate_name( $affiliate_id ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -267,8 +264,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( '', affwp_get_affiliate_first_name( $affiliate ) );
-		// Clean up.
-		affwp_delete_affiliate( $affiliate );
 	}
 
 	/**
@@ -318,8 +313,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( '', affwp_get_affiliate_last_name( $affiliate ) );
-		// Clean up.
-		affwp_delete_affiliate( $affiliate );
 	}
 
 	/**
@@ -1241,11 +1234,6 @@ class Tests extends UnitTestCase {
 		}
 
 		$this->assertSame( 3000.0, affwp_get_affiliate_unpaid_earnings( self::$affiliates[0] ) );
-
-		// Clean up.
-		foreach ( $referrals as $referral ) {
-			affwp_delete_referral( $referral );
-		}
 	}
 
 	/**
@@ -1270,11 +1258,6 @@ class Tests extends UnitTestCase {
 
 		$affiliate = affwp_get_affiliate( self::$affiliates[0] );
 		$this->assertSame( 4000.0, affwp_get_affiliate_unpaid_earnings( $affiliate ) );
-
-		// Clean up.
-		foreach ( $referrals as $referral ) {
-			affwp_delete_referral( $referral );
-		}
 	}
 
 	/**
@@ -1291,11 +1274,6 @@ class Tests extends UnitTestCase {
 		}
 
 		$this->assertSame( '&#36;150.00', affwp_get_affiliate_unpaid_earnings( self::$affiliates[0], $formatted = true ) );
-
-		// Clean up.
-		foreach ( $referrals as $referral ) {
-			affwp_delete_referral( $referral );
-		}
 	}
 
 	/**
@@ -1595,9 +1573,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( 'pending', affwp_get_affiliate_status( $affiliate ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate );
 	}
 
 	/**
@@ -1618,9 +1593,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( 'These are test notes', affwp_get_affiliate_meta( $affiliate_id, 'notes', true ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1645,9 +1617,6 @@ class Tests extends UnitTestCase {
 		$actual   = gmdate( 'Y-m-d H:i', strtotime( $affiliate->date ) );
 
 		$this->assertSame( $expected, $actual );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1666,9 +1635,6 @@ class Tests extends UnitTestCase {
 		$actual        = gmdate( 'Y-m-d H:i', strtotime( $affiliate->date ) );
 
 		$this->assertSame( $expected_date, $actual );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1682,9 +1648,6 @@ class Tests extends UnitTestCase {
 		$user_data = get_user_by( 'id', $user_id );
 
 		$this->assertSame( '', $user_data->user_url );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1701,9 +1664,6 @@ class Tests extends UnitTestCase {
 		$user_data = get_user_by( 'id', $user_id );
 
 		$this->assertSame( $website_url, $user_data->user_url );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1726,9 +1686,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertTrue( $updated );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1744,9 +1701,6 @@ class Tests extends UnitTestCase {
 
 		$this->assertTrue( $updated );
 		$this->assertSame( 'These are test notes', affwp_get_affiliate_meta( $affiliate_id, 'notes', true ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1835,9 +1789,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEquals( 1, get_user_meta( $user_id, 'affwp_referral_notifications', true ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -1858,9 +1809,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEmpty( get_user_meta( $user_id, 'affwp_referral_notifications', true ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -2008,15 +1956,6 @@ class Tests extends UnitTestCase {
 		$results = affwp_get_affiliate_payouts( self::$affiliates[0] );
 
 		$this->assertEqualSets( $payouts, $results );
-
-		// Clean up.
-		foreach ( $referrals as $referral ) {
-			affwp_delete_referral( $referral );
-		}
-
-		foreach ( $payouts as $payout ) {
-			affwp_delete_payout( $payout );
-		}
 	}
 
 	/**
@@ -2048,15 +1987,6 @@ class Tests extends UnitTestCase {
 		$results = affwp_get_affiliate_payouts( $affiliate );
 
 		$this->assertEqualSets( $payouts, $results );
-
-		// Clean up.
-		foreach ( $referrals as $referral ) {
-			affwp_delete_referral( $referral );
-		}
-
-		foreach ( $payouts as $payout ) {
-			affwp_delete_payout( $payout );
-		}
 	}
 
 	/**

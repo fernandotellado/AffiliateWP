@@ -91,9 +91,6 @@ class Tests extends UnitTestCase {
 		$this->assertFalse( $payout = $this->factory->payout->create( array(
 			'referrals'    => range( 1, 4 ),
 		) ) );
-
-		// Clean up.
-		affwp_delete_payout( $payout );
 	}
 
 	/**
@@ -122,9 +119,6 @@ class Tests extends UnitTestCase {
 		$actual   = gmdate( 'Y-m-d H:i', strtotime( $payout->date ) );
 
 		$this->assertSame( $expected, $actual );
-
-		// Clean up.
-		affwp_delete_payout( $payout_id );
 	}
 
 	/**
@@ -144,9 +138,6 @@ class Tests extends UnitTestCase {
 		$actual        = gmdate( 'Y-m-d H:i', strtotime( $payout->date ) );
 
 		$this->assertSame( $expected_date, $actual );
-
-		// Clean up.
-		affwp_delete_payout( $payout_id );
 	}
 
 
@@ -330,10 +321,6 @@ class Tests extends UnitTestCase {
 
 		$this->assertSame( 1, count( $results ) );
 		$this->assertSame( $payout, $results[0] );
-
-		// Clean up.
-		affwp_delete_payout( $payout );
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -358,11 +345,6 @@ class Tests extends UnitTestCase {
 			in_array( $affiliate_id, $affiliates, true )
 			&& in_array( self::$affiliate_id, $affiliates, true )
 		);
-
-		// Clean up.
-		affwp_delete_payout( $payouts[0] );
-		affwp_delete_payout( $payouts[1] );
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -385,10 +367,6 @@ class Tests extends UnitTestCase {
 		$payout_referrals = affiliate_wp()->affiliates->payouts->get_referral_ids( $results[0] );
 
 		$this->assertSame( array( $referral ), $payout_referrals );
-
-		// Clean up.
-		affwp_delete_payout( $payout );
-		affwp_delete_referral( $referral );
 	}
 
 	public function test_get_payouts_with_multiple_paid_referrals_should_return_the_payouts_for_those_referrals() {
@@ -422,11 +400,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertCount( 5, $payouts );
-
-		// Clean up.
-		affwp_delete_payout( $payout );
-		affwp_delete_referral( $referrals[0] );
-		affwp_delete_referral( $referrals[1] );
 	}
 
 	/**
@@ -454,10 +427,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$payouts, $payout_ids );
-
-		// Clean up.
-		affwp_delete_payout( $failed_payouts[0] );
-		affwp_delete_payout( $failed_payouts[1] );
 	}
 
 	/**
@@ -474,10 +443,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( $paid_payouts, $payout_ids );
-
-		// Clean up.
-		affwp_delete_payout( $paid_payouts[0] );
-		affwp_delete_payout( $paid_payouts[1] );
 	}
 
 	/**
@@ -492,10 +457,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$payouts, $payout_ids );
-
-		// Clean up.
-		affwp_delete_payout( $failed[0] );
-		affwp_delete_payout( $failed[1] );
 	}
 
 	/**
@@ -513,9 +474,6 @@ class Tests extends UnitTestCase {
 
 		$this->assertCount( 1, $payouts );
 		$this->assertSame( $payout_id, $payouts[0] );
-
-		// Clean up.
-		affwp_delete_payout( $payout_id );
 	}
 
 	/**
@@ -535,11 +493,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( $three, $payouts[0] );
-
-		// Clean up.
-		affwp_delete_payout( $one );
-		affwp_delete_payout( $three );
-		affwp_delete_payout( $five );
 	}
 
 	/**
@@ -558,9 +511,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( $five, $payouts[0] );
-
-		// Clean up.
-		affwp_delete_payout( $five );
 	}
 
 	/**
@@ -580,9 +530,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( self::$payouts, $results );
-
-		// Clean up.
-		affwp_delete_payout( $four );
 	}
 
 	/**
@@ -601,9 +548,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( $five, $payouts[0] );
-
-		// Clean up.
-		affwp_delete_payout( $five );
 	}
 
 	/**
@@ -644,9 +588,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( self::$payouts, $results );
-
-		// Clean up.
-		affwp_delete_payout( $five );
 	}
 
 	/**
@@ -668,11 +609,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( $payouts, $results );
-
-		// Clean up.
-		foreach ( $payouts as $payout ) {
-			affwp_delete_payout( $payout );
-		}
 	}
 
 	/**
@@ -703,11 +639,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( $combined_payouts, $results );
-
-		// Clean up.
-		foreach ( $combined_payouts as $payout ) {
-			affwp_delete_payout( $payout );
-		}
 	}
 
 	/**
@@ -848,9 +779,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$payouts, $results );
-
-		// Clean up.
-		$this->factory->payout->delete_many( $payouts );
 	}
 
 	/**
@@ -869,9 +797,6 @@ class Tests extends UnitTestCase {
 
 		// Should catch all but the one just created +1 day.
 		$this->assertEqualSets( self::$payouts, $results );
-
-		// Clean up.
-		$this->factory->payout->delete( $payout );
 	}
 
 	/**
@@ -894,11 +819,6 @@ class Tests extends UnitTestCase {
 		$results   = affiliate_wp()->affiliates->payouts->get_affiliate_ids_by_referrals( $referrals );
 
 		$this->assertSame( self::$referrals, $results[ self::$affiliate_id ] );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
-		affwp_delete_referral( $pending[0] );
-		affwp_delete_referral( $pending[1] );
 	}
 
 	/**
@@ -915,11 +835,6 @@ class Tests extends UnitTestCase {
 
 		$this->assertNotSame( self::$referrals, $results[ $affiliate_id ] );
 		$this->assertSame( $unpaid, $results[ $affiliate_id ] );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
-		affwp_delete_referral( $unpaid[0] );
-		affwp_delete_referral( $unpaid[1] );
 	}
 
 	/**

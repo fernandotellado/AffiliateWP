@@ -131,9 +131,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		$actual   = gmdate( 'Y-m-d H:i', strtotime( $referral->date ) );
 
 		$this->assertSame( $expected, $actual );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -152,9 +149,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		$actual        = gmdate( 'Y-m-d H:i', strtotime( $referral->date ) );
 
 		$this->assertSame( $expected_date, $actual );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -267,9 +261,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$referrals, $results );
-
-		// Clean up.
-		affwp_delete_payout( $payout );
 	}
 
 	/**
@@ -312,13 +303,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( $referral_ids_A, $results );
-
-		// Clean up.
-		$referral_ids = array_merge( $referral_ids_A, $referral_ids_B );
-
-		foreach ( $referral_ids as $referral_id ) {
-			affwp_delete_referral( $referral_id );
-		}
 	}
 
 	/**
@@ -347,11 +331,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( array( $referral_A, $referral_C ), $results );
-
-		// Clean up.
-		foreach ( array( $referral_A, $referral_B, $referral_C ) as $referral_id ) {
-			affwp_delete_referral( $referral_id );
-		}
 	}
 
 	/**
@@ -380,11 +359,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( array( $referral_A, $referral_C ), $results );
-
-		// Clean up.
-		foreach ( array( $referral_A, $referral_B, $referral_C ) as $referral_id ) {
-			affwp_delete_referral( $referral_id );
-		}
 	}
 
 	/**
@@ -430,9 +404,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( self::$referrals, $results );
-
-		// Clean up.
-		$this->factory->referral->delete_many( $referrals );
 	}
 
 	/**
@@ -451,9 +422,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// Should catch all but the one just created +1 day.
 		$this->assertEqualSets( self::$referrals, $results );
-
-		// Clean up.
-		$this->factory->referral->delete( $referral );
 	}
 
 	/**
@@ -542,8 +510,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		affiliate_wp()->referrals->update_referral( self::$referrals[0], array(
 			'affiliate_id' => self::$affiliate_id
 		) );
-
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -577,7 +543,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 		affiliate_wp()->referrals->update_referral( self::$referrals[0], array(
 			'visit_id' => self::$visits[0]
 		) );
-		affwp_delete_visit( $visit_id );
 	}
 
 	/**
@@ -604,9 +569,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// New earnings = $old_earnings plus the increased referral amount.
 		$this->assertEquals( $old_earnings + $referral_amount, $new_earnings );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -632,9 +594,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// New earnings = $old_earnings plus the increased referral amount.
 		$this->assertEquals( $old_earnings + $referral_amount, $new_earnings );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -661,9 +620,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// New earnings = $old_earnings plus the increased referral amount.
 		$this->assertEquals( $old_earnings + $referral_amount, $new_earnings );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -693,9 +649,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// New earnings = $old_earnings minus the increased referral amount.
 		$this->assertEquals( $old_earnings - $referral_amount, $new_earnings );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -725,9 +678,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// New earnings = $old_earnings minus the increased referral amount.
 		$this->assertEquals( $old_earnings - $referral_amount, $new_earnings );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -757,9 +707,6 @@ class Referrals_DB_Tests extends UnitTestCase {
 
 		// New earnings = $old_earnings minus the increased referral amount.
 		$this->assertEquals( $old_earnings - $referral_amount, $new_earnings );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
