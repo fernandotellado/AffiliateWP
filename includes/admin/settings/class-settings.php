@@ -131,8 +131,13 @@ class Affiliate_WP_Settings {
 		if ( ! empty( $options ) ) {
 			$all_options = array_merge( $all_options, $options );
 		}
-		return update_option( 'affwp_settings', $all_options );
-	}
+
+		$updated = update_option( 'affwp_settings', $all_options );
+
+		// Refresh the options array available in memory (prevents unexpected race conditions).
+		$this->options = get_option( 'affwp_settings', array() );
+
+		return $updated;	}
 
 	/**
 	 * Get all settings
