@@ -361,9 +361,10 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		}
 
-		$url = get_edit_post_link( $reference );
+		$url   = get_edit_post_link( $reference );
+		$order = wc_get_order( $reference );
 
-		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
+		return '<a href="' . esc_url( $url ) . '">' . $order->get_order_number() . '</a>';
 	}
 
 	/**
