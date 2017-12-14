@@ -183,6 +183,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 * @since   1.5
 	 *
 	 * @param int|AffWP\Referral $referral Referral ID or object.
+	 * @return bool True if the referral was successfully updated, otherwise false.
 	*/
 	public function update_referral( $referral = 0, $data = array() ) {
 
@@ -221,9 +222,20 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		 */
 		$new_status = ! empty( $data['status'] ) ? sanitize_key( $data['status'] ) : $referral->status;
 
-		$update = $this->update( $referral->ID, $args, '', 'referral' );
+		$updated = $this->update( $referral->ID, $args, '', 'referral' );
 
-		if( $update ) {
+		/**
+		 * Fires immediately after a referral update has been attempted.
+		 *
+		 * @since 2.1.9
+		 *
+		 * @param \AffWP\Referral $updated_referral Updated referral object.
+		 * @param \AffWP\Referral $referral         Original referral object.
+		 * @param bool            $updated          Whether the referral was successfully updated.
+		 */
+		do_action( 'affwp_updated_referral', affwp_get_referral( $referral ), $referral, $updated );
+
+		if( $updated ) {
 
 			if( ! empty( $new_status ) && $referral->status !== $new_status ) {
 
@@ -258,7 +270,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				}
 			}
 
-			return $update;
+			return true;
 		}
 
 		return false;

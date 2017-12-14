@@ -24,6 +24,9 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		// Necessary for Apple Pay support
 		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_pending_referral' ), 10 );
 
+		// Add an order note if a contained referral is updated.
+		add_action( 'affwp_updated_referral', array( $this, 'updated_referral_note' ), 10, 3 );
+
 		// There should be an option to choose which of these is used
 		add_action( 'woocommerce_order_status_completed', array( $this, 'mark_referral_complete' ), 10 );
 		add_action( 'woocommerce_order_status_processing', array( $this, 'mark_referral_complete' ), 10 );
@@ -219,6 +222,38 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					$this->log( 'Referral failed to be created.' );
 
 				}
+			}
+
+		}
+
+	}
+
+	/**
+	 * Adds a note to an order if an associated referral's amount is updated.
+	 *
+	 * @since 2.1.9
+	 *
+	 * @param \AffWP\Referral $updated_referral Updated referral object.
+	 * @param \AffWP\Referral $referral         Old referral object.
+	 * @param bool            $update           Whether the referral was successfully updated.
+	 */
+	public function updated_referral_note( $updated_referral, $referral, $updated ) {
+
+		if ( $updated && 'woocommerce' === $updated_referral->context && ! empty( $updated_referral->reference ) ) {
+
+			$order = wc_get_order( $updated_referral->reference );
+
+			if ( false !== $order && $updated_referral->amount != $referral->amount ) {
+
+				$amount = affwp_currency_filter( affwp_format_amount( $updated_referral->amount ) );
+				$name   = affiliate_wp()->affiliates->get_affiliate_name( $updated_referral->affiliate_id );
+
+				$order->add_order_note( sprintf( __( 'Referral #%1$d updated. Amount %2$s recorded for %3$s', 'affiliate-wp' ),
+					$updated_referral->ID,
+					$amount,
+					$name
+				) );
+
 			}
 
 		}
