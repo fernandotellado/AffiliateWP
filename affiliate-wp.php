@@ -77,6 +77,24 @@ final class Affiliate_WP {
 	public $affiliate_meta;
 
 	/**
+	 * The customers DB instance variable.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    Affiliate_WP_DB_customers
+	 */
+	public $customers;
+
+	/**
+	 * The customer meta DB instance variable.
+	 *
+	 * @access public
+	 * @since  1.6
+	 * @var    Affiliate_WP_Customer_Meta_DB
+	 */
+	public $customer_meta;
+
+	/**
 	 * The referrals instance variable.
 	 *
 	 * @access public
@@ -340,6 +358,7 @@ final class Affiliate_WP {
 
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/abstracts/class-affwp-object.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-affiliate.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-customer.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-creative.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-payout.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-referral.php';
@@ -367,6 +386,8 @@ final class Affiliate_WP {
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/class-menu.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/affiliates/affiliates.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/class-notices.php';
+			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/customers/actions.php';
+			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/customers/customers.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/creatives/actions.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/creatives/creatives.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/class-meta-box-base.php';
@@ -403,16 +424,20 @@ final class Affiliate_WP {
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-rewrites.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-visits-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-campaigns-db.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-customers-db.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-customer-meta-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-creatives-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-creatives.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affiliate-meta-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/affiliate-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/affiliate-meta-functions.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/customer-meta-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/class-registrations-graph.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/misc-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/payout-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/referral-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/visit-functions.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/customer-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/creative-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/install.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/plugin-compatibility.php';
@@ -439,6 +464,7 @@ final class Affiliate_WP {
 
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-affiliate-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-creative-fetcher.php';
+			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-customer-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-payout-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-referral-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-visit-fetcher.php';
@@ -464,6 +490,8 @@ final class Affiliate_WP {
 		self::$instance->affiliate_meta = new Affiliate_WP_Affiliate_Meta_DB;
 		self::$instance->referrals      = new Affiliate_WP_Referrals_DB;
 		self::$instance->visits         = new Affiliate_WP_Visits_DB;
+		self::$instance->customers      = new Affiliate_WP_Customers_DB;
+		self::$instance->customer_meta  = new Affiliate_WP_Customer_Meta_DB;
 		self::$instance->campaigns      = new Affiliate_WP_Campaigns_DB;
 		self::$instance->settings       = new Affiliate_WP_Settings;
 		self::$instance->tracking       = new Affiliate_WP_Tracking;

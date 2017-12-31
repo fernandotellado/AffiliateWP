@@ -50,6 +50,15 @@ final class Referral extends Base_Object {
 	public $visit_id = 0;
 
 	/**
+	 * Customer ID.
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @var int
+	 */
+	public $customer_id = 0;
+
+	/**
 	 * Referral description.
 	 *
 	 * @since 1.9

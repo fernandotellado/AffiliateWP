@@ -79,6 +79,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'referral_id' => '%d',
 			'affiliate_id'=> '%d',
 			'visit_id'    => '%d',
+			'customer_id' => '%d',
 			'description' => '%s',
 			'status'      => '%s',
 			'amount'      => '%s',
@@ -102,6 +103,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	public function get_column_defaults() {
 		return array(
 			'affiliate_id' => 0,
+			'customer_id'  => 0,
 			'date'         => gmdate( 'Y-m-d H:i:s' ),
 			'currency'     => affwp_get_currency()
 		);
@@ -203,6 +205,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 		$args['affiliate_id']  = ! empty( $data['affiliate_id' ] ) ? absint( $data['affiliate_id'] )             : $referral->affiliate_id;
 		$args['visit_id']      = ! empty( $data['visit_id' ] )     ? absint( $data['visit_id'] )                 : $referral->visit_id;
+		$args['customer_id']   = ! empty( $data['customer_id' ] )  ? absint( $data['customer_id'] )              : $referral->customer_id;
 		$args['description']   = ! empty( $data['description' ] )  ? sanitize_text_field( $data['description'] ) : '';
 		$args['amount']        = ! empty( $data['amount'] )        ? affwp_sanitize_amount( $data['amount'] )    : $referral->amount;
 		$args['currency']      = ! empty( $data['currency'] )      ? sanitize_text_field( $data['currency'] )    : '';
@@ -302,6 +305,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 *     @type int          $offset         Number of referrals to offset in the query. Default 0.
 	 *     @type int|array    $referral_id    Specific referral ID or array of IDs to query for. Default 0 (all).
 	 *     @type int|array    $affiliate_id   Affiliate ID or array of IDs to query referrals for. Default 0 (all).
+	 *     @type int|array    $customer_id    Customer ID or array of IDs to query referrals for. Default 0 (all).
 	 *     @type int|array    $payout_id      Payout ID or array of IDs to query referrals for. Default 0 (all).
 	 *     @type float|array  $amount {
 	 *         Specific amount to query for or min/max range. If float, can be used with `$amount_compare`.
@@ -347,6 +351,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'referral_id'    => 0,
 			'payout_id'      => 0,
 			'affiliate_id'   => 0,
+			'customer_id'    => 0,
 			'amount'         => 0,
 			'amount_compare' => '=',
 			'description'    => '',
@@ -391,6 +396,19 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			}
 
 			$where .= "WHERE `affiliate_id` IN( {$affiliate_ids} ) ";
+
+		}
+
+		// Referrals for specific customers
+		if( ! empty( $args['customer_id'] ) ) {
+
+			if( is_array( $args['customer_id'] ) ) {
+				$customer_ids = implode( ',', array_map( 'intval', $args['customer_id'] ) );
+			} else {
+				$customer_ids = intval( $args['customer_id'] );
+			}
+
+			$where .= "WHERE `customer_id` IN( {$customer_ids} ) ";
 
 		}
 
@@ -817,6 +835,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		referral_id bigint(20) NOT NULL AUTO_INCREMENT,
 		affiliate_id bigint(20) NOT NULL,
 		visit_id bigint(20) NOT NULL,
+		customer_id bigint(20) NOT NULL,
 		description longtext NOT NULL,
 		status tinytext NOT NULL,
 		amount mediumtext NOT NULL,
