@@ -19,9 +19,9 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 
 		if( defined( 'customer_WP_NETWORK_WIDE' ) && customer_WP_NETWORK_WIDE ) {
 			// Allows a single customer meta table for the whole network
-			$this->table_name  = 'customer_wp_customermeta';
+			$this->table_name  = 'affiliate_wp_customermeta';
 		} else {
-			$this->table_name  = $wpdb->prefix . 'customer_wp_customermeta';
+			$this->table_name  = $wpdb->prefix . 'affiliate_wp_customermeta';
 		}
 		$this->primary_key = 'meta_id';
 		$this->version     = '1.0';

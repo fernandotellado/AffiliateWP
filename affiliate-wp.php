@@ -81,7 +81,7 @@ final class Affiliate_WP {
 	 *
 	 * @access public
 	 * @since  2.2
-	 * @var    Affiliate_WP_DB_customers
+	 * @var    Affiliate_WP_Customers_DB
 	 */
 	public $customers;
 
