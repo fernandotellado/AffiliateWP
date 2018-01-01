@@ -43,7 +43,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 		} else {
 			$this->table_name  = $wpdb->prefix . 'affiliate_wp_customers';
 		}
-		$this->primary_key = 'customemr_id';
+		$this->primary_key = 'customer_id';
 		$this->version     = '2.2';
 
 		// REST endpoints.
