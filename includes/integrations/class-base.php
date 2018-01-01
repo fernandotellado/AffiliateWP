@@ -119,7 +119,8 @@ abstract class Affiliate_WP_Base {
 			'visit_id'     => $visit_id,
 			'products'     => ! empty( $products ) ? maybe_serialize( $products ) : '',
 			'custom'       => ! empty( $data ) ? maybe_serialize( $data ) : '',
-			'context'      => $this->context
+			'context'      => $this->context,
+			'customer'     => $this->get_customer( $reference )
 		), $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
 
 		$referral_id = affiliate_wp()->referrals->add( $args );
@@ -404,6 +405,17 @@ abstract class Affiliate_WP_Base {
 	 * @return  array
 	*/
 	public function get_products( $order_id = 0 ) {
+		return array();
+	}
+
+	/**
+	 * Retrieves the customer details for an order
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $order_id = 0 ) {
 		return array();
 	}
 

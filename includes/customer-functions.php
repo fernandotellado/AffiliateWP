@@ -33,7 +33,7 @@ function affwp_add_customer( $data = array() ) {
 		'first_name'   => ! empty( $data['first_name'] ) ? sanitize_text_field( $data['first_name'] ) : '',
 		'last_name'    => ! empty( $data['last_name'] ) ? sanitize_text_field( $data['last_name'] ) : '',
 		'email'        => ! empty( $data['email'] ) ? sanitize_text_field( $data['email'] ) : '',
-		'affiliate_id' => ! empty( $data['email'] ) ? sanitize_text_field( $data['email'] ) : '',
+		'affiliate_id' => ! empty( $data['affiliate_id'] ) ? absint( $data['affiliate_id'] ) : '',
 	);
 
 	if ( $customer_id = affiliate_wp()->customers->add( $args ) ) {
@@ -62,7 +62,7 @@ function affwp_update_customer( $data = array() ) {
 		'first_name'   => ! empty( $data['first_name'] ) ? sanitize_text_field( $data['first_name'] ) : '',
 		'last_name'    => ! empty( $data['last_name'] ) ? sanitize_text_field( $data['last_name'] ) : '',
 		'email'        => ! empty( $data['email'] ) ? sanitize_text_field( $data['email'] ) : '',
-		'affiliate_id' => ! empty( $data['email'] ) ? sanitize_text_field( $data['email'] ) : '',
+		'affiliate_id' => ! empty( $data['affiliate_id'] ) ? absintn( $data['affiliate_id'] ) : '',
 	);
 
 	if ( affiliate_wp()->customeers->update( $customer->ID, $args, '', 'customer' ) ) {

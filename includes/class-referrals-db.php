@@ -158,6 +158,8 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			$args['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
 		}
 
+		$args['customer_id'] = $this->setup_customer( $args );
+
 		$add = $this->insert( $args, 'referral' );
 
 		if ( $add ) {
@@ -817,6 +819,68 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Set up the customer_id key for the args array.
+	 *
+	 * A customer record will be created if it does not already exist.
+	 *
+	 * @access  private
+	 * @since   2.2
+	*/
+	private function setup_customer( $args = array() ) {
+
+		if( ! empty( $args['customer'] ) ) {
+
+			if( is_array( $args['customer'] ) ) {
+
+				if( ! empty( $args['customer_id'] ) ) {
+					$args['customer_id'] = absint( $args['customer_id'] );
+				}
+
+			} else if ( is_email( $args['customer'] ) ) {
+
+				$customer = affwp_get_customer( $args['customer'] );
+
+				if( $customer ) {
+
+					$args['customer_id'] = $customer->customer_id;
+					unset( $args['customer'] );
+
+				} else {
+
+					$user = get_user_by( 'email', $args['customer'] );
+
+					// Create a new customer
+					$args['customer_id'] = affiliate_wp()->customers->add( array(
+						'email'        => $args['customer'],
+						'user_id'      => $user ? $user->ID : 0,
+						'first_name'   => $user ? $user->first_name : '',
+						'last_name'    => $user ? $user->last_name : '',
+						'affiliate_id' => $args['affiliate_id']
+					) );
+
+				}
+
+
+			} else if ( is_numeric( $args['customer'] ) ) {
+				$args['customer_id'] = absint( $args['customer'] );
+				unset( $args['customer'] );
+			}
+
+		}
+
+		if( ! empty( $args['customer_id'] ) ) {
+			// Ensure the provided customer ID exists
+			$customer = affwp_get_customer( absint( $args['customer_id'] ) );
+
+			if( ! $customer ) {
+				unset( $args['customer_id'] );
+			}
+		}
+
+		return $args;
 	}
 
 	/**
