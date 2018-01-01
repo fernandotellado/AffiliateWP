@@ -107,17 +107,9 @@ class AffWP_Customers_Table extends List_Table {
 		$base           = $affiliate_id ? add_query_arg( 'affiliate_id', $affiliate_id, $base ) : $base;
 		$current        = isset( $_GET['status'] ) ? $_GET['status'] : '';
 		$total_count    = '&nbsp;<span class="count">(' . $this->total_count    . ')</span>';
-		$paid_count     = '&nbsp;<span class="count">(' . $this->paid_count . ')</span>';
-		$unpaid_count   = '&nbsp;<span class="count">(' . $this->unpaid_count . ')</span>';
-		$pending_count  = '&nbsp;<span class="count">(' . $this->pending_count . ')</span>';
-		$rejected_count = '&nbsp;<span class="count">(' . $this->rejected_count . ')</span>';
 
 		$views = array(
 			'all'      => sprintf( '<a href="%s"%s>%s</a>', esc_url( remove_query_arg( 'status', $base ) ), $current === 'all' || $current == '' ? ' class="current"' : '', __( 'All', 'affiliate-wp' ) . $total_count ),
-			'paid'     => sprintf( '<a href="%s"%s>%s</a>', esc_url( add_query_arg( 'status', 'paid', $base ) ), $current === 'paid' ? ' class="current"' : '', __( 'Paid', 'affiliate-wp' ) . $paid_count ),
-			'unpaid'   => sprintf( '<a href="%s"%s>%s</a>', esc_url( add_query_arg( 'status', 'unpaid', $base ) ), $current === 'unpaid' ? ' class="current"' : '', __( 'Unpaid', 'affiliate-wp' ) . $unpaid_count ),
-			'pending'  => sprintf( '<a href="%s"%s>%s</a>', esc_url( add_query_arg( 'status', 'pending', $base ) ), $current === 'pending' ? ' class="current"' : '', __( 'Pending', 'affiliate-wp' ) . $pending_count ),
-			'rejected' => sprintf( '<a href="%s"%s>%s</a>', esc_url( add_query_arg( 'status', 'rejected', $base ) ), $current === 'rejected' ? ' class="current"' : '', __( 'Rejected', 'affiliate-wp' ) . $rejected_count ),
 		);
 
 		return $views;
@@ -132,14 +124,12 @@ class AffWP_Customers_Table extends List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'cb'          => '<input type="checkbox" />',
-			'amount'      => __( 'Amount', 'affiliate-wp' ),
-			'affiliate'   => __( 'Affiliate', 'affiliate-wp' ),
-			'reference'   => __( 'Reference', 'affiliate-wp' ),
-			'description' => __( 'Description', 'affiliate-wp' ),
-			'date'        => __( 'Date', 'affiliate-wp' ),
-			'actions'     => __( 'Actions', 'affiliate-wp' ),
-			'status'      => __( 'Status', 'affiliate-wp' ),
+			'cb'           => '<input type="checkbox" />',
+			'first_name'   => __( 'First Name', 'affiliate-wp' ),
+			'last_name'    => __( 'Last Name', 'affiliate-wp' ),
+			'email'        => __( 'Email', 'affiliate-wp' ),
+			'ip'           => __( 'IP Address(es)', 'affiliate-wp' ),
+			'date_created' => __( 'Date Created', 'affiliate-wp' ),
 		);
 
 		/**
