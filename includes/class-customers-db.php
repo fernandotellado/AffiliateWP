@@ -342,9 +342,17 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			}
 		}
 
+		if( isset( $args['affiliate_id'] ) ) {
+			$affiliate_id = absint( $args['affiliate_id'] );
+			unset( $args['affiliate_id'] );
+		}
 		$add = $this->insert( $args, 'customer' );
 
 		if ( $add ) {
+
+			if( ! empty( $affiliate_id ) ) {
+				affwp_add_customer_meta( $add, 'affiliate_id', $affiliate_id, false );
+			}
 
 			/**
 			 * Fires immediately after an customer has been added to the database.
