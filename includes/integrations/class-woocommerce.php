@@ -216,10 +216,11 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 					$this->log( sprintf( 'Referral #%d created successfully.', $referral_id ) );
 
-					$amount = affwp_currency_filter( affwp_format_amount( $amount ) );
-					$name   = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
+					$amount         = affwp_currency_filter( affwp_format_amount( $amount ) );
+					$name           = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
+					$referral_link  = affwp_admin_url( 'referrals', array( 'referral_id' => $referral_id, 'action' => 'edit_referral' ) );
 
-					$this->order->add_order_note( sprintf( __( 'Referral #%d for %s recorded for %s', 'affiliate-wp' ), $referral_id, $amount, $name ) );
+					$this->order->add_order_note( sprintf( __( 'Referral <a href="%1$s">#%2$d</a> for %3$s recorded for %4$s', 'affiliate-wp' ), $referral_link, $referral_id, $amount, $name ) );
 
 				} else {
 
@@ -249,10 +250,12 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 			if ( false !== $order && $updated_referral->amount != $referral->amount ) {
 
-				$amount = affwp_currency_filter( affwp_format_amount( $updated_referral->amount ) );
-				$name   = affiliate_wp()->affiliates->get_affiliate_name( $updated_referral->affiliate_id );
+				$amount        = affwp_currency_filter( affwp_format_amount( $updated_referral->amount ) );
+				$name          = affiliate_wp()->affiliates->get_affiliate_name( $updated_referral->affiliate_id );
+				$referral_link = affwp_admin_url( 'referrals', array( 'referral_id' => $updated_referral->ID, 'action' => 'edit_referral' ) );
 
-				$order->add_order_note( sprintf( __( 'Referral #%1$d updated. Amount %2$s recorded for %3$s', 'affiliate-wp' ),
+				$order->add_order_note( sprintf( __( 'Referral <a href="%1$s">#%2$d</a> updated. Amount %3$s recorded for %4$s', 'affiliate-wp' ),
+					$referral_link,
 					$updated_referral->ID,
 					$amount,
 					$name
@@ -951,7 +954,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	 * @return void.
 	 */
 	public function render_orders_referral_column( $column_name, $order_id ) {
-	
+
 		if ( get_post_type( $order_id ) == 'shop_order' && 'referral' === $column_name ) {
 
 			$referral = affiliate_wp()->referrals->get_by( 'reference', $order_id, $this->context );
@@ -961,7 +964,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 		}
-	
+
 	}
 }
 
