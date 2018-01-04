@@ -28,6 +28,7 @@ function affwp_get_currencies() {
 		'ARS' => __( 'Argentine Peso', 'affiliate-wp' ),
 		'AUD' => __( 'Australian Dollars', 'affiliate-wp' ),
 		'BDT' => __( 'Bangladeshi Taka', 'affiliate-wp' ),
+		'BTC' => __( 'Bitcoin', 'affiliate-wp' ),
 		'BRL' => __( 'Brazilian Real', 'affiliate-wp' ),
 		'BGN' => __( 'Bulgarian Lev', 'affiliate-wp' ),
 		'CAD' => __( 'Canadian Dollars', 'affiliate-wp' ),
@@ -1232,4 +1233,3 @@ function affwp_maybe_unserialize( $original ) {
 
 	return $value;
 }
-
