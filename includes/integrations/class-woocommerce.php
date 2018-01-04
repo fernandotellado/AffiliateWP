@@ -218,9 +218,14 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 					$amount         = affwp_currency_filter( affwp_format_amount( $amount ) );
 					$name           = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
-					$referral_link  = esc_url( affwp_admin_url( 'referrals', array( 'referral_id' => $referral_id, 'action' => 'edit_referral' ) ) );
+					$referral_link  = affwp_admin_link( 'referrals', esc_html( '#' . $referral_id ), array( 'action' => 'edit_referral', 'referral_id' => $referral_id ) );
 
-					$this->order->add_order_note( sprintf( __( 'Referral <a href="%1$s">#%2$d</a> for %3$s recorded for %4$s', 'affiliate-wp' ), $referral_link, $referral_id, $amount, $name ) );
+					/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name */
+					$this->order->add_order_note( sprintf( __( 'Referral %1$s for %2$s recorded for %3$s', 'affiliate-wp' ),
+						$referral_link,
+						$amount,
+						$name
+					) );
 
 				} else {
 
@@ -252,11 +257,11 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 				$amount        = affwp_currency_filter( affwp_format_amount( $updated_referral->amount ) );
 				$name          = affiliate_wp()->affiliates->get_affiliate_name( $updated_referral->affiliate_id );
-				$referral_link = esc_url( affwp_admin_url( 'referrals', array( 'referral_id' => $updated_referral->ID, 'action' => 'edit_referral' ) ) );
+				$referral_link = affwp_admin_link( 'referrals', esc_html( '#' . $updated_referral->ID ), array( 'action' => 'edit_referral', 'referral_id' => $updated_referral->ID ) );
 
-				$order->add_order_note( sprintf( __( 'Referral <a href="%1$s">#%2$d</a> updated. Amount %3$s recorded for %4$s', 'affiliate-wp' ),
+				/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name */
+				$order->add_order_note( sprintf( __( 'Referral %1$s updated. Amount %2$s recorded for %3$s', 'affiliate-wp' ),
 					$referral_link,
-					$updated_referral->ID,
 					$amount,
 					$name
 				) );
