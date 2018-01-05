@@ -112,3 +112,22 @@ function affwp_display_post_states( $post_states, $post ) {
 
 }
 add_filter( 'display_post_states', 'affwp_display_post_states', 10, 2 );
+
+/**
+ * Sets the decimal places to 8 when Bitcoin is selected as the currency.
+ *
+ * @since 2.1.11
+ *
+ * @param int 	$decimal_places Decimal Places.
+ * @return int 	Number of decimal places
+ */
+function affwp_btc_decimal_count( $decimal_places ) {
+
+	if ( 'BTC' == affwp_get_currency() ) {
+		return 8;
+	}
+
+	return $decimal_places;
+
+}
+add_filter( 'affwp_decimal_count', 'affwp_btc_decimal_count' );
