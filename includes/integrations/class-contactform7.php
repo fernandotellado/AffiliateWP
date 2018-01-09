@@ -406,7 +406,16 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 			} else {
 
 				$product_id  = 0;
-				$description = get_the_title( $form_id );
+				/**
+				 * Filters the referral description for the AffiliateWP Contact Form 7 integration.
+				 *
+				 * @param string $title         CF7 form title
+				 * @param object $contact_form  CF7 form submission object.
+				 * @param object $result        Submitted CF7 form submission data.
+				 *
+				 * @since  2.1.11
+				 */
+				$description = apply_filter( 'affwp_cf7_referral_description', get_the_title( $form_id ), $contact_form, $result );
 				$base_amount = 0;
 
 			}
