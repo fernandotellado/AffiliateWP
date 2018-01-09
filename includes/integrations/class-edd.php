@@ -278,6 +278,14 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				}
 
+				if ( class_exists( 'edd_dp' ) ) {
+
+					if( isset( $download['fees']['dp_'.$download['id']] ) ) {
+						$amount += $download['fees']['dp_'.$download['id']]['amount'];
+					}
+
+				}
+
 				// Check for Recurring Payments signup fee
 				if( ! empty( $download['item_number']['options']['recurring']['signup_fee'] ) ) {
 					$amount += $download['item_number']['options']['recurring']['signup_fee'];
