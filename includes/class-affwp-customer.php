@@ -38,10 +38,10 @@ final class Customer extends Base_Object {
 	 * Affiliate IDs associated with the customer.
 	 *
 	 * @since 2.2
-	 * @access public
+	 * @access protected
 	 * @var array
 	 */
-	public $affiliate_ids = array();
+	protected $affiliate_ids = array();
 
 	/**
 	 * Affiliate user ID.
@@ -147,6 +147,37 @@ final class Customer extends Base_Object {
 			return $this->date_created;
 		}
 
+		if ( 'affiliate_ids' === $key ) {
+			return $this->get_affiliate_ids();
+		}
+
 		return parent::__get( $key );
+	}
+
+	/**
+	 * Retrieves the affiliate IDs associated with this customer.
+	 *
+	 * @since 2.2
+	 * @access public
+	 *
+	 * @return array Affiliate IDs.
+	 */
+	public function get_affiliate_ids() {
+		return affwp_get_customer_meta( $this->customer_id, 'affiliate_id', false );
+	}
+
+	/**
+	 * Retrieves the canonical affiliate ID associated with this customer.
+	 *
+	 * @since 2.2
+	 * @access public
+	 *
+	 * @return int ID of the affiliate that originally referred the customer
+	 */
+	public function get_canonical_affiliate_id() {
+		global $wpdb;
+		$table_name   = affiliate_wp()->customer_meta->table_name;
+		$affiliate_id = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$table_name} WHERE meta_key = 'affiliate_id' AND customer_id = %d ORDER BY meta_id ASC LIMIT 1;", $this->customer_id ) );
+		return apply_filters( 'affwp_get_canonical_customer_affiliate_id', $affiliate_id, $this );
 	}
 }
