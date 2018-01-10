@@ -348,11 +348,18 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		
 		$customer     = array();
 		$edd_customer = new EDD_Customer( edd_get_payment_customer_id( $payment_id ) );
+		$names        = explode( ' ', $edd_customer->name );
+		$first_name   = $names[0];
+		$last_name    = '';
+		if( ! empty( $names[1] ) ) {
+			unset( $names[0] );
+			$last_name = implode( ' ', $names );
+		}
 
 		$customer['user_id']    = $edd_customer->user_id;
 		$customer['email']      = $edd_customer->email;
-		$customer['first_name'] = $edd_customer->first_name;
-		$customer['last_name']  = $edd_customer->last_name;
+		$customer['first_name'] = $first_name;
+		$customer['last_name']  = $last_name;
 		$customer['ip']         = edd_get_payment_user_ip( $payment_id );
 
 		return $customer;

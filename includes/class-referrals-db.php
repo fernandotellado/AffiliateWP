@@ -828,86 +828,64 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 *
 	 * @access  private
 	 * @since   2.2
+	 * @return  int $customer_id The ID of the customer record for the referral.
 	*/
 	private function setup_customer( $args = array() ) {	
 
-		if( ! empty( $args['customer'] ) ) {
+		$existing      = false;
+		$customer_id   = 0;
+		$customer_args = array(
+			'first_name'   => '',
+			'last_name'    => '',
+			'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : '',
+			'user_id'      => get_current_user_id(),
+			'ip'           => affiliate_wp()->tracking->get_ip(),
+			'affiliate_id' => $args['affiliate_id']
+		);
 
-			if( is_array( $args['customer'] ) ) {
-
-				if( ! empty( $args['customer']['customer_id'] ) ) {
-
-					$args['customer_id'] = absint( $args['customer']['customer_id'] );
-
-					affwp_update_customer( $args['customer_id'], $args['customer'] );
-
-				} else {
-
-					// Look for an existing customer by email
-					$customer = affiliate_wp()->customers->get_by( 'email', $args['customer']['email'] );
-
-					if( $customer->id > 0 ) {
-
-						affwp_update_customer( $args['customer_id'], $args['customer'] );
-
-						$args['customer_id'] = $customer->id;
-
-					} else {
-
-						$defaults = array(
-							'affiliate_id' => $args['affiliate_id']
-						);
-
-						$customer_args = wp_parse_args( $defaults, $args['customer'] );
-
-						$args['customer_id'] = affiliate_wp()->customers->add( $customer_args );
-						
-					}
-
-				}
-
-			} else if ( is_email( $args['customer'] ) ) {
-
-				$customer = affwp_get_customer( $args['customer'] );
-
-				if( $customer ) {
-
-					$args['customer_id'] = $customer->customer_id;
-					unset( $args['customer'] );
-
-				} else {
-
-					$user = get_user_by( 'email', $args['customer'] );
-
-					// Create a new customer
-					$args['customer_id'] = affiliate_wp()->customers->add( array(
-						'email'        => $args['customer'],
-						'user_id'      => $user ? $user->ID : 0,
-						'first_name'   => $user ? $user->first_name : '',
-						'last_name'    => $user ? $user->last_name : '',
-						'affiliate_id' => $args['affiliate_id']
-					) );
-
-				}
-
-
-			} else if ( is_numeric( $args['customer'] ) ) {
-				$args['customer_id'] = absint( $args['customer'] );
-				unset( $args['customer'] );
-			}
-
+		if( ! isset( $args['customer'] ) ) {
+			return $customer_id;
 		}
 
 		if( ! empty( $args['customer_id'] ) ) {
+
 			// Ensure the provided customer ID exists
 			$customer = affwp_get_customer( absint( $args['customer_id'] ) );
 
-			if( ! $customer ) {
-				unset( $args['customer_id'] );
+			if( $customer ) {
+				$existing    = true;
+				$customer_id = $customer->customer_id;
 			}
+	
 		}
 
-		return $args;
+		if( ! $existing && ! empty( $customer_args['email'] ) ) {
+
+			$customer = affiliate_wp()->customers->get_by( 'email', $customer_args['email'] );
+
+			if( $customer ) {
+				$existing = true;
+				$customer_id = $customer->customer_id;
+			}
+
+		}
+	
+		if( $existing ) {
+
+			// Update the customer record
+			$customer = wp_parse_args( $args['customer'], $customer_args );
+			$customer['customer_id'] = $customer_id;
+
+			affwp_update_customer( $customer );
+
+		} else {
+
+			// Create a new customer record
+			$customer_id = affiliate_wp()->customers->add( $customer );
+
+		}
+
+		return $customer_id;
 	}
 
 	/**
