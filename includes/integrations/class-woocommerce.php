@@ -403,7 +403,9 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$url   = get_edit_post_link( $reference );
 		$order = wc_get_order( $reference );
 
-		return '<a href="' . esc_url( $url ) . '">' . $order->get_order_number() . '</a>';
+		$reference = is_a( $order, 'WC_Order' ) ? $order->get_order_number() : $reference; 
+
+		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 	}
 
 	/**
