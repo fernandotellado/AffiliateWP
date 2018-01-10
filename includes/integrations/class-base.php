@@ -418,8 +418,8 @@ abstract class Affiliate_WP_Base {
 	public function get_customer( $order_id = 0 ) {
 
 		$customer = array(
-			'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',,
-			'last_name'    => is_user_logged_in() ? wp_get_current_user()->first_name : '',,
+			'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',
+			'last_name'    => is_user_logged_in() ? wp_get_current_user()->first_name : '',
 			'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : '',
 			'user_id'      => get_current_user_id(),
 			'ip'           => affiliate_wp()->tracking->get_ip(),
