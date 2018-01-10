@@ -422,7 +422,7 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 			 * @param object $result        Submitted CF7 form submission data.
 			 *
 			 */
-			$description = apply_filter( 'affwp_cf7_referral_description', $description, $form_id, $contact_form, $result );
+			$description = apply_filters( 'affwp_cf7_referral_description', $description, $form_id, $contact_form, $result );
 
 			$reference       = $form_id . '-' . date_i18n( 'U' );
 			$affiliate_id    = $this->get_affiliate_id( $reference );
