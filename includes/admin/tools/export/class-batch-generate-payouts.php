@@ -262,7 +262,7 @@ class Generate_Payouts extends Batch\Export\CSV implements Batch\With_PreFetch {
 			 */
 			$data[] = apply_filters( 'affwp_batch_generate_payouts_get_data', array(
 				'email'    => affwp_get_affiliate_payment_email( $affiliate_id ),
-				'amount'   => $payouts[ $affiliate_id ]['amount'],
+				'amount'   => affwp_format_amount( $payouts[ $affiliate_id ]['amount'] ),
 				'currency' => $payouts[ $affiliate_id ]['currency'],
 			), $affiliate_id, $payouts );
 
