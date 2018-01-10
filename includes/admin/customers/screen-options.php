@@ -18,6 +18,7 @@ function affwp_customers_screen_options() {
 		return;
 	}
 
+
 	add_screen_option(
 		'per_page',
 		array(
@@ -28,7 +29,7 @@ function affwp_customers_screen_options() {
 	);
 
 	// Instantiate the list table to make the columns array available to screen options.
-	new AffWP_customers_Table;
+	new AffWP_Customers_Table;
 
 	/**
 	 * Fires in the screen-options area of the customers screen.

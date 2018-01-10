@@ -166,6 +166,7 @@ abstract class Affiliate_WP_DB {
 	public function get_results( $clauses, $args, $callback = '' ) {
 		global $wpdb;
 
+
 		if ( true === $clauses['count'] ) {
 
 			$results = $wpdb->get_var(

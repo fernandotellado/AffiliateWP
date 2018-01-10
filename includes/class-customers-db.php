@@ -53,18 +53,18 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	}
 
 	/**
-	 * Retrieves an affiliate object.
+	 * Retrieves a customer object.
 	 *
 	 * @access public
 	 * @since  2.2
 	 *
 	 * @see Affiliate_WP_DB::get_core_object()
 	 *
-	 * @param int|AffWP\Affiliate $affiliate Affiliate ID or object.
-	 * @return AffWP\Affiliate|false Affiliate object, otherwise false.
+	 * @param int|AffWP\Customer $customer Customer ID or object.
+	 * @return AffWP\Customer|false Customer object, otherwise false.
 	 */
-	public function get_object( $affiliate ) {
-		return $this->get_core_object( $affiliate, $this->query_object_type );
+	public function get_object( $customer ) {
+		return $this->get_core_object( $customer, $this->query_object_type );
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
 		}
 
-		// Affiliates registered on a date or date range
+		// Customers registered on a date or date range
 		if( ! empty( $args['date'] ) ) {
 			$where = $this->prepare_date_query( $where, $args['date'], 'date_created' );
 		}

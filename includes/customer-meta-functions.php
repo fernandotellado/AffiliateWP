@@ -12,7 +12,7 @@
  * @since   2.2
  */
 function affwp_get_customer_meta( $customer_id = 0, $meta_key = '', $single = false ) {
-	return customer_wp()->customer_meta->get_meta( $customer_id, $meta_key, $single );
+	return affiliate_wp()->customer_meta->get_meta( $customer_id, $meta_key, $single );
 }
 
 /**
@@ -28,7 +28,7 @@ function affwp_get_customer_meta( $customer_id = 0, $meta_key = '', $single = fa
  * @since   2.2
  */
 function affwp_add_customer_meta( $customer_id = 0, $meta_key = '', $meta_value, $unique = false ) {
-	return customer_wp()->customer_meta->add_meta( $customer_id, $meta_key, $meta_value, $unique );
+	return affiliate_wp()->customer_meta->add_meta( $customer_id, $meta_key, $meta_value, $unique );
 }
 
 /**
@@ -44,7 +44,7 @@ function affwp_add_customer_meta( $customer_id = 0, $meta_key = '', $meta_value,
  * @since   2.2
  */
 function affwp_update_customer_meta( $customer_id = 0, $meta_key = '', $meta_value, $prev_value = '' ) {
-	return customer_wp()->customer_meta->update_meta( $customer_id, $meta_key, $meta_value, $prev_value );
+	return affiliate_wp()->customer_meta->update_meta( $customer_id, $meta_key, $meta_value, $prev_value );
 }
 
 /**
@@ -59,5 +59,5 @@ function affwp_update_customer_meta( $customer_id = 0, $meta_key = '', $meta_val
  * @since   2.2
  */
 function affwp_delete_customer_meta( $customer_id = 0, $meta_key = '', $meta_value = '' ) {
-	return customer_wp()->customer_meta->delete_meta( $customer_id, $meta_key, $meta_value );
+	return affiliate_wp()->customer_meta->delete_meta( $customer_id, $meta_key, $meta_value );
 }

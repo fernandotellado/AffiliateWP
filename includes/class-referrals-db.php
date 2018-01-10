@@ -829,14 +829,41 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 * @access  private
 	 * @since   2.2
 	*/
-	private function setup_customer( $args = array() ) {
+	private function setup_customer( $args = array() ) {	
 
 		if( ! empty( $args['customer'] ) ) {
 
 			if( is_array( $args['customer'] ) ) {
 
-				if( ! empty( $args['customer_id'] ) ) {
-					$args['customer_id'] = absint( $args['customer_id'] );
+				if( ! empty( $args['customer']['customer_id'] ) ) {
+
+					$args['customer_id'] = absint( $args['customer']['customer_id'] );
+
+					affwp_update_customer( $args['customer_id'], $args['customer'] );
+
+				} else {
+
+					// Look for an existing customer by email
+					$customer = affiliate_wp()->customers->get_by( 'email', $args['customer']['email'] );
+
+					if( $customer->id > 0 ) {
+
+						affwp_update_customer( $args['customer_id'], $args['customer'] );
+
+						$args['customer_id'] = $customer->id;
+
+					} else {
+
+						$defaults = array(
+							'affiliate_id' => $args['affiliate_id']
+						);
+
+						$customer_args = wp_parse_args( $defaults, $args['customer'] );
+
+						$args['customer_id'] = affiliate_wp()->customers->add( $customer_args );
+						
+					}
+
 				}
 
 			} else if ( is_email( $args['customer'] ) ) {

@@ -23,7 +23,7 @@ namespace AffWP;
  * @property      array    $meta Meta array.
  * @property-read string   $date Alias for `$date_registered`.
  */
-final class Customere extends Base_Object {
+final class Customer extends Base_Object {
 
 	/**
 	 * Customer ID.

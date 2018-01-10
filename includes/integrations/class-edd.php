@@ -338,6 +338,27 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Retrieves the customer details for an order
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $payment_id = 0 ) {
+		
+		$customer     = array();
+		$edd_customer = new EDD_Customer( edd_get_payment_customer_id( $payment_id ) );
+
+		$customer['user_id']    = $edd_customer->user_id;
+		$customer['email']      = $edd_customer->email;
+		$customer['first_name'] = $edd_customer->first_name;
+		$customer['last_name']  = $edd_customer->last_name;
+		$customer['ip']         = edd_get_payment_user_ip( $payment_id );
+
+		return $customer;
+	}
+
+	/**
 	 * Insert payment note
 	 *
 	 * @access  public

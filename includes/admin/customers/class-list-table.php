@@ -205,7 +205,7 @@ class AffWP_Customers_Table extends List_Table {
 	 * @return string Displays a checkbox
 	 */
 	public function column_cb( $customer ) {
-		return '<input type="checkbox" name="customer_id[]" value="' . absint( $customer->referral_id ) . '" />';
+		return '<input type="checkbox" name="customer_id[]" value="' . absint( $customer->customer_id ) . '" />';
 	}
 
 	/**
@@ -508,18 +508,18 @@ class AffWP_Customers_Table extends List_Table {
 
 		$page        = isset( $_GET['paged'] )        ? absint( $_GET['paged'] ) : 1;
 		$affiliate   = isset( $_GET['affiliate_id'] ) ? $_GET['affiliate_id']    : '';
-		$user_id     = isset( $_GET['user_id'] ) ? $_GET['user_id']    : '';
+		$user_id     = isset( $_GET['user_id'] )      ? $_GET['user_id']         : '';
 		$customer    = isset( $_GET['customer_id'] )  ? $_GET['customer_id']     : '';
 		$from        = isset( $_GET['filter_from'] )  ? $_GET['filter_from']     : '';
 		$to          = isset( $_GET['filter_to'] )    ? $_GET['filter_to']       : '';
 		$order       = isset( $_GET['order'] )        ? $_GET['order']           : 'DESC';
-		$orderby     = isset( $_GET['orderby'] )      ? $_GET['orderby']         : 'referral_id';
+		$orderby     = isset( $_GET['orderby'] )      ? $_GET['orderby']         : 'customer_id';
 		$is_search   = false;
 
 		if ( $affiliate && $affiliate = affwp_get_affiliate( $affiliate ) ) {
 			$affiliate = $affiliate->ID;
 		} else {
-			// Switch back to empty for the benefit of get_referrals().
+			// Switch back to empty for the benefit of get_customers().
 			$affiliate = '';
 		}
 
@@ -593,11 +593,7 @@ class AffWP_Customers_Table extends List_Table {
 
 		$this->process_bulk_action();
 
-		$data = $this->customers_data();
-
-		$current_page = $this->get_pagenum();
-
-		$this->items = $data;
+		$this->items = $this->customers_data();
 
 		$this->set_pagination_args( array(
 			'total_items' => $this->total_count,

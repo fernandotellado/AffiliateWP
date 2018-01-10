@@ -23,7 +23,7 @@ function affwp_customers_admin() {
 
 		include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/customers/new.php';
 
-	} else if( isset( $_GET['action'] ) && 'edit_referral' == $_GET['action'] ) {
+	} else if( isset( $_GET['action'] ) && 'edit_customer' == $_GET['action'] ) {
 
 		include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/customers/edit.php';
 
