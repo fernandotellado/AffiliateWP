@@ -2,6 +2,8 @@
 
 class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 
+	public $form = null; 
+
 	/**
 	 * Get things started
 	 *
@@ -127,6 +129,7 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	 */
 	public function add_pending_referral( $args = array(), $form ) {
 
+		$this->form   = $form;
 		$affiliate_id = $this->affiliate_id;
 		$entry_id     = $args['entry_id'];
 
@@ -255,6 +258,22 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 
 		<?php
 	}
+
+	/**
+	 * Retrieves the customer details for an entry
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $entry_id = 0 ) {
+		
+		$customer          = array();
+		$customer['email'] = $this->get_field_value( 'email', $this->form );
+
+		return $customer;
+	}
+
 
 }
 

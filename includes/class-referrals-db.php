@@ -881,7 +881,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		} else {
 
 			// Create a new customer record
-			$customer_id = affiliate_wp()->customers->add( $customer );
+			$customer_id = affiliate_wp()->customers->add( $customer_args );
 
 		}
 
