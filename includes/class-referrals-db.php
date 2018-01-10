@@ -835,8 +835,8 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		$existing      = false;
 		$customer_id   = 0;
 		$customer_args = array(
-			'first_name'   => '',
-			'last_name'    => '',
+			'first_name'   => is_user_logged_in() ? wp_get_current_user()->first_name : '',
+			'last_name'    => is_user_logged_in() ? wp_get_current_user()->last_name : '',
 			'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : '',
 			'user_id'      => get_current_user_id(),
 			'ip'           => affiliate_wp()->tracking->get_ip(),
