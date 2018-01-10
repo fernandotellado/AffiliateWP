@@ -268,7 +268,7 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	*/
 	public function get_customer( $entry_id = 0 ) {
 		
-		$customer          = array();
+		$customer          = parent::get_customer( $entry_id );
 		$customer['email'] = $this->get_field_value( 'email', $this->form );
 
 		return $customer;
