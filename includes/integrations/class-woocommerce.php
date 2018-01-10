@@ -186,6 +186,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					'affiliate_id' => $affiliate_id,
 					'visit_id'     => $visit_id,
 					'products'     => $this->get_products(),
+					'customer'     => $this->get_customer( $order_id ),
 					'context'      => $this->context
 				) );
 
@@ -202,6 +203,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					'affiliate_id' => $affiliate_id,
 					'visit_id'     => $visit_id,
 					'products'     => $this->get_products(),
+					'customer'     => $this->get_customer( $order_id ),
 					'context'      => $this->context
 				), $amount, $order_id, $description, $affiliate_id, $visit_id, array(), $this->context ) );
 
@@ -885,6 +887,27 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$settings = array_merge( $settings, $affwp_settings );
 
 		return $settings;
+	}
+
+	/**
+	 * Retrieves the customer details for an order
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $order_id = 0 ) {
+		
+		$customer = array();
+		$order    = wc_get_order( $order_id );
+
+		$customer['user_id']    = $order->get_user_id();
+		$customer['email']      = $order->get_billing_email();
+		$customer['first_name'] = $order->get_billing_first_name();
+		$customer['last_name']  = $order->get_billing_last_name();
+		$customer['ip']         = $order->get_customer_ip_address();
+
+		return $customer;
 	}
 
 }
