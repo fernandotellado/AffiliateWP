@@ -834,15 +834,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 		$existing      = false;
 		$customer_id   = 0;
-		$customer_args = array(
-			'first_name'   => is_user_logged_in() ? wp_get_current_user()->first_name : '',
-			'last_name'    => is_user_logged_in() ? wp_get_current_user()->last_name : '',
-			'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : '',
-			'user_id'      => get_current_user_id(),
-			'ip'           => affiliate_wp()->tracking->get_ip(),
-			'affiliate_id' => $args['affiliate_id']
-		);
-
+		
 		if( ! isset( $args['customer'] ) ) {
 			return $customer_id;
 		}
@@ -873,15 +865,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		if( $existing ) {
 
 			// Update the customer record
-			$customer = wp_parse_args( $args['customer'], $customer_args );
-			$customer['customer_id'] = $customer_id;
+			$args['customer_id'] = $customer_id;
 
-			affwp_update_customer( $customer );
+			affwp_update_customer( $args );
 
 		} else {
 
 			// Create a new customer record
-			$customer_id = affiliate_wp()->customers->add( $customer_args );
+			$customer_id = affiliate_wp()->customers->add( $args['customer'] );
 
 		}
 
