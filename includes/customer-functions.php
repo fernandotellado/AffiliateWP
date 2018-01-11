@@ -13,6 +13,11 @@ function affwp_get_customer( $customer = null ) {
 		$customer_id = $customer->customer_id;
 	} elseif( is_numeric( $customer ) ) {
 		$customer_id = absint( $customer );
+	} elseif( is_email( $customer ) ) {
+		$customer_id = affiliate_wp()->customers->get_column_by( 'customer_id', 'email', $customer );
+		if( ! $customer_id ) {
+			return false;
+		}
 	} else {
 		return false;
 	}
