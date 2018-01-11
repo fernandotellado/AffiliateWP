@@ -28,7 +28,9 @@ class Sub_Commands extends Base {
 		'first_name',
 		'last_name',
 		'email',
+		'user_id',
 		'ip',
+		'affiliate_id',
 		'date'
 	);
 
@@ -75,39 +77,37 @@ class Sub_Commands extends Base {
 	 *
 	 * ## OPTIONS
 	 *
-	 * [--name=<name>]
-	 * : Required. Name identifier for the customer.
+	 * [--email=<email>]
+	 * : Required. Email identifier for the customer.
 	 *
-	 * [--description=<description>]
-	 * : Description for the customer.
+	 * [--first_name=<first name>]
+	 * : Optional. First name identifier for the customer.
 	 *
-	 * [--link=<URL>]
-	 * : URL the customer should link to.
+	 * [--last_name=<last name>]
+	 * : Optional. Last name identifier for the customer.
 	 *
-	 * [--text=<text>]
-	 * : Text for the customer.
+	 * [--ip=<ip address>]
+	 * : Optional. IP identifier for the customer.
 	 *
-	 * [--image=<URL>]
-	 * : Image URL (local or external) to use for the customer.
+	 * [--user_id=<user ID>]
+	 * : Optional. User ID identifier to be associated with the customer.
 	 *
-	 * [--status=<status>]
-	 * : Status for the customer. Accepts 'active' or 'inactive'. Default 'active'.
+	 * [--affiliate_id=<affiliate ID>]
+	 * : Optional. Affiliate IDd to link to customer.
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Creates a customer linking to http://affiliatewp.com
-	 *     wp affwp customer create --name=AffiliateWP --link=http://affiliatewp.com
+	 *     # Creates a customer named John wih an email of john@test.com
+	 *     wp affwp customer create --first_name=John --email=john@test.com
 	 *
-	 *     # Creates a customer using a locally-hosted image.
-	 *     wp affwp customer create --name='Special Case' --image=https://example.org/my-image.jpg
+	 *     # Creates a customer named Susan Jones
+	 *     wp affwp customer create --first_name=Susan --last_name=Jones
 	 *
-	 *     # Create a customer with a status of 'inactive'
-	 *     wp affwp customer create --name='My customer' --status=inactive
+	 *     # Creates a customer named Susan Jones linked to Affiliate ID 27
+	 *     wp affwp customer create --first_name=Susan --last_name=Jones --affiliate_id=27
 	 *
 	 * @since 2.2
 	 * @access public
-	 *
-	 * @internal The --link flag maps to 'url' because --url is a global WP CLI flag.
 	 *
 	 * @param array $_          Top-level arguments (unused).
 	 * @param array $assoc_args Associated arguments (flags).
@@ -119,15 +119,17 @@ class Sub_Commands extends Base {
 			\WP_CLI::error( __( 'A --email value must be specified to add a new customer.', 'affiliate-wp' ) );
 		}
 
-		$data['email']      = $email;
-		$data['first_name'] = Utils\get_flag_value(  $assoc_args, 'first_name', ''       );
-		$data['last_name']  = Utils\get_flag_value(  $assoc_args, 'last_name', ''       );
-		$data['ip']         = Utils\get_flag_value(  $assoc_args, 'ip',        ''       );
+		$data['email']        = $email;
+		$data['user_id']      = Utils\get_flag_value(  $assoc_args, 'user_id', ''      );
+		$data['first_name']   = Utils\get_flag_value(  $assoc_args, 'first_name', ''   );
+		$data['last_name']    = Utils\get_flag_value(  $assoc_args, 'last_name', ''    );
+		$data['affiliate_id'] = Utils\get_flag_value(  $assoc_args, 'affiliate_id', '' );
+		$data['ip']           = Utils\get_flag_value(  $assoc_args, 'ip',        ''    );
 
 		$created = affwp_add_customer( $data );
 
 		if ( $created ) {
-			$customer = affiliate_wp()->customers->get_by( 'name', $data['name'] );
+			$customer = affiliate_wp()->customers->get_by( 'email', $data['email'] );
 			\WP_CLI::success( sprintf( __( 'A customer with the ID %d has been successfully created.', 'affiliate-wp' ), $customer->customer_id ) );
 		} else {
 			\WP_CLI::error( __( 'The customer could not be created.', 'affiliate-wp' ) );
@@ -140,13 +142,19 @@ class Sub_Commands extends Base {
 	 * ## OPTIONS
 	 *
 	 * [--email=<email>]
-	 * : Email identifier for the customer.
+	 * : Required. Email identifier for the customer.
 	 *
-	 * [--first_name=<first_name>]
-	 * : First Name for the customer.
+	 * [--first_name=<first name>]
+	 * : Optional. First name identifier for the customer.
 	 *
-	 * [--ip=<ip>]
-	 * : URL the customer should link to.
+	 * [--last_name=<last name>]
+	 * : Optional. Last name identifier for the customer.
+	 *
+	 * [--ip=<ip address>]
+	 * : Optional. IP identifier for the customer.
+	 *
+	 * [--affiliate_id=<affiliate ID>]
+	 * : Optional. Affiliate IDd to link to customer.
 	 *
 	 * ## EXAMPLES
 	 *
@@ -154,7 +162,7 @@ class Sub_Commands extends Base {
 	 *     wp affwp customer update 300 --first_name='New Name'
 	 *
 	 *     # Updates customer ID 53 with a new email.
-	 *     wp affwp customer update 53 --image='soso@so.com'
+	 *     wp affwp customer update 53 --email='soso@so.com'
 	 *
 	 * @since 2.2
 	 * @access public
@@ -171,10 +179,13 @@ class Sub_Commands extends Base {
 			\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
 		}
 
-		$data['first_name']  = Utils\get_flag_value(  $assoc_args, 'first_name', ''       );
-		$data['last_name']   = Utils\get_flag_value(  $assoc_args, 'last_name', ''       );
-		$data['ip']          = Utils\get_flag_value(  $assoc_args, 'ip',        ''       );
-		$data['customer_id'] = $customer->customer_id;
+		$data['email']        = Utils\get_flag_value(  $assoc_args, 'email', ''      );
+		$data['user_id']      = Utils\get_flag_value(  $assoc_args, 'user_id', ''    );
+		$data['first_name']   = Utils\get_flag_value(  $assoc_args, 'first_name', '' );
+		$data['last_name']    = Utils\get_flag_value(  $assoc_args, 'last_name', ''  );
+		$data['ip']           = Utils\get_flag_value(  $assoc_args, 'ip', ''         );
+		$data['affiliate_id'] = Utils\get_flag_value(  $assoc_args, 'affiliate_id','');
+		$data['customer_id']  = $customer->customer_id;
 
 		$updated = affwp_update_customer( $data );
 

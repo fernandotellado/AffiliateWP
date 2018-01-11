@@ -1,5 +1,5 @@
 <?php
-namespace AffWP\Custsomoer\CLI;
+namespace AffWP\Customer\CLI;
 
 use \WP_CLI\Fetchers\Base;
 
