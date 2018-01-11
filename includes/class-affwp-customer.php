@@ -155,6 +155,38 @@ final class Customer extends Base_Object {
 	}
 
 	/**
+	 * Retrieves the customer's name.
+	 *
+	 * If no name is present, the customer's email is returned.
+	 *
+	 * @since 2.2
+	 * @access public
+	 *
+	 * @return string Customerr name
+	 */
+	public function get_name() {
+
+		$name = '';
+
+		if( $this->first_name ) {
+			$name = $this->first_name;
+		}
+
+		if( $this->last_name ) {
+			$name .= ' ' . $this->last_name;
+		}
+
+		$name = ltrim( $name );
+
+		if( empty( $name ) ) {
+			$name = $this->email;
+		}
+
+		return $name;
+	}
+
+
+	/**
 	 * Retrieves the affiliate IDs associated with this customer.
 	 *
 	 * @since 2.2
