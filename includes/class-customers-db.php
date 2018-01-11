@@ -346,7 +346,20 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			$affiliate_id = absint( $args['affiliate_id'] );
 			unset( $args['affiliate_id'] );
 		}
-		$add = $this->insert( $args, 'customer' );
+
+		if( isset( $data['email'] ) ) {
+			$existing = $this->get_by( 'email', $data['email'] );
+		}
+
+		if( ! empty( $existing ) ) {
+
+			$add = $this->update( $existing->customer_id, $data );
+
+		} else {
+
+			$add = $this->insert( $args, 'customer' );
+			
+		}
 
 		if ( $add ) {
 
