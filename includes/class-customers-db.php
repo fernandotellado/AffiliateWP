@@ -323,13 +323,8 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	 *
 	 * @return int|false Customer ID if successfully added, otherwise false.
 	*/
-	public function add( $data = array() ) {
-
-		$defaults = array(
-			'user_id' => 0
-		);
-
-		$args = wp_parse_args( $data, $defaults );
+	public function add( $args = array() ) {
+	
 
 		if ( isset( $args['date_created'] ) ) {
 
@@ -347,13 +342,28 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			unset( $args['affiliate_id'] );
 		}
 
-		if( isset( $data['email'] ) ) {
-			$existing = $this->get_by( 'email', $data['email'] );
+		if( isset( $args['email'] ) ) {
+			$existing = $this->get_by( 'email', $args['email'] );
+			
+			if( ! isset( $args['user_id'] ) ) {
+
+				$user = get_user_by( 'email', $args['email'] );
+
+				if( $user ) {
+
+					$args['user_id'] = $user->ID;
+
+				}
+			
+			}
+
 		}
 
-		if( ! empty( $existing ) ) {
+		if( $existing ) {
 
-			$add = $this->update( $existing->customer_id, $data );
+			unset( $args['customer_id'] );
+			unset( $args['date_created'] );
+			$add = $this->update( $existing->customer_id, $args, '', 'customer' );
 
 		} else {
 
