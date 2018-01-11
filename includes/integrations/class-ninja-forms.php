@@ -128,6 +128,42 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Retrieves the customer details for a form submission
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $entry_id = 0 ) {
+
+		$fields = Ninja_Forms()->form()->get_sub( $entry_id )->get_field_values();
+
+		if( ! is_array( $fields ) ) {
+			return array();
+		}
+
+		$customer = array();
+
+		foreach( $fields as $key => $value ) {
+
+			if( false !== strpos( $key, 'email' ) ) {
+				$customer['email'] = $value;
+			}
+
+			if( false !== strpos( $key, 'firstname' ) ) {
+				$customer['first_name'] = $value;
+			}
+
+			if( false !== strpos( $key, 'lastname' ) ) {
+				$customer['last_name'] = $value;
+			}
+
+		}
+
+		return $customer;
+	}
+
+	/**
 	 * Register Ninja Forms Action
 	 *
 	 * @access  public

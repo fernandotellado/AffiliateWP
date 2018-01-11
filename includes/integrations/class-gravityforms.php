@@ -374,6 +374,26 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 <?php
 	}
 
+	/**
+	 * Retrieves the customer details for a form submission
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $entry_id = 0 ) {
+
+		$entry  = GFFormsModel::get_lead( $entry_id );
+		$form   = GFAPI::get_form( $entry['form_id'] );
+		$emails = $this->get_emails( $entry, $form );
+
+		$customer = array(
+			'email' => current( $emails )
+		);
+
+		return $customer;
+	}
+
 }
 
 if ( class_exists( 'GFCommon' ) ) {
