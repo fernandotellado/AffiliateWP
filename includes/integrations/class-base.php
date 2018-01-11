@@ -123,6 +123,10 @@ abstract class Affiliate_WP_Base {
 			'customer'     => $this->get_customer( $reference )
 		), $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
 
+		if( ! empty( $args['customer'] ) && empty( $args['customer']['affiliate_id'] ) ) {
+			$args['customer']['affiliate_id'] = $this->affiliate_id;
+		}
+
 		$referral_id = affiliate_wp()->referrals->add( $args );
 
 		if ( $referral_id ) {
