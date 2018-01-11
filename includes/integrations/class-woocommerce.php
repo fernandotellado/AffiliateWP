@@ -899,7 +899,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	public function get_customer( $order_id = 0 ) {
 		
 		$customer = array();
-		$order    = wc_get_order( $order_id );
+		$order    = new WC_Order( $order_id );
 
 		$customer['user_id']    = $order->get_user_id();
 		$customer['email']      = $order->get_billing_email();
