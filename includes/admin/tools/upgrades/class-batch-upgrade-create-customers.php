@@ -116,17 +116,20 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 
 			if( class_exists( $class_name ) ) {
 
-				$integration = new $class_name;
-				$customer = $integration->get_customer( $referral->reference );
-				$customer['affiliate_id'] = $referral->affiliate_id;
+				try {
 
+					$integration = new $class_name;
+					$customer = $integration->get_customer( $referral->reference );
+					$customer['affiliate_id'] = $referral->affiliate_id;
 
-				affiliate_wp()->utils->log( 'Customer Upgrade data: ' . print_r( $customer, true ) );
+					$inserted[] = affwp_add_customer( $customer );
 
+				} catch ( Exception $e ) {
+	
+					// Something happened here
 
-				$inserted[] = affwp_add_customer( $customer );
-				
-		
+				}
+
 			}
 
 
