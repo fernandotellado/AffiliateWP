@@ -179,6 +179,15 @@ class Affiliate_WP_Upgrades {
 			)
 		) );
 
+		$this->add_routine( 'upgrade_v22_create_customer_records', array(
+			'version' => '2.2',
+			'compare' => '<',
+			'batch_process' => array(
+				'id'    => 'create-customers-upgrade',
+				'class' => 'AffWP\Utils\Batch_Process\Upgrade_Create_Customers',
+				'file'  => AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/upgrades/class-batch-upgrade-create-customers.php'
+			)
+		) );
 	}
 
 	/**
@@ -680,4 +689,5 @@ class Affiliate_WP_Upgrades {
 
 		$this->upgraded = true;
 	}
+
 }
