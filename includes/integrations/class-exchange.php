@@ -74,20 +74,24 @@ class Affiliate_WP_Exchange extends Affiliate_WP_Base {
 
 				foreach ( $this->transaction->coupons['cart'] as $coupon ) {
 
-					$affiliate_id = get_post_meta( $coupon['id'], 'affwp_coupon_affiliate', true );
+					$coupon_affiliate_id = get_post_meta( $coupon['id'], 'affwp_coupon_affiliate', true );
 
-					if ( ! $affiliate_id ) {
+					if ( ! $coupon_affiliate_id ) {
 
 						$this->log( 'Referral not created because of missing affiliate ID.' );
 
 						continue;
 					}
 
-					if ( ! affiliate_wp()->tracking->is_valid_affiliate( $affiliate_id ) ) {
-						
+					if ( ! affiliate_wp()->tracking->is_valid_affiliate( $coupon_affiliate_id ) ) {
+
 						$this->log( 'Referral not created because affiliate is invalid.' );
 
 						continue;
+					}
+
+					if ( false !== $coupon_affiliate_id ) {
+						$affiliate_id = $coupon_affiliate_id;
 					}
 
 					break;
