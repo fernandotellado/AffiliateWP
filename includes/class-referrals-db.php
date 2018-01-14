@@ -412,19 +412,6 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 		}
 
-		// Referrals for specific types
-		if( ! empty( $args['type'] ) ) {
-
-			if( is_array( $args['type'] ) ) {
-				$types = implode( ',', array_map( 'sanitize_text_field', $args['type'] ) );
-			} else {
-				$types = sanitize_text_field( $args['type'] );
-			}
-
-			$where .= "WHERE `type` IN( {$types} ) ";
-
-		}
-
 		// Amount.
 		if ( ! empty( $args['amount'] ) ) {
 
@@ -525,6 +512,25 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			}
 
 		}
+
+		if( ! empty( $args['type'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
+			if( is_array( $args['type'] ) ) {
+				$where .= "`type` IN(" . implode( ',', array_map( 'esc_sql', $args['type'] ) ) . ") ";
+			} else {
+				$type = esc_sql( $args['type'] );
+
+				if ( ! empty( $args['search'] ) ) {
+					$where .= "`type` LIKE '%%" . $type . "%%' ";
+				} else {
+					$where .= "`type` = '" . $type . "' ";
+				}
+			}
+
+		}
+
 
 		// Description.
 		if( ! empty( $args['description'] ) ) {
