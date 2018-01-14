@@ -229,9 +229,9 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		$args['context']       = ! empty( $data['context'] )       ? sanitize_text_field( $data['context'] )     : '';
 		$args['campaign']      = ! empty( $data['campaign'] )      ? sanitize_text_field( $data['campaign'] )    : '';
 		$args['reference']     = ! empty( $data['reference'] )     ? sanitize_text_field( $data['reference'] )   : '';
-		$args['type']          = ! empty( $data['type'] )          ? sanitize_text_field( $data['type'] )        : 'sale';
+		$args['type']          = ! empty( $data['type'] )          ? sanitize_text_field( $data['type'] )        : '';
 
-		if( ! $this->types_registry->get_type( $args['type'] ) ) {
+		if( empty( $args['type'] ) && ! $this->types_registry->get_type( $args['type'] ) ) {
 			$args['type'] = 'sale';
 		}
 
