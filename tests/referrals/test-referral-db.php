@@ -106,6 +106,7 @@ class Referrals_DB_Tests extends UnitTestCase {
 			'custom'      => '%s',
 			'context'     => '%s',
 			'campaign'    => '%s',
+			'type'        => '%s',
 			'reference'   => '%s',
 			'products'    => '%s',
 			'payout_id'   => '%d',
