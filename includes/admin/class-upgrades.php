@@ -147,6 +147,10 @@ class Affiliate_WP_Upgrades {
 			$this->v2131_upgrade();
 		}
 
+		if ( version_compare( $this->version, '2.2', '<' ) ) {
+			$this->v22_upgrade();
+		}
+
 		// Inconsistency between current and saved version.
 		if ( version_compare( $this->version, AFFILIATEWP_VERSION, '<>' ) ) {
 			$this->upgraded = true;
@@ -677,6 +681,28 @@ class Affiliate_WP_Upgrades {
 		// Refresh capabilities missed in 2.1 update (export_visit_data).
 		@affiliate_wp()->capabilities->add_caps();
 		@affiliate_wp()->utils->log( 'Upgrade: Core capabilities have been upgraded for 2.1.3.1.' );
+
+		$this->upgraded = true;
+	}
+
+	/**
+	 * Performs database upgrades for version 2.2.
+	 *
+	 * @access private
+	 * @since  2.2
+	 */
+	private function v22_upgrade() {
+		
+		global $wpdb;
+
+		// Add type column to referrals database.
+		@affiliate_wp()->referrals->create_table();
+
+		$table = affiliate_wp()->referrals->table_name;
+
+		$wpdb->query( "UPDATE $table SET type = 'sale' where 1=1;" );
+
+		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
 
 		$this->upgraded = true;
 	}

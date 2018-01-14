@@ -89,6 +89,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'reference'   => '%s',
 			'products'    => '%s',
 			'payout_id'   => '%d',
+			'type'        => '%s',
 			'date'        => '%s',
 		);
 	}
@@ -103,7 +104,8 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		return array(
 			'affiliate_id' => 0,
 			'date'         => gmdate( 'Y-m-d H:i:s' ),
-			'currency'     => affwp_get_currency()
+			'currency'     => affwp_get_currency(),
+			'type'         => 'sale',
 		);
 	}
 
@@ -210,6 +212,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		$args['context']       = ! empty( $data['context'] )       ? sanitize_text_field( $data['context'] )     : '';
 		$args['campaign']      = ! empty( $data['campaign'] )      ? sanitize_text_field( $data['campaign'] )    : '';
 		$args['reference']     = ! empty( $data['reference'] )     ? sanitize_text_field( $data['reference'] )   : '';
+		$args['type']          = ! empty( $data['type'] )          ? sanitize_text_field( $data['type'] )        : 'sale';
 
 		/*
 		 * Deliberately defer updating the status – it will be updated instead
@@ -322,6 +325,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 *                                        Default empty.
 	 *     @type string       $context        Specific context to query referrals for. Default empty.
 	 *     @type string       $campaign       Specific campaign to query referrals for. Default empty.
+	 *     @type string       $type           Specific referral type to query referrals for. Default empty.
 	 *     @type string       $description    Description to search referrals for. Fuzzy matching is permitted when
 	 *                                        `$search` is true.
 	 *     @type string|array $status         Referral status or array of statuses to query referrals for.
@@ -353,6 +357,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'reference'      => '',
 			'context'        => '',
 			'campaign'       => '',
+			'type'           => '',
 			'status'         => '',
 			'orderby'        => 'referral_id',
 			'order'          => 'DESC',
@@ -404,6 +409,19 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			}
 
 			$where .= "WHERE `payout_id` IN( {$payout_ids} ) ";
+
+		}
+
+		// Referrals for specific types
+		if( ! empty( $args['type'] ) ) {
+
+			if( is_array( $args['type'] ) ) {
+				$types = implode( ',', array_map( 'sanitize_text_field', $args['type'] ) );
+			} else {
+				$types = sanitize_text_field( $args['type'] );
+			}
+
+			$where .= "WHERE `type` IN( {$types} ) ";
 
 		}
 
@@ -824,6 +842,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		custom longtext NOT NULL,
 		context tinytext NOT NULL,
 		campaign varchar(30) NOT NULL,
+		type varchar(30) NOT NULL,
 		reference mediumtext NOT NULL,
 		products mediumtext NOT NULL,
 		payout_id bigint(20) NOT NULL,

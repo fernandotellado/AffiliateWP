@@ -140,6 +140,15 @@ final class Referral extends Base_Object {
 	public $date;
 
 	/**
+	 * Referral type.
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * Token to use for generating cache keys.
 	 *
 	 * @since 1.9
