@@ -900,6 +900,11 @@ class Affiliate_WP_Settings {
 				'type' => 'rich_editor',
 				'std' => __( 'Hi {name}!', 'affiliate-wp' ) . "\n\n" . __( 'Thanks for your recent affiliate registration on {site_name}.', 'affiliate-wp' ) . "\n\n" . __( 'We&#8217;re currently reviewing your affiliate application and will be in touch soon!', 'affiliate-wp' ) . "\n\n"
 			),
+			'rejection_options_header' => array(
+				'name' => '<strong>' . __( 'Application Rejection Email Options', 'affiliate-wp' ) . '</strong>',
+				'desc' => '',
+				'type' => 'header'
+			),
 			'rejection_subject' => array(
 				'name' => __( 'Application Rejection Email Subject', 'affiliate-wp' ),
 				'desc' => __( 'Enter the subject line for rejected affiliate application emails.', 'affiliate-wp' ),
