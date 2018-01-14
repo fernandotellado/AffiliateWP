@@ -883,6 +883,11 @@ class Affiliate_WP_Settings {
 		$emails_tags_list = affwp_get_emails_tags_list();
 
 		$new_email_settings = array(
+			'pending_options_header' => array(
+				'name' => '<strong>' . __( 'Pending Email Options', 'affiliate-wp' ) . '</strong>',
+				'desc' => '',
+				'type' => 'header'
+			),
 			'pending_subject' => array(
 				'name' => __( 'Application Pending Email Subject', 'affiliate-wp' ),
 				'desc' => __( 'Enter the subject line for pending affiliate application emails.', 'affiliate-wp' ),
