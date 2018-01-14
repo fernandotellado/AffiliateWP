@@ -94,6 +94,19 @@ class Registry extends Utils\Registry {
 	}
 
 	/**
+	 * Retrieves a type and its associated attributes.
+	 *
+	 * @access public
+	 * @since  2.2
+	 *
+	 * @param string $type_id Type ID.
+	 * @return array|false Array of attributes for the type if registered, otherwise false.
+	 */
+	public function get_type( $type_id ) {
+		return $this->get( $type_id );
+	}
+
+	/**
 	 * Retrieves registered referral types.
 	 *
 	 * @access public
