@@ -234,20 +234,13 @@ class AffWP_Referrals_Table extends List_Table {
 
 			case 'type' :
 
-				$value = $referral->type;
-				$type  = affiliate_wp()->referrals->types_registry->get_type( $referral->type );
-
-				if( $type ) {
-					$value = $type['label'];
-				}
-
 				/**
 				 * Filters the referral type column data in the referrals list table.
 				 *
 				 * @param string $value       Data shown in the type column.
 				 * @param array  $type The referral type.
 				 */
-				$value = (string) apply_filters( 'affwp_referral_type_column', $value, $referral->type );
+				$value = (string) apply_filters( 'affwp_referral_type_column', $referral->type(), $referral->type );
 				break;
 
 			default:

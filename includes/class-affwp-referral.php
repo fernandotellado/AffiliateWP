@@ -206,4 +206,25 @@ final class Referral extends Base_Object {
 		return $value;
 	}
 
+	/**
+	 * Retrieves the referral type name
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @static
+	 *
+	 * @return string Nice name of the referral type.
+	 */
+	public function type() {
+
+		$value = $this->type;
+		$type  = affiliate_wp()->referrals->types_registry->get_type( $this->type );
+
+		if( $type ) {
+			$value = $type['label'];
+		}
+
+		return $value;
+	}
+
 }
