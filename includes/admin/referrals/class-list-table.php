@@ -169,6 +169,7 @@ class AffWP_Referrals_Table extends List_Table {
 			'affiliate'   => __( 'Affiliate', 'affiliate-wp' ),
 			'reference'   => __( 'Reference', 'affiliate-wp' ),
 			'description' => __( 'Description', 'affiliate-wp' ),
+			'type'        => __( 'Type', 'affiliate-wp' ),
 			'date'        => __( 'Date', 'affiliate-wp' ),
 			'actions'     => __( 'Actions', 'affiliate-wp' ),
 			'status'      => __( 'Status', 'affiliate-wp' ),
@@ -195,6 +196,7 @@ class AffWP_Referrals_Table extends List_Table {
 		return array(
 			'amount'    => array( 'amount', false ),
 			'affiliate' => array( 'affiliate_id', false ),
+			'type'      => array( 'type', false ),
 			'date'      => array( 'date', false ),
 			'status'    => array( 'status', false ),
 		);
@@ -228,6 +230,24 @@ class AffWP_Referrals_Table extends List_Table {
 				 * @param array  $description The referral description.
 				 */
 				$value = (string) apply_filters( 'affwp_referral_description_column', $value, $referral->description );
+				break;
+
+			case 'type' :
+
+				$value = $referral->type;
+				$type  = affiliate_wp()->referrals->types_registry->get_type( $referral->type );
+
+				if( $type ) {
+					$value = $type['label'];
+				}
+
+				/**
+				 * Filters the referral type column data in the referrals list table.
+				 *
+				 * @param string $value       Data shown in the type column.
+				 * @param array  $type The referral type.
+				 */
+				$value = (string) apply_filters( 'affwp_referral_type_column', $value, $referral->type );
 				break;
 
 			default:
