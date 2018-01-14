@@ -884,7 +884,7 @@ class Affiliate_WP_Settings {
 
 		$new_email_settings = array(
 			'pending_options_header' => array(
-				'name' => '<strong>' . __( 'Pending Email Options', 'affiliate-wp' ) . '</strong>',
+				'name' => '<strong>' . __( 'Application Pending Email Options', 'affiliate-wp' ) . '</strong>',
 				'desc' => '',
 				'type' => 'header'
 			),
