@@ -144,6 +144,18 @@ $disabled = disabled( (bool) $payout, true, false );
 			<tr class="form-row form-required">
 
 				<th scope="row">
+					<label for="date"><?php _e( 'Type', 'affiliate-wp' ); ?></label>
+				</th>
+
+				<td>
+					<input type="text" name="type" id="type" value="<?php echo esc_attr( $referral->type() ); ?>" disabled="disabled" />
+				</td>
+
+			</tr>
+
+			<tr class="form-row form-required">
+
+				<th scope="row">
 					<label for="date"><?php _e( 'Date', 'affiliate-wp' ); ?></label>
 				</th>
 
