@@ -574,6 +574,14 @@ class AffWP_Referrals_Table extends List_Table {
 			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_from' placeholder='" . __( 'From - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . esc_attr( $from ) . "'/>";
 			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_to' placeholder='" . __( 'To - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . esc_attr( $to ) . "'/>&nbsp;";
 
+			?>
+			<select name="type" class="affwp-referral-type-select">
+				<option value=""><?php _e( 'All Types', 'affiliate-wp' ); ?></option>
+				<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+					<option value="<?php echo esc_attr( $type_id ); ?>"><?php echo esc_html( $type['label'] ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php
 			/**
 			 * Fires in the admin referrals screen, inside the search filters form area, prior to the submit button.
 			 */
@@ -741,6 +749,7 @@ class AffWP_Referrals_Table extends List_Table {
 		$reference   = isset( $_GET['reference'] )    ? $_GET['reference']       : '';
 		$context     = isset( $_GET['context'] )      ? $_GET['context']         : '';
 		$campaign    = isset( $_GET['campaign'] )     ? $_GET['campaign']        : '';
+		$type        = isset( $_GET['type'] )         ? $_GET['type']            : '';
 		$from        = isset( $_GET['filter_from'] )  ? $_GET['filter_from']     : '';
 		$to          = isset( $_GET['filter_to'] )    ? $_GET['filter_to']       : '';
 		$order       = isset( $_GET['order'] )        ? $_GET['order']           : 'DESC';
@@ -802,6 +811,7 @@ class AffWP_Referrals_Table extends List_Table {
 			'reference'    => $reference,
 			'context'      => $context,
 			'campaign'     => $campaign,
+			'type'         => $type,
 			'amount'       => $amount,
 			'description'  => $description,
 			'date'         => $date,
