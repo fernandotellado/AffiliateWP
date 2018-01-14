@@ -763,6 +763,7 @@ class Referrals_DB_Tests extends UnitTestCase {
 		$this->assertFalse( affiliate_wp()->referrals->get_by( 'affiliate_id', '' ) );
 	}
 
+
 	/**
 	 * @covers \Affiliate_WP_Referrals_DB::paid_earnings()
 	 */
@@ -775,6 +776,29 @@ class Referrals_DB_Tests extends UnitTestCase {
 		$total = affwp_currency_filter( affwp_format_amount( $total ) );
 
 		$this->assertSame( $total, affiliate_wp()->referrals->paid_earnings( '', self::$affiliate_id ) );
+	}
+
+	public function test_referral_type_is_sale() {
+		$referral = affwp_get_referral( self::$referrals[0] );
+
+		$this->assertEquals( 'sale', $referral->type );
+
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Referrals_DB::update_referral()
+	 * @group dates
+	 */
+	public function test_update_referral_new_type_of_opt_in() {
+	
+		affiliate_wp()->referrals->update_referral( self::$referrals[0], array(
+			'type' => 'opt-in'
+		) );
+
+		$referral = affwp_get_referral( self::$referrals[0] );
+
+		$this->assertEquals( 'opt-in', $referral->type );
+
 	}
 
 }
