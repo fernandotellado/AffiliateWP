@@ -30,6 +30,15 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	public $query_object_type = 'AffWP\Referral';
 
 	/**
+	 * Referral types registry.
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @var object
+	 */
+	public $types_registry;
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
@@ -51,6 +60,9 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		if ( version_compare( $wp_version, '4.4', '>=' ) ) {
 			$this->REST = new \AffWP\Referral\REST\v1\Endpoints;
 		}
+
+		$this->types_registry = new AffWP\Utils\Referral_Types\Registry;
+		$this->types_registry->init();
 	}
 
 	/**
