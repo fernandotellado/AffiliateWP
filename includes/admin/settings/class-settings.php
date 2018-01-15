@@ -637,10 +637,10 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Select which emails should be disabled.', 'affiliate-wp' ),
 						'type' => 'multicheck',
 						'options' => array(
-							'application_accepted_emails' => __( 'Application accepted emails', 'affiliate-wp' ),
-							'application_pending_emails'  => __( 'Application pending emails', 'affiliate-wp' ),
-							'application_rejected_emails' => __( 'Application rejected emails', 'affiliate-wp' ),
-							'new_referral_emails'         => __( 'New referral emails', 'affiliate-wp' ),
+							'application_accepted_emails' => __( 'Application accepted emails sent to the affiliate', 'affiliate-wp' ),
+							'application_pending_emails'  => __( 'Application pending emails sent to the affiliate', 'affiliate-wp' ),
+							'application_rejected_emails' => __( 'Application rejected emails sent to the affiliate', 'affiliate-wp' ),
+							'new_referral_emails'         => __( 'New referral emails sent to the affiliate', 'affiliate-wp' ),
 						)
 					),
 					'registration_notifications' => array(
