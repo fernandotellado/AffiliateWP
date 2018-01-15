@@ -645,11 +645,6 @@ class Affiliate_WP_Settings {
 							'affiliate_new_referral_email'         => __( 'Notify affiliates when they earn a new referral', 'affiliate-wp' ),
 						)
 					),
-					'registration_notifications' => array(
-						'name' => __( 'Notify Admin', 'affiliate-wp' ),
-						'desc' => __( 'Notify site admin of new affiliate registrations.', 'affiliate-wp' ),
-						'type' => 'checkbox'
-					),
 					'email_logo' => array(
 						'name' => __( 'Logo', 'affiliate-wp' ),
 						'desc' => __( 'Upload or choose a logo to be displayed at the top of emails.', 'affiliate-wp' ),
@@ -728,11 +723,6 @@ class Affiliate_WP_Settings {
 						'name' => '<strong>' . __( 'New Referral Admin Email Options', 'affiliate-wp' ) . '</strong>',
 						'desc' => '',
 						'type' => 'header'
-					),
-					'admin_referral_notifications' => array(
-						'name' => __( 'Notify Admin of Referrals', 'affiliate-wp' ),
-						'desc' => __( 'Notify site admin when new referrals are earned.', 'affiliate-wp' ),
-						'type' => 'checkbox'
 					),
 					'new_admin_referral_subject' => array(
 						'name' => __( 'New Referral Admin Email Subject', 'affiliate-wp' ),
