@@ -149,6 +149,7 @@ $disabled = disabled( (bool) $payout, true, false );
 
 				<td>
 					<input type="text" name="type" id="type" value="<?php echo esc_attr( $referral->type() ); ?>" disabled="disabled" />
+					<p class="description"><?php _e( 'The referral type. This cannot be changed.', 'affiliate-wp' ); ?></p>
 				</td>
 
 			</tr>
