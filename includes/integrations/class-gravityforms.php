@@ -289,7 +289,7 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 
 		$field_type = '<select name="affwp_referral_type" id="affwp_referral_type">';
 			foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) {
-				$field_type .= '<option value="' . esc_attr( $type_id ) . '"' . selected( $type_id, $selected ) .'>' . esc_html( $type['label'] ) . '</option>';
+				$field_type .= '<option value="' . esc_attr( $type_id ) . '"' . selected( $type_id, $selected, false ) .'>' . esc_html( $type['label'] ) . '</option>';
 			}
 		$field_type .= '</select>';
 		$field_type .= ' <label for="affwp_referral_type">' . __( 'Referral Type', 'affiliate-wp' ) . '</label>';
