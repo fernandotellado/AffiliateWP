@@ -14,6 +14,15 @@ use AffWP\Utils\Batch_Process as Batch;
 class Import_Referrals extends Batch\Import\CSV implements Batch\With_PreFetch {
 
 	/**
+	 * Batch process ID.
+	 *
+	 * @access public
+	 * @since  2.1.7
+	 * @var    string
+	 */
+	public $batch_id = 'import-referrals';
+
+	/**
 	 * Capability needed to process a referrals import.
 	 *
 	 * @access public
@@ -184,7 +193,7 @@ class Import_Referrals extends Batch\Import\CSV implements Batch\With_PreFetch {
 			if ( $user_id ) {
 				// Check for an existing affiliate for this user.
 				if ( $affiliate = affiliate_wp()->affiliates->get_by( 'user_id', $user_id ) ) {
-					$affiliate_id = $affiliate->ID;
+					$affiliate_id = $affiliate->affiliate_id;
 				} else {
 					$args['user_id'] = $user_id;
 

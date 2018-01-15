@@ -462,4 +462,74 @@ abstract class Affiliate_WP_DB {
 		return $fields_sql;
 	}
 
+	/**
+	 * Prepares the date query section of the WHERE clause if set.
+	 *
+	 * @since 2.1.9
+	 *
+	 * @param string       $where WHERE clause for the query up to this point.
+	 * @param string|array $date {
+	 *     Date string or array of start and end dates to query by.
+	 *
+	 *     @type string $start Starting date string.
+	 *     @type string $end   Ending date string.
+	 * }
+	 * @param string       $field Optional. Field to query by (this will be 'date' for all
+	 *                            except affiliate queries). Default 'date'.
+	 * @return string WHERE clause string for date conditions.
+	 */
+	public function prepare_date_query( $where, $date, $field = 'date' ) {
+
+		if ( empty( $field ) ) {
+			$field = 'date';
+		} else {
+			sanitize_key( $field );
+		}
+
+		$gmt_offset = affiliate_wp()->utils->wp_offset;
+
+		if ( is_array( $date ) ) {
+
+			if( ! empty( $date['start'] ) ) {
+
+				$where .= empty( $where ) ? "WHERE " : "AND ";
+
+				if ( false !== strpos( $date['start'], ':' ) ) {
+					$format = 'Y-m-d H:i:s';
+				} else {
+					$format = 'Y-m-d 00:00:00';
+				}
+
+				$start = esc_sql( gmdate( $format, strtotime( $date['start'] ) - $gmt_offset ) );
+
+				$where .= "`{$field}` >= '{$start}' ";
+			}
+
+			if ( ! empty( $date['end'] ) ) {
+
+				$where .= empty( $where ) ? "WHERE " : "AND ";
+
+				if ( false !== strpos( $date['end'], ':' ) ) {
+					$format = 'Y-m-d H:i:s';
+				} else {
+					$format = 'Y-m-d 23:59:59';
+				}
+
+				$end = esc_sql( gmdate( $format, strtotime( $date['end'] ) - $gmt_offset ) );
+
+				$where .= "`{$field}` <= '{$end}' ";
+			}
+
+		} else {
+
+			$year  = gmdate( 'Y', strtotime( $date ) - $gmt_offset );
+			$month = gmdate( 'm', strtotime( $date ) - $gmt_offset );
+			$day   = gmdate( 'd', strtotime( $date ) - $gmt_offset );
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+			$where .= "$year = YEAR ( {$field} ) AND $month = MONTH ( {$field} ) AND $day = DAY ( {$field} ) ";
+		}
+
+		return $where;
+	}
 }

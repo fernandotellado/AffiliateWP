@@ -21,6 +21,8 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$this->context = 'woocommerce';
 
 		add_action( 'woocommerce_checkout_order_processed', array( $this, 'add_pending_referral' ), 10 );
+		// Necessary for Apple Pay support
+		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_pending_referral' ), 10 );
 
 		// There should be an option to choose which of these is used
 		add_action( 'woocommerce_order_status_completed', array( $this, 'mark_referral_complete' ), 10 );
@@ -43,7 +45,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		// Per product referral rates
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'product_tab' ) );
-		add_action( 'woocommerce_product_data_panels', array( $this, 'product_settings' ), 100 );
+		add_action( 'woocommerce_product_data_panels', array( $this, 'product_settings' ) );
 		add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'variation_settings' ), 100, 3 );
 		add_action( 'save_post', array( $this, 'save_meta' ) );
 		add_action( 'woocommerce_ajax_save_product_variations', array( $this, 'save_variation_data' ) );
@@ -69,6 +71,19 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	public function add_pending_referral( $order_id = 0 ) {
 
 		$this->order = apply_filters( 'affwp_get_woocommerce_order', new WC_Order( $order_id ) );
+
+		if( function_exists( 'doing_action' ) ) {
+
+			if( doing_action( 'woocommerce_checkout_update_order_meta' ) && did_action( 'woocommerce_checkout_order_processed' ) ) {
+
+				// woocommerce_checkout_order_processed does not fire during Apple Pay processing. If it has fired, this is not an Applee Pay purchase and we need to bail
+				if ( 'stripe' === ( version_compare( WC_VERSION, '3.0.0', '<' ) ? $this->order->payment_method : $this->order->get_payment_method() ) ) {
+					return;
+				}
+
+			}
+
+		}
 
 		// Check if an affiliate coupon was used
 		$coupon_affiliate_id = $this->get_coupon_affiliate_id();

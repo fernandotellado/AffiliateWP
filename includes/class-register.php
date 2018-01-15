@@ -159,6 +159,8 @@ class Affiliate_WP_Register {
 		if ( empty( $this->errors ) ) {
 			$this->register_user();
 
+			$redirect = empty( $data['affwp_redirect'] ) ? affwp_get_affiliate_area_page_url() : $data['affwp_redirect'];
+
 			$redirect = apply_filters( 'affwp_register_redirect', $data['affwp_redirect'] );
 
 			if ( $redirect ) {

@@ -82,7 +82,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
  */
 function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
-	if( affiliate_wp()->settings->get( 'disable_application_accepted_emails' ) ) {
+	if ( array_key_exists( 'application_accepted_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
 		return;
 	}
 
@@ -154,7 +154,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
  */
 function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $status = '', $args ) {
 
-	if( affiliate_wp()->settings->get( 'disable_application_pending_emails' ) ) {
+	if ( array_key_exists( 'application_pending_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
 		return;
 	}
 
@@ -197,7 +197,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_regis
  */
 function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
-	if( affiliate_wp()->settings->get( 'disable_application_rejected_emails' ) ) {
+	if ( array_key_exists( 'application_rejected_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
 		return;
 	}
 
@@ -237,7 +237,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_re
  */
 function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
-	if( affiliate_wp()->settings->get( 'disable_new_referral_emails' ) ) {
+	if ( array_key_exists( 'new_referral_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
 		return;
 	}
 
@@ -282,3 +282,84 @@ function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
 }
 add_action( 'affwp_referral_accepted', 'affwp_notify_on_new_referral', 10, 2 );
+
+/**
+ * Sends an email to admins on when a new referral is generated.
+ *
+ * @since 2.1.7
+ *
+ * @param int             $affiliate_id The ID of the registered affiliate
+ * @param \AffWP\Referral $referral     Referral object.
+ */
+function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
+
+	if( empty( $affiliate_id ) ) {
+		return;
+	}
+
+	if( empty( $referral ) ) {
+		return;
+	}
+
+	$send = (bool) affiliate_wp()->settings->get( 'admin_referral_notifications', false );
+
+	/**
+	 * Filters whether to notify admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param bool            $send     Whether to send the email. Default false.
+	 * @param \AffWP\Referral $referral Referral object.
+	 */
+	if( true !== apply_filters( 'affwp_notify_admin_on_new_referral', $send, $referral ) ) {
+		return;
+	}
+
+	$emails  = new Affiliate_WP_Emails;
+	$emails->__set( 'affiliate_id', $affiliate_id );
+	$emails->__set( 'referral', $referral );
+
+	$subject = affiliate_wp()->settings->get( 'new_admin_referral_subject', __( 'Referral Earned!', 'affiliate-wp' ) );
+	$message = affiliate_wp()->settings->get( 'new_admin_referral_email', false );
+
+	if( ! $message ) {
+		$message = '{name} has been awarded a new referral of {amount} on {site_name}.';
+	}
+
+	/**
+	 * Filters the subject field for the email sent to admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string          $subject      Email subject.
+	 * @param int             $affiliate_id Affiliate ID.
+	 * @param \AffWP\Referral $referral     Referral object.
+	 */
+	$subject = apply_filters( 'affwp_new_admin_referral_subject', $subject, $affiliate_id, $referral );
+
+	/**
+	 * Filters the message body for the email sent to admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string          $message      Email message body.
+	 * @param int             $affiliate_id Affiliate ID.
+	 * @param \AffWP\Referral $referral     Referral object.
+	 */
+	$message = apply_filters( 'affwp_new_admin_referral_email', $message, $affiliate_id, $referral );
+
+	/**
+	 * Filters the recipient email address for the email sent to admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string          $email        Recipient email. Default is the value of the 'admin_email' option.
+	 * @param int             $affiliate_id Affiliate ID.
+	 * @param \AffWP\Referral $referral     Referral object.
+	 */
+	$to_email = apply_filters( 'affwp_new_admin_referral_email_to', get_option( 'admin_email' ), $affiliate_id, $referral );
+
+	$emails->send( $to_email, $subject, $message );
+
+}
+add_action( 'affwp_referral_accepted', 'affwp_notify_admin_on_new_referral', 10, 2 );

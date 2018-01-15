@@ -121,9 +121,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertFalse( is_serialized( $referral->custom ) );
-
-		// Clean up.
-		affwp_delete_referral( $referral );
 	}
 
 	/**
@@ -136,9 +133,36 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertFalse( is_serialized( $referral->custom ) );
+	}
 
-		// Clean up.
-		affwp_delete_referral( $referral );
+	/**
+	 * @covers ::affwp_get_referral()
+	 */
+	public function test_get_referral_with_stdclass_custom_should_retrieve_the_serialized_object() {
+		$object = new \stdClass();
+		$object->foo = 'bar';
+
+		$referral = $this->factory->referral->create_and_get( array(
+			'affiliate_id' => self::$_affiliate_id,
+			'custom'       => $object,
+		) );
+
+		$this->assertEquals( $object, $referral->custom );
+	}
+
+	/**
+	 * @covers ::affwp_get_referral()
+	 */
+	public function test_get_referral_with_array_stdclass_custom_should_retrieve_the_serialized_object() {
+		$object = new \stdClass();
+		$object->foo = 'bar';
+
+		$referral = $this->factory->referral->create_and_get( array(
+			'affiliate_id' => self::$_affiliate_id,
+			'custom'       => array( $object ),
+		) );
+
+		$this->assertEquals( array( $object ), $referral->custom );
 	}
 
 	/**
@@ -166,42 +190,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( '', $referral->custom );
-
-		// Clean up.
-		affwp_delete_referral( $referral );
-	}
-
-	/**
-	 * @covers ::affwp_get_referral()
-	 */
-	public function test_get_referral_with_stdclass_custom_should_retrieve_the_serialized_object() {
-		$object = new \stdClass();
-		$object->foo = 'bar';
-
-		$referral = $this->factory->referral->create_and_get( array(
-			'affiliate_id' => self::$_affiliate_id,
-			'custom'       => $object,
-		) );
-
-		$this->assertEquals( $object, $referral->custom );
-
-		// Clean up.
-		affwp_delete_referral( $referral );
-	}
-
-	/**
-	 * @covers ::affwp_get_referral()
-	 */
-	public function test_get_referral_with_array_stdclass_custom_should_retrieve_the_serialized_object() {
-		$object = new \stdClass();
-		$object->foo = 'bar';
-
-		$referral = $this->factory->referral->create_and_get( array(
-			'affiliate_id' => self::$_affiliate_id,
-			'custom'       => array( $object ),
-		) );
-
-		$this->assertEquals( array( $object ), $referral->custom );
 
 		// Clean up.
 		affwp_delete_referral( $referral );
@@ -510,9 +498,6 @@ class Tests extends UnitTestCase {
 		$result = affwp_get_referral( $referral_id );
 
 		$this->assertSame( self::$_visit_id, $result->visit_id );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -536,7 +521,6 @@ class Tests extends UnitTestCase {
 
 		// Clean up.
 		affiliate_wp()->referrals->update_referral( self::$_referral_id, array( 'visit_id' => 0 ) );
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -551,9 +535,6 @@ class Tests extends UnitTestCase {
 		$result = affwp_get_referral( $referral_id );
 
 		$this->assertSame( '', $result->custom );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -568,9 +549,6 @@ class Tests extends UnitTestCase {
 		$result = affwp_get_referral( $referral_id );
 
 		$this->assertSame( 'foo', $result->custom );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -587,9 +565,6 @@ class Tests extends UnitTestCase {
 		$result = affwp_get_referral( $referral_id );
 
 		$this->assertEqualSets( $custom, $result->custom );
-
-		// Clean up.
-		affwp_delete_referral( $referral_id );
 	}
 
 	/**
@@ -753,9 +728,6 @@ class Tests extends UnitTestCase {
 		$result = affwp_calc_referral_amount( 10, $affiliate_id, 0, '0,50' );
 
 		$this->assertSame( '0.05', $result );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -769,9 +741,6 @@ class Tests extends UnitTestCase {
 		$result = affwp_calc_referral_amount( 10, $affiliate_id, 0, '0.50' );
 
 		$this->assertSame( '0.50', $result );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**

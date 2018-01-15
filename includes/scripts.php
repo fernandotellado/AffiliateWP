@@ -155,7 +155,7 @@ function affwp_frontend_scripts_and_styles() {
 	$script_deps = array( 'jquery' );
 	$style_deps  = array();
 
-	if ( isset( $_REQUEST['tab'] ) && 'graphs' === sanitize_key( $_REQUEST['tab'] ) ) {
+	if ( 'graphs' === affwp_get_active_affiliate_area_tab() || isset( $_REQUEST['tab'] ) && 'graphs' === sanitize_key( $_REQUEST['tab'] ) ) {
 		$script_deps[] = 'jquery-ui-datepicker';
 		$style_deps[]  = 'jquery-ui-css';
 	}

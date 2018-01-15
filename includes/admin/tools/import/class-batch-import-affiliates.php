@@ -14,6 +14,15 @@ use AffWP\Utils\Batch_Process as Batch;
 class Import_Affiliates extends Batch\Import\CSV implements Batch\With_PreFetch {
 
 	/**
+	 * Batch process ID.
+	 *
+	 * @access public
+	 * @since  2.1.7
+	 * @var    string
+	 */
+	public $batch_id = 'import-affiliates';
+
+	/**
 	 * Whether to use 'strict' mode when sanitizing generated usernames.
 	 *
 	 * See {@see 'affwp_batch_import_affiliates_strict_usernames'}.

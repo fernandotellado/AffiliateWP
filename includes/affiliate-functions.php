@@ -127,6 +127,59 @@ function affwp_get_affiliate_name( $affiliate = 0 ) {
 	}
 }
 
+
+/**
+ * Retrieves the affiliate first name, if set.
+ *
+ * @since 2.1.7
+ *
+ * @uses affwp_get_affiliate_id
+ * @uses get_userdata
+ *
+ * @param int|AffWP\Affiliate $affiliate Optional. Affiliate ID or object. Default is the current affiliate.
+ * @return string The affiliate user's first name  if set. An empty string if the affiliate ID
+ *                is invalid or first name is not set.
+ */
+function affwp_get_affiliate_last_name( $affiliate = 0 ) {
+
+	if ( ! $affiliate = affwp_get_affiliate( $affiliate ) ) {
+		return '';
+	}
+
+	if ( ! $user_info = get_userdata( $affiliate->user_id ) ) {
+		return '';
+	}
+
+	return esc_html( $user_info->last_name );
+	
+}
+
+/**
+ * Retrieves the affiliate first name, if set.
+ *
+ * @since 2.1.7
+ *
+ * @uses affwp_get_affiliate_id
+ * @uses get_userdata
+ *
+ * @param int|AffWP\Affiliate $affiliate Optional. Affiliate ID or object. Default is the current affiliate.
+ * @return string The affiliate user's first name  if set. An empty string if the affiliate ID
+ *                is invalid or first name is not set.
+ */
+function affwp_get_affiliate_first_name( $affiliate = 0 ) {
+
+	if ( ! $affiliate = affwp_get_affiliate( $affiliate ) ) {
+		return '';
+	}
+
+	if ( ! $user_info = get_userdata( $affiliate->user_id ) ) {
+		return '';
+	}
+
+	return esc_html( $user_info->first_name );
+	
+}
+
 /**
  * Determines whether or not the affiliate is active.
  *
@@ -1111,11 +1164,24 @@ function affwp_add_affiliate( $data = array() ) {
 			$username = sanitize_user( $data['user_email'] );
 		}
 
-		$user_id = wp_insert_user( array(
+		$user_args = array(
 			'user_email' => sanitize_text_field( $data['user_email'] ),
 			'user_login' => $username,
 			'user_pass'  => wp_generate_password( 24 ),
-		) );
+		);
+
+		/**
+		 * Filters the arguments used for creating new users when adding an affiliate.
+		 *
+		 * @since 2.1.8
+		 *
+		 * @param array $user_args Arguments passed to wp_insert_user().
+		 * @param array $data      Arguments passed to affwp_add_affiliate().
+		 */
+		$user_args = apply_filters( 'affwp_add_affiliate_user_args', $user_args, $data );
+
+		// Create the user account.
+		$user_id = wp_insert_user( $user_args );
 
 		if ( is_wp_error( $user_id ) ) {
 			return false;
@@ -1139,7 +1205,7 @@ function affwp_add_affiliate( $data = array() ) {
 		'payment_email'   => ! empty( $data['payment_email'] ) ? sanitize_text_field( $data['payment_email'] ) : '',
 		'notes'           => ! empty( $data['notes' ] ) ? wp_kses_post( $data['notes'] ) : '',
 		'website_url'     => ! empty( $data['website_url'] ) ? sanitize_text_field( $data['website_url'] ) : '',
-		'date_registered' => ! empty( $data['date_registered'] ) ? sanitize_text_field( $data['date_registered'] ) : '',
+		'date_registered' => ! empty( $data['date_registered'] ) ? $data['date_registered'] : '',
 	);
 
 	$affiliate_id = affiliate_wp()->affiliates->add( $args );
@@ -1183,6 +1249,12 @@ function affwp_update_affiliate( $data = array() ) {
 	$args['status']        = ! empty( $data['status'] ) ? sanitize_text_field( $data['status'] ) : $affiliate->status;
 	$args['user_id']       = $user_id;
 	$args['notes']         = ! empty( $data['notes' ] ) ? wp_kses_post( $data['notes'] ) : '';
+
+	if ( ! empty( $data['date_registered'] ) && $data['date_registered'] !== $affiliate->date_registered ) {
+		$timestamp = strtotime( $data['date_registered'] ) - affiliate_wp()->utils->wp_offset;
+
+		$args['date_registered'] = gmdate( 'Y-m-d H:i:s', $timestamp );
+	}
 
 	/**
 	 * Fires immediately before data for the current affiliate is updated.
@@ -1447,9 +1519,7 @@ function affwp_get_affiliate_area_page_url( $tab = '' ) {
 
 	$affiliate_area_page_url = get_permalink( $affiliate_area_page_id );
 
-	if ( ! empty( $tab )
-		&& in_array( $tab, array( 'urls', 'stats', 'graphs', 'referrals', 'payouts', 'visits', 'creatives', 'settings' ) )
-	) {
+	if ( ! empty( $tab ) && array_key_exists( $tab, affwp_get_affiliate_area_tabs() ) ) {
 		$affiliate_area_page_url = add_query_arg( array( 'tab' => $tab ), $affiliate_area_page_url );
 	}
 
@@ -1466,6 +1536,38 @@ function affwp_get_affiliate_area_page_url( $tab = '' ) {
 }
 
 /**
+ * Retrieves an array of tabs for the affiliate area
+ *
+ * @since 2.1.7
+ *
+ * @return array $tabs Array of tabs.
+ */
+function affwp_get_affiliate_area_tabs() {
+
+	/**
+	 * Filters the Affiliate Area tabs list.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param array $tabs Array of tabs.
+	 */
+	$tabs = apply_filters( 'affwp_affiliate_area_tabs',
+		array(
+			'urls'      => __( 'Affiliate URLs', 'affiliate-wp' ),
+			'stats'     => __( 'Statistics', 'affiliate-wp' ),
+			'graphs'    => __( 'Graphs', 'affiliate-wp' ),
+			'referrals' => __( 'Referrals', 'affiliate-wp' ),
+			'payouts'   => __( 'Payouts', 'affiliate-wp' ),
+			'visits'    => __( 'Visits', 'affiliate-wp' ),
+			'creatives' => __( 'Creatives', 'affiliate-wp' ),
+			'settings'  => __( 'Settings', 'affiliate-wp' ),
+		)
+	);
+
+	return $tabs;
+}
+
+/**
  * Retrieves the active Affiliate Area tab slug.
  *
  * @since 1.8.1
@@ -1474,35 +1576,57 @@ function affwp_get_affiliate_area_page_url( $tab = '' ) {
  */
 function affwp_get_active_affiliate_area_tab() {
 	$active_tab = ! empty( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';
+	$tabs = affwp_get_affiliate_area_tabs();
 
-	/**
-	 * Filters the Affiliate Area tabs list.
-	 *
-	 * @since 1.8.1
-	 *
-	 * @param array $tabs Array of tabs.
-	 */
-	$tabs = apply_filters( 'affwp_affiliate_area_tabs', array(
-		'urls', 'stats', 'graphs', 'referrals',
-		'payouts', 'visits', 'creatives', 'settings'
-	) );
+	foreach ( $tabs as $tab_slug => $tab_title ) {
 
-	// If the tab can't be shown, remove it from play.
-	foreach ( $tabs as $index => $tab ) {
-		if ( false === affwp_affiliate_area_show_tab( $tab ) ) {
-			unset( $tabs[ $index ] );
+		// This ensures that tabs registered prior to 2.1.7 (when tab titles were added to the array) continue to function
+		if( is_int( $tab_slug ) ) {
+			$tabs[ sanitize_key( $tab_title ) ] = $tab_title;
+		}
+
+		if ( false === affwp_affiliate_area_show_tab( $tab_slug ) ) {
+			unset( $tabs[ $tab_slug ] );
 		}
 	}
 
-	if ( $active_tab && in_array( $active_tab, $tabs ) ) {
+	if ( $active_tab && array_key_exists( $active_tab, $tabs ) ) {
 		$active_tab = $active_tab;
 	} elseif ( ! empty( $tabs ) ) {
 		$active_tab = reset( $tabs );
+		$active_tab = key( $tabs );
 	} else {
 		$active_tab = '';
 	}
 
 	return $active_tab;
+}
+
+/**
+ * Show a tab in the Affiliate Area
+ *
+ * @since  1.8
+ * @return boolean
+ */
+function affwp_affiliate_area_show_tab( $tab = '' ) {
+	return apply_filters( 'affwp_affiliate_area_show_tab', true, $tab );
+}
+
+/**
+ * Render a specified tab of the affiliate area
+ *
+ * @since  2.1.7
+ * @return void
+ */
+function affwp_render_affiliate_dashboard_tab( $tab = '' ) {
+
+	ob_start();
+	affiliate_wp()->templates->get_template_part( 'dashboard-tab', $tab );
+	$content = ob_get_clean();
+
+	$content = apply_filters( 'affwp_render_affiliate_dashboard_tab_' . $tab, $content, $tab );
+	echo apply_filters( 'affwp_render_affiliate_dashboard_tab', $content, $tab );
+
 }
 
 /**
