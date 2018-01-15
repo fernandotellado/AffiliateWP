@@ -3,8 +3,8 @@ $affiliate_id           = affwp_get_affiliate_id();
 $affiliate_user_id      = affwp_get_affiliate_user_id( $affiliate_id );
 $user_email             = affwp_get_affiliate_email( $affiliate_id );
 $payment_email          = affwp_get_affiliate_payment_email( $affiliate_id, $user_email ); // Fallback to user_email
-$disable_emails         = affiliate_wp()->settings->get( 'disable_emails' );
-$referral_notifications = is_array( $disable_emails ) && array_key_exists( 'affiliate_new_referral_email', $disable_emails ) ? false : true;
+$disabled_emails         = affiliate_wp()->settings->get( 'disabled_emails' );
+$referral_notifications = is_array( $disabled_emails ) && array_key_exists( 'affiliate_new_referral_email', $disabled_emails ) ? false : true;
 ?>
 
 <div id="affwp-affiliate-dashboard-profile" class="affwp-tab-content">
