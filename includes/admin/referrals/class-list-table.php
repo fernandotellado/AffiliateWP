@@ -581,8 +581,9 @@ class AffWP_Referrals_Table extends List_Table {
 				<input type="text" name="affiliate_id" id="user_name" class="affwp-user-search" value="<?php echo esc_attr( $affiliate_name ); ?>" data-affwp-status="any" autocomplete="off" placeholder="<?php _e( 'Affiliate name', 'affiliate-wp' ); ?>" />
 			</span>
 			<?php
-			$from = ! empty( $_REQUEST['filter_from'] ) ? $_REQUEST['filter_from'] : '';
-			$to   = ! empty( $_REQUEST['filter_to'] )   ? $_REQUEST['filter_to']   : '';
+			$from     = ! empty( $_REQUEST['filter_from'] ) ? $_REQUEST['filter_from'] : '';
+			$to       = ! empty( $_REQUEST['filter_to'] )   ? $_REQUEST['filter_to']   : '';
+			$set_type = ! empty( $_REQUEST['type'] )        ? $_REQUEST['type']        : '';
 
 			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_from' placeholder='" . __( 'From - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . esc_attr( $from ) . "'/>";
 			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_to' placeholder='" . __( 'To - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . esc_attr( $to ) . "'/>&nbsp;";
@@ -591,7 +592,7 @@ class AffWP_Referrals_Table extends List_Table {
 			<select name="type" class="affwp-referral-type-select">
 				<option value=""><?php _e( 'All Types', 'affiliate-wp' ); ?></option>
 				<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
-					<option value="<?php echo esc_attr( $type_id ); ?>"><?php echo esc_html( $type['label'] ); ?></option>
+					<option value="<?php echo esc_attr( $type_id ); ?>"<?php selected( $type_id, $set_type ); ?>><?php echo esc_html( $type['label'] ); ?></option>
 				<?php endforeach; ?>
 			</select>
 			<?php
