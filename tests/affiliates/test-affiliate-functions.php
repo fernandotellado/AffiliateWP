@@ -2094,7 +2094,6 @@ class Tests extends UnitTestCase {
 		affwp_delete_affiliate_meta( self::$affiliates[1], 'objects' );
 	}
 
-
 	/**
 	 * @covers ::affwp_get_affiliate_area_tabs()
 	 */
