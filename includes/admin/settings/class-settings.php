@@ -727,6 +727,11 @@ class Affiliate_WP_Settings {
 						'type' => 'rich_editor',
 						'std' => __( 'Congratulations {name}!', 'affiliate-wp' ) . "\n\n" . __( 'You have been awarded a new referral of', 'affiliate-wp' ) . ' {amount} ' . sprintf( __( 'on %s!', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Log into your affiliate area to view your earnings or disable these notifications:', 'affiliate-wp' ) . ' {login_url}'
 					),
+					'new_admin_referral_options_header' => array(
+						'name' => '<strong>' . __( 'New Referral Admin Email Options', 'affiliate-wp' ) . '</strong>',
+						'desc' => '',
+						'type' => 'header'
+					),
 					'admin_referral_notifications' => array(
 						'name' => __( 'Notify Admin of Referrals', 'affiliate-wp' ),
 						'desc' => __( 'Notify site admin when new referrals are earned.', 'affiliate-wp' ),
