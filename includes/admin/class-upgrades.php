@@ -700,7 +700,7 @@ class Affiliate_WP_Upgrades {
 
 		$table = affiliate_wp()->referrals->table_name;
 
-		$wpdb->query( "UPDATE $table SET type = 'sale' where type IS NULL1;" );
+		$wpdb->query( "UPDATE $table SET type = 'sale' where type IS NULL;" );
 
 		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
 
