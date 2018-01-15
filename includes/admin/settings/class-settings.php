@@ -632,7 +632,7 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Disable all email notifications.', 'affiliate-wp' ),
 						'type' => 'checkbox'
 					),
-					'disable_emails' => array(
+					'disabled_emails' => array(
 						'name' => __( 'Disable Specific Emails', 'affiliate-wp' ),
 						'desc' => __( 'Select which emails should be disabled.', 'affiliate-wp' ),
 						'type' => 'multicheck',
