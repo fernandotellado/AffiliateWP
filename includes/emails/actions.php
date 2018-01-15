@@ -229,7 +229,7 @@ function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $st
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_registration', 10, 3 );
 
 /**
- * Sends affilaite an email on new referrals
+ * Sends affiliate an email on new referrals
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
