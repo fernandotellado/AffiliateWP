@@ -632,11 +632,11 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Disable all email notifications.', 'affiliate-wp' ),
 						'type' => 'checkbox'
 					),
-					'disabled_emails' => array(
-						'name' => __( 'Disable Specific Emails', 'affiliate-wp' ),
-						'desc' => __( 'Select which emails should be disabled.', 'affiliate-wp' ),
+					'email_notifications' => array(
+						'name' => __( 'Email Notifications', 'affiliate-wp' ),
+						'desc' => __( 'Select which email notifications should be sent.', 'affiliate-wp' ),
 						'type' => 'multicheck',
-						'options' => $this->email_notification_options()
+						'options' => $this->email_notifications()
 					),
 					'email_logo' => array(
 						'name' => __( 'Logo', 'affiliate-wp' ),
@@ -860,14 +860,14 @@ class Affiliate_WP_Settings {
 	}
 
 	/**
-	 * Email notification options
+	 * Email notifications
 	 *
 	 * @since 2.2
-	 * @return array $email_options
+	 * @return array $emails
 	 */
-	private function email_notification_options() {
+	private function email_notifications() {
 
-		$email_options = array(
+		$emails = array(
 			'admin_affiliate_registration_email'   => __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' ),
 			'admin_new_referral_email'             => __( 'Notify site admin when new referrals are earned', 'affiliate-wp' ),
 			'affiliate_application_accepted_email' => __( 'Notify affiliates when their affiliate application has been accepted', 'affiliate-wp' ),
@@ -875,11 +875,11 @@ class Affiliate_WP_Settings {
 		);
 
 		if ( affiliate_wp()->settings->get( 'require_approval' ) ) {
-			$email_options['affiliate_application_pending_email']  = __( 'Notify affiliates when their affiliate application is pending', 'affiliate-wp' );
-			$email_options['affiliate_application_rejected_email'] = __( 'Notify affiliates when their affiliate application has been rejected', 'affiliate-wp' );
+			$emails['affiliate_application_pending_email']  = __( 'Notify affiliates when their affiliate application is pending', 'affiliate-wp' );
+			$emails['affiliate_application_rejected_email'] = __( 'Notify affiliates when their affiliate application has been rejected', 'affiliate-wp' );
 		}
 
-		return $email_options;
+		return $emails;
 
 	}
 
