@@ -98,13 +98,13 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 			if ( true === version_compare( WC()->version, '3.0.0', '>=' ) ) {
-				$billing_email = $this->order->get_billing_email();
+				$this->email = $this->order->get_billing_email();
 			} else {
-				$billing_email = $this->order->billing_email;
+				$this->email = $this->order->billing_email;
 			}
 
 			// Customers cannot refer themselves
-			if ( $this->is_affiliate_email( $billing_email, $affiliate_id ) ) {
+			if ( $this->is_affiliate_email( $this->email, $affiliate_id ) ) {
 
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
