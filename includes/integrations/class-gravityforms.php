@@ -296,7 +296,7 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 
 		$settings['Form Options']['affwp_allow_referrals'] = '
 			<tr>
-				<th>' . __( 'Allow referrals', 'affiliate-wp' ) . '</th> .
+				<th>' . __( 'Allow referrals', 'affiliate-wp' ) . '</th>
 				<td>' .
 					'<p>' . $field . '</p>' . 
 					'<p>' . $field_type . '</p>' . 
