@@ -676,11 +676,6 @@ class Affiliate_WP_Settings {
 						'desc' => '',
 						'type' => 'header'
 					),
-					'registration_notifications' => array(
-						'name' => __( 'Notify Admin', 'affiliate-wp' ),
-						'desc' => __( 'Notify site admin of new affiliate registrations.', 'affiliate-wp' ),
-						'type' => 'checkbox'
-					),
 					'registration_subject' => array(
 						'name' => __( 'Registration Email Subject', 'affiliate-wp' ),
 						'desc' => __( 'Enter the subject line for the registration email sent to admins when new affiliates register.', 'affiliate-wp' ),
