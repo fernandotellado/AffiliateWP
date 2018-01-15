@@ -144,10 +144,10 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 		}
 
 		// get customer email
-		$customer_email = $this->get_field_value( 'email', $form );
+		$this->email = $this->get_field_value( 'email', $form );
 
 		// Customers cannot refer themselves
-		if ( $this->is_affiliate_email( $customer_email, $affiliate_id ) ) {
+		if ( $this->is_affiliate_email( $this->email, $affiliate_id ) ) {
 
 			$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
@@ -155,7 +155,7 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 		}
 
 		// Referral total
-		$referral_total = $args['referral_total'];
+		$referral_total = floatval( $args['referral_total'] );
 
 		// Use form title as description
 		$description = $form['name'];
@@ -201,8 +201,12 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 			// Get the newly created referral based on the process ID
 			$existing = affiliate_wp()->referrals->get_by( 'reference', $process_id, $this->context );
 
-			// Swap our the processs ID for the entry ID
-			affiliate_wp()->referrals->update( $existing->referral_id, array( 'reference' => $entry_id ) );
+			if( $existing ) {
+
+				// Swap our the processs ID for the entry ID
+				affiliate_wp()->referrals->update( $existing->referral_id, array( 'reference' => $entry_id ) );
+
+			}
 
 		}
 
