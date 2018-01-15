@@ -627,11 +627,6 @@ class Affiliate_WP_Settings {
 						'desc' => '',
 						'type' => 'header'
 					),
-					'disable_all_emails' => array(
-						'name' => __( 'Disable All Emails', 'affiliate-wp' ),
-						'desc' => __( 'Disable all email notifications.', 'affiliate-wp' ),
-						'type' => 'checkbox'
-					),
 					'email_notifications' => array(
 						'name' => __( 'Email Notifications', 'affiliate-wp' ),
 						'desc' => __( 'Select which email notifications should be sent.', 'affiliate-wp' ),
