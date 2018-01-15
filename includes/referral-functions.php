@@ -229,8 +229,11 @@ function affwp_add_referral( $data = array() ) {
 		'context'      => ! empty( $data['context'] )     ? sanitize_text_field( $data['context'] )     : '',
 		'custom'       => ! empty( $data['custom'] )      ? $data['custom']                             : '',
 		'date'         => ! empty( $data['date'] )        ? $data['date']                               : '',
+		'type'         => ! empty( $data['type'] )        ? $data['type']                               : '',
 		'status'       => 'pending',
 	);
+
+	
 
 	if ( ! empty( $data['visit_id'] ) && ! affiliate_wp()->referrals->get_by( 'visit_id', $data['visit_id'] ) ) {
 		$args['visit_id'] = absint( $data['visit_id'] );
