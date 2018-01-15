@@ -171,7 +171,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			$args['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
 		}
 
-		if( ! $this->types_registry->get_type( $args['type'] ) ) {
+		if( ! empty( $args['type'] ) && ! $this->types_registry->get_type( $args['type'] ) ) {
 			$args['type'] = 'sale';
 		}
 
