@@ -51,9 +51,9 @@ function affwp_process_add_affiliate( $data ) {
 		if( isset( $errors ) ) {
 
 			echo '<div class="error">';
-				foreach( $errors as $error ):
+				foreach( $errors as $error ) {
 					echo '<p>' . $error . '</p>';
-				endforeach;
+				}
 			echo '</div>';
 
 		}
