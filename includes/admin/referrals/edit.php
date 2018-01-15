@@ -144,12 +144,16 @@ $disabled = disabled( (bool) $payout, true, false );
 			<tr class="form-row form-required">
 
 				<th scope="row">
-					<label for="date"><?php _e( 'Type', 'affiliate-wp' ); ?></label>
+					<label for="type"><?php _e( 'Referral Type', 'affiliate-wp' ); ?></label>
 				</th>
 
 				<td>
-					<input type="text" name="type" id="type" value="<?php echo esc_attr( $referral->type() ); ?>" disabled="disabled" />
-					<p class="description"><?php _e( 'The referral type. This cannot be changed.', 'affiliate-wp' ); ?></p>
+					<select name="type" id="type">
+						<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+							<option value="<?php echo esc_attr( $type_id ); ?>"<?php selected( $type_id, $referral->type ); ?>><?php echo esc_html( $type['label'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php _e( 'Select the type of the referral.', 'affiliate-wp' ); ?></p>
 				</td>
 
 			</tr>
