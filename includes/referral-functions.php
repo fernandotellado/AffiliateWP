@@ -233,8 +233,6 @@ function affwp_add_referral( $data = array() ) {
 		'status'       => 'pending',
 	);
 
-	
-
 	if ( ! empty( $data['visit_id'] ) && ! affiliate_wp()->referrals->get_by( 'visit_id', $data['visit_id'] ) ) {
 		$args['visit_id'] = absint( $data['visit_id'] );
 	}
