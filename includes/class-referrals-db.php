@@ -231,7 +231,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		$args['reference']     = ! empty( $data['reference'] )     ? sanitize_text_field( $data['reference'] )   : '';
 		$args['type']          = ! empty( $data['type'] )          ? sanitize_text_field( $data['type'] )        : '';
 
-		if( empty( $args['type'] ) && ! $this->types_registry->get_type( $args['type'] ) ) {
+		if( ! empty( $args['type'] ) && ! $this->types_registry->get_type( $args['type'] ) ) {
 			$args['type'] = 'sale';
 		}
 
