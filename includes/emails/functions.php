@@ -231,11 +231,14 @@ function affwp_email_tag_campaign_name( $affiliate_id = 0, $referral ) {
  */
 function affwp_email_referral_notifications() {
 
+	$enabled = false;
+
 	if ( affwp_email_notification_enabled( 'affiliate_new_referral_email' ) ) {
-		return true;
+		$enabled = true;
 	}
 
-	return false;
+	return apply_filters( 'affwp_email_referral_notifications', $enabled );
+
 }
 
 /**
