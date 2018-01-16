@@ -193,7 +193,8 @@ class Affiliate_WP_Shortcodes {
 				'reference'   => '',
 				'context'     => '',
 				'campaign'    => '',
-				'status'      => ''
+				'status'      => '',
+				'type'        => 'sale',
 			),
 			$atts,
 			'affwp_conversion_script'
