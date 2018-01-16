@@ -147,6 +147,10 @@ class Affiliate_WP_Upgrades {
 			$this->v2131_upgrade();
 		}
 
+		if ( version_compare( $this->version, '2.2', '<' ) ) {
+			$this->v22_upgrade();
+		}
+
 		// Inconsistency between current and saved version.
 		if ( version_compare( $this->version, AFFILIATEWP_VERSION, '<>' ) ) {
 			$this->upgraded = true;
@@ -680,4 +684,16 @@ class Affiliate_WP_Upgrades {
 
 		$this->upgraded = true;
 	}
+
+	/**
+	 * Performs database upgrades for version 2.2.
+	 *
+	 * @access private
+	 * @since  2.2
+	 */
+	private function v22_upgrade() {
+		
+		$this->upgraded = true;
+	}
+
 }
