@@ -627,12 +627,6 @@ class Affiliate_WP_Settings {
 						'desc' => '',
 						'type' => 'header'
 					),
-					'email_notifications' => array(
-						'name' => __( 'Email Notifications', 'affiliate-wp' ),
-						'desc' => __( 'Select which email notifications should be enabled.', 'affiliate-wp' ),
-						'type' => 'multicheck',
-						'options' => $this->email_notifications()
-					),
 					'email_logo' => array(
 						'name' => __( 'Logo', 'affiliate-wp' ),
 						'desc' => __( 'Upload or choose a logo to be displayed at the top of emails.', 'affiliate-wp' ),
@@ -655,6 +649,12 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'The email address to send emails from. This will act as the "from" and "reply-to" address.', 'affiliate-wp' ),
 						'type' => 'text',
 						'std' => get_bloginfo( 'admin_email' )
+					),
+					'email_notifications' => array(
+						'name' => __( 'Email Notifications', 'affiliate-wp' ),
+						'desc' => __( 'Select which email notifications should be enabled.', 'affiliate-wp' ),
+						'type' => 'multicheck',
+						'options' => $this->email_notifications()
 					),
 					'registration_options_header' => array(
 						'name' => '<strong>' . __( 'Registration Email Options', 'affiliate-wp' ) . '</strong>',
