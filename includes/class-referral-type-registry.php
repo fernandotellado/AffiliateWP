@@ -55,6 +55,11 @@ class Registry extends Utils\Registry {
 			'label' => __( 'Opt-In', 'affiliate-wp' ),
 		) );
 
+		// Lead type
+		$this->register_type( 'lead', array(
+			'label' => __( 'Lead', 'affiliate-wp' ),
+		) );
+
 	}
 
 	/**
