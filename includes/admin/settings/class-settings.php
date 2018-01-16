@@ -673,6 +673,23 @@ class Affiliate_WP_Settings {
 						'type' => 'rich_editor',
 						'std' => sprintf( __( 'A new affiliate has registered on your site, %s', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Name: ', 'affiliate-wp' ) . "{name}\n\n{website}\n\n{promo_method}"
 					),
+					'new_admin_referral_options_header' => array(
+						'name' => '<strong>' . __( 'New Referral Admin Email Options', 'affiliate-wp' ) . '</strong>',
+						'desc' => '',
+						'type' => 'header'
+					),
+					'new_admin_referral_subject' => array(
+						'name' => __( 'New Referral Admin Email Subject', 'affiliate-wp' ),
+						'desc' => __( 'Enter the subject line for the email sent to site the site administrator when affiliates earn referrals.', 'affiliate-wp' ),
+						'type' => 'text',
+						'std' => __( 'Referral Earned!', 'affiliate-wp' )
+					),
+					'new_admin_referral_email' => array(
+						'name' => __( 'New Referral Admin Email Content', 'affiliate-wp' ),
+						'desc' => __( 'Enter the email to send to site administrators when new referrals are earned. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
+						'type' => 'rich_editor',
+						'std' => __( '{name} has been awarded a new referral of {amount} on {site_name}.', 'affiliate-wp' )
+					),
 					'accepted_options_header' => array(
 						'name' => '<strong>' . __( 'Application Accepted Email Options', 'affiliate-wp' ) . '</strong>',
 						'desc' => '',
@@ -706,23 +723,6 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Enter the email to send on new referrals. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
 						'type' => 'rich_editor',
 						'std' => __( 'Congratulations {name}!', 'affiliate-wp' ) . "\n\n" . __( 'You have been awarded a new referral of', 'affiliate-wp' ) . ' {amount} ' . sprintf( __( 'on %s!', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Log into your affiliate area to view your earnings or disable these notifications:', 'affiliate-wp' ) . ' {login_url}'
-					),
-					'new_admin_referral_options_header' => array(
-						'name' => '<strong>' . __( 'New Referral Admin Email Options', 'affiliate-wp' ) . '</strong>',
-						'desc' => '',
-						'type' => 'header'
-					),
-					'new_admin_referral_subject' => array(
-						'name' => __( 'New Referral Admin Email Subject', 'affiliate-wp' ),
-						'desc' => __( 'Enter the subject line for the email sent to site the site administrator when affiliates earn referrals.', 'affiliate-wp' ),
-						'type' => 'text',
-						'std' => __( 'Referral Earned!', 'affiliate-wp' )
-					),
-					'new_admin_referral_email' => array(
-						'name' => __( 'New Referral Admin Email Content', 'affiliate-wp' ),
-						'desc' => __( 'Enter the email to send to site administrators when new referrals are earned. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
-						'type' => 'rich_editor',
-						'std' => __( '{name} has been awarded a new referral of {amount} on {site_name}.', 'affiliate-wp' )
 					)
 				)
 			),
