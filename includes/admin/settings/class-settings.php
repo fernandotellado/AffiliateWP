@@ -858,9 +858,11 @@ class Affiliate_WP_Settings {
 	 * Email notifications
 	 *
 	 * @since 2.2
+	 * @param boolean $install Whether or not the install script has been run.
+	 * 
 	 * @return array $emails
 	 */
-	private function email_notifications() {
+	public function email_notifications( $install = false ) {
 
 		$emails = array(
 			'admin_affiliate_registration_email'   => __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' ),
@@ -869,7 +871,7 @@ class Affiliate_WP_Settings {
 			'affiliate_new_referral_email'         => __( 'Notify affiliates when they earn a new referral', 'affiliate-wp' ),
 		);
 
-		if ( affiliate_wp()->settings->get( 'require_approval' ) ) {
+		if ( affiliate_wp()->settings->get( 'require_approval' ) || true === $install ) {
 			$emails['affiliate_application_pending_email']  = __( 'Notify affiliates when their affiliate application is pending', 'affiliate-wp' );
 			$emails['affiliate_application_rejected_email'] = __( 'Notify affiliates when their affiliate application has been rejected', 'affiliate-wp' );
 		}
