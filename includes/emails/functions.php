@@ -251,11 +251,13 @@ function affwp_email_referral_notifications() {
  */
 function affwp_email_notification_enabled( $email_notification = '' ) {
 
+	$enabled = false;
+
 	if ( array_key_exists( $email_notification, affwp_get_enabled_email_notifications() ) ) {
-		return true;
+		$enabled = true;
 	}
 
-	return false;
+	return apply_filters( 'affwp_email_notification_enabled', $enabled, $email_notification );
 
 }
 
