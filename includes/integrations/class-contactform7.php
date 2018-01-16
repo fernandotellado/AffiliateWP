@@ -145,8 +145,30 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 				'name' => '<strong>' . __( 'Enable referrals for specific Contact Form 7 forms', 'affiliate-wp' ) . '</strong>',
 				'type' => 'multicheck',
 				'options' => $this->all_forms_multicheck_render()
-			)
+			),
 		);
+
+		$types = array();
+		foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) {
+			$types[ $type_id ] =  $type['label'];
+		}
+
+		$forms = $this->get_all_forms();
+		if( $forms ) {
+
+			foreach( $forms as $form_id => $title ) {
+
+				$settings[ 'contactform7' ][ 'cf7_referral_type_' . $form_id ] = array(
+					'name'     => sprintf( __( 'Referral type for %s (Form ID: %d)', 'affiliate-wp' ), $title, $form_id ),
+					'type'     => 'select',
+					'options'  => $types,
+					'selected' => affiliate_wp()->settings->get( 'cf7_referral_type_' . $form_id ) 
+				);
+
+			}
+			
+		}
+
 
 		return $settings;
 	}
@@ -411,10 +433,11 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 
 			}
 
-			$reference       = $form_id . '-' . date_i18n( 'U' );
-			$affiliate_id    = $this->get_affiliate_id( $reference );
-			$referral_total  = $this->calculate_referral_amount( $base_amount, $reference, $product_id, $affiliate_id );
-			$referral_id     = $this->insert_pending_referral( $referral_total, $reference, $description, $product_id );
+			$this->referral_type = affiliate_wp()->settings->get( 'cf7_referral_type_' . $form_id );
+			$reference           = $form_id . '-' . date_i18n( 'U' );
+			$affiliate_id        = $this->get_affiliate_id( $reference );
+			$referral_total      = $this->calculate_referral_amount( $base_amount, $reference, $product_id, $affiliate_id );
+			$referral_id         = $this->insert_pending_referral( $referral_total, $reference, $description, $product_id );
 
 			if ( empty( $referral_total ) ) {
 				$this->complete_referral( $reference );
