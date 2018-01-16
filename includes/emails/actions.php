@@ -82,7 +82,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
  */
 function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
-	if ( ! affwp_email_enabled( 'affiliate_application_accepted_email' ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_accepted_email' ) ) {
 		return;
 	}
 
@@ -154,7 +154,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
  */
 function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $status = '', $args ) {
 
-	if ( ! affwp_email_enabled( 'affiliate_application_pending_email' ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_pending_email' ) ) {
 		return;
 	}
 
@@ -197,7 +197,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_regis
  */
 function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
-	if ( ! affwp_email_enabled( 'affiliate_application_rejected_email' ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_rejected_email' ) ) {
 		return;
 	}
 
@@ -237,7 +237,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_re
  */
 function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
-	if ( ! affwp_email_enabled( 'affiliate_new_referral_email' ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_new_referral_email' ) ) {
 		return;
 	}
 
