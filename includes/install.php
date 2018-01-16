@@ -44,7 +44,8 @@ function affiliate_wp_install() {
 			'required_registration_fields' => array(
 				'your_name'   => __( 'Your Name', 'affiliate-wp' ),
 				'website_url' => __( 'Website URL', 'affiliate-wp' )
-			)
+			),
+			'email_notifications' => affiliate_wp()->settings->email_notifications( true )
 		), $save = true );
 
 	}
