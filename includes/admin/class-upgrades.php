@@ -711,13 +711,19 @@ class Affiliate_WP_Upgrades {
 			$email_notifications = array();
 		}
 
-		// Uncheck the new admin affiliate registration email if it was previously unchecked.
-		if ( ! affiliate_wp()->settings->get( $registration_notifications ) ) {
+		// Enable the new admin affiliate registration email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $registration_notifications ) ) {
+			$email_notifications['admin_affiliate_registration_email'] = __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin affiliate registration email if it was previously unchecked.
 			unset( $email_notifications['admin_affiliate_registration_email'] );
 		}
 
-		// Uncheck the new admin referral notification email if it was previously unchecked.
-		if ( ! affiliate_wp()->settings->get( $admin_referral_notifications ) ) {
+		// Enable the new admin referral notification email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $admin_referral_notifications ) ) {
+			$email_notifications['admin_new_referral_email'] = __( 'Notify site admin when new referrals are earned', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin referral notification email if it was previously unchecked.
 			unset( $email_notifications['admin_new_referral_email'] );
 		}
 
