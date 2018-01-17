@@ -692,8 +692,32 @@ class Affiliate_WP_Upgrades {
 	 * @since  2.2
 	 */
 	private function v22_upgrade() {
+
+		/**
+		 * If "Disable All Emails" checkbox option was previously enabled, 
+		 * clear out the email notification array, essentially disabling all notifications.
+		 */
+		if ( affiliate_wp()->settings->get( 'disable_all_emails' ) ) {
+			@affiliate_wp()->settings->set( array(
+				'email_notifications' => array(),
+			), $save = true );
+		}
+
+		// Get all settings.
+		$settings = affiliate_wp()->settings->get_all();
+
+		// Remove old "Disable All Emails" option.
+		if ( isset( $settings['disable_all_emails'] ) ) {
+			unset( $settings['disable_all_emails'] );
+		}
 		
+		/**
+		 * Update affwp_settings option.
+		 */
+		update_option( 'affwp_settings', $settings );
+
 		$this->upgraded = true;
+		
 	}
 
 }
