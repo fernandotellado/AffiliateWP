@@ -698,10 +698,28 @@ class Affiliate_WP_Upgrades {
 		 * clear out the email notification array, essentially disabling all notifications.
 		 */
 		if ( affiliate_wp()->settings->get( 'disable_all_emails' ) ) {
-			@affiliate_wp()->settings->set( array(
-				'email_notifications' => array(),
-			), $save = true );
+			
+			$email_notifications = array();
+
+		} else {
+
+			$email_notifications = array();
+
+			if ( affiliate_wp()->settings->get( 'registration_notifications' ) ) {
+				$email_notifications['admin_affiliate_registration_email'] = __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' );
+			}
+	
+			if ( affiliate_wp()->settings->get( 'admin_referral_notifications' ) ) {
+				$email_notifications['admin_new_referral_email'] = __( 'Notify site admin when new referrals are earned', 'affiliate-wp' );
+			}
+	
 		}
+
+		// Make the required changes to the Email Notifications.
+		@affiliate_wp()->settings->set( array(
+			'email_notifications' => $email_notifications
+		), $save = true );
+
 
 		// Get all settings.
 		$settings = affiliate_wp()->settings->get_all();
@@ -709,6 +727,16 @@ class Affiliate_WP_Upgrades {
 		// Remove old "Disable All Emails" option.
 		if ( isset( $settings['disable_all_emails'] ) ) {
 			unset( $settings['disable_all_emails'] );
+		}
+
+		// Remove old
+		if ( isset( $settings['registration_notifications'] ) ) {
+			unset( $settings['registration_notifications'] );
+		}
+
+		// Remove old
+		if ( isset( $settings['admin_referral_notifications'] ) ) {
+			unset( $settings['admin_referral_notifications'] );
 		}
 		
 		/**
