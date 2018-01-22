@@ -872,8 +872,8 @@ class Affiliate_WP_Settings {
 		);
 
 		if ( affiliate_wp()->settings->get( 'require_approval' ) || true === $install ) {
-			$emails['affiliate_application_pending_email']  = __( 'Notify affiliates when their affiliate application is pending', 'affiliate-wp' );
-			$emails['affiliate_application_rejected_email'] = __( 'Notify affiliates when their affiliate application has been rejected', 'affiliate-wp' );
+			$emails['affiliate_application_pending_email']  = __( 'Notify affiliate when their affiliate application is pending', 'affiliate-wp' );
+			$emails['affiliate_application_rejected_email'] = __( 'Notify affiliate when their affiliate application has been rejected', 'affiliate-wp' );
 		}
 
 		return $emails;
