@@ -690,23 +690,6 @@ class Affiliate_WP_Settings {
 						'type' => 'rich_editor',
 						'std' => __( '{name} has been awarded a new referral of {amount} on {site_name}.', 'affiliate-wp' )
 					),
-					'accepted_options_header' => array(
-						'name' => '<strong>' . __( 'Application Accepted Email Options', 'affiliate-wp' ) . '</strong>',
-						'desc' => '',
-						'type' => 'header'
-					),
-					'accepted_subject' => array(
-						'name' => __( 'Application Accepted Email Subject', 'affiliate-wp' ),
-						'desc' => __( 'Enter the subject line for accepted application emails sent to affiliates when their account is approved.', 'affiliate-wp' ),
-						'type' => 'text',
-						'std' => __( 'Affiliate Application Accepted', 'affiliate-wp' )
-					),
-					'accepted_email' => array(
-						'name' => __( 'Application Accepted Email Content', 'affiliate-wp' ),
-						'desc' => __( 'Enter the email to send when an application is accepted. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
-						'type' => 'rich_editor',
-						'std' => __( 'Congratulations {name}!', 'affiliate-wp' ) . "\n\n" . sprintf( __( 'Your affiliate application on %s has been accepted!', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Log into your affiliate area at', 'affiliate-wp' ) . ' {login_url}'
-					),
 					'new_referral_options_header' => array(
 						'name' => '<strong>' . __( 'New Referral Email Options', 'affiliate-wp' ) . '</strong>',
 						'desc' => '',
@@ -723,6 +706,23 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Enter the email to send on new referrals. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
 						'type' => 'rich_editor',
 						'std' => __( 'Congratulations {name}!', 'affiliate-wp' ) . "\n\n" . __( 'You have been awarded a new referral of', 'affiliate-wp' ) . ' {amount} ' . sprintf( __( 'on %s!', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Log into your affiliate area to view your earnings or disable these notifications:', 'affiliate-wp' ) . ' {login_url}'
+					),
+					'accepted_options_header' => array(
+						'name' => '<strong>' . __( 'Application Accepted Email Options', 'affiliate-wp' ) . '</strong>',
+						'desc' => '',
+						'type' => 'header'
+					),
+					'accepted_subject' => array(
+						'name' => __( 'Application Accepted Email Subject', 'affiliate-wp' ),
+						'desc' => __( 'Enter the subject line for accepted application emails sent to affiliates when their account is approved.', 'affiliate-wp' ),
+						'type' => 'text',
+						'std' => __( 'Affiliate Application Accepted', 'affiliate-wp' )
+					),
+					'accepted_email' => array(
+						'name' => __( 'Application Accepted Email Content', 'affiliate-wp' ),
+						'desc' => __( 'Enter the email to send when an application is accepted. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
+						'type' => 'rich_editor',
+						'std' => __( 'Congratulations {name}!', 'affiliate-wp' ) . "\n\n" . sprintf( __( 'Your affiliate application on %s has been accepted!', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Log into your affiliate area at', 'affiliate-wp' ) . ' {login_url}'
 					)
 				)
 			),
