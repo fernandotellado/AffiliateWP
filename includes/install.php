@@ -32,7 +32,7 @@ function affiliate_wp_install() {
 		$affiliates_page = affiliate_wp()->settings->get( 'affiliates_page' );
 
 		// Check that the page exists.
-		$affiliates_page = isset( $affiliates_page ) ? get_post( $affiliates_page ) : false;
+		$affiliates_page = ! empty( $affiliates_page ) ? get_post( $affiliates_page ) : false;
 
 		// Create the Affiliate Area page if it doesn't exist.
 		if ( empty( $affiliates_page ) ) {
