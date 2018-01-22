@@ -735,24 +735,22 @@ class Affiliate_WP_Upgrades {
 		// Get all settings.
 		$settings = affiliate_wp()->settings->get_all();
 
-		// Remove old "Disable All Emails" option.
+		// Remove old "Disable All Emails" setting.
 		if ( isset( $settings[$disable_all_emails] ) ) {
 			unset( $settings[$disable_all_emails] );
 		}
 
-		// Remove old
+		// Remove old "Notify Admin" setting.
 		if ( isset( $settings[$registration_notifications] ) ) {
 			unset( $settings[$registration_notifications] );
 		}
 
-		// Remove old
+		// Remove old "Notify Admin of Referrals" setting.
 		if ( isset( $settings[$admin_referral_notifications] ) ) {
 			unset( $settings[$admin_referral_notifications] );
 		}
-		
-		/**
-		 * Update affwp_settings option.
-		 */
+
+		// Update affwp_settings option.
 		update_option( 'affwp_settings', $settings );
 
 		$this->upgraded = true;
