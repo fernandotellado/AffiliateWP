@@ -226,18 +226,19 @@ function affwp_email_tag_campaign_name( $affiliate_id = 0, $referral ) {
  *
  * @since 2.2
  * @uses affwp_email_notification_enabled()
+ * @param int $affiliate_id The affiliate's ID
  *
  * @return boolean True if new referral notifications are enabled, false otherwise.
  */
-function affwp_email_referral_notifications() {
+function affwp_email_referral_notifications( $affiliate_id = 0 ) {
 
 	$enabled = false;
 
-	if ( affwp_email_notification_enabled( 'affiliate_new_referral_email' ) ) {
+	if ( true === affwp_email_notification_enabled( 'affiliate_new_referral_email', $affiliate_id ) ) {
 		$enabled = true;
 	}
 
-	return apply_filters( 'affwp_email_referral_notifications', $enabled );
+	return (bool) $enabled;
 
 }
 
@@ -246,10 +247,11 @@ function affwp_email_referral_notifications() {
  *
  * @since 2.2
  * @param string $email_notification The email notification to check.
+ * @param int $affiliate_id The affiliate's ID
  * 
  * @return boolean True if the email notification is enabled, false otherwise.
  */
-function affwp_email_notification_enabled( $email_notification = '' ) {
+function affwp_email_notification_enabled( $email_notification = '', $affiliate_id = 0 ) {
 
 	$enabled = false;
 
@@ -257,7 +259,7 @@ function affwp_email_notification_enabled( $email_notification = '' ) {
 		$enabled = true;
 	}
 
-	return apply_filters( 'affwp_email_notification_enabled', $enabled, $email_notification );
+	return (bool) apply_filters( 'affwp_email_notification_enabled', $enabled, $email_notification, $affiliate_id );
 
 }
 
