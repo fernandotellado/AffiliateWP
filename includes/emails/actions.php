@@ -237,7 +237,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_re
  */
 function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
-	if ( ! affwp_email_notification_enabled( 'affiliate_new_referral_email' ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_new_referral_email', $affiliate_id ) ) {
 		return;
 	}
 
@@ -301,7 +301,7 @@ function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
 		return;
 	}
 
-	$send = affwp_email_notification_enabled( 'admin_new_referral_email' );
+	$send = affwp_email_notification_enabled( 'admin_new_referral_email', $affiliate_id );
 
 	/**
 	 * Filters whether to notify admins when a new referral is generated.
