@@ -22,7 +22,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
  */
 function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = array() ) {
 
-	if( ! affiliate_wp()->settings->get( 'registration_notifications' ) ) {
+	if ( ! affwp_email_notification_enabled( 'admin_affiliate_registration_email' ) ) {
 		return;
 	}
 
