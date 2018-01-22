@@ -866,9 +866,9 @@ class Affiliate_WP_Settings {
 
 		$emails = array(
 			'admin_affiliate_registration_email'   => __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' ),
-			'admin_new_referral_email'             => __( 'Notify site admin when new referrals are earned', 'affiliate-wp' ),
-			'affiliate_application_accepted_email' => __( 'Notify affiliates when their affiliate application has been accepted', 'affiliate-wp' ),
-			'affiliate_new_referral_email'         => __( 'Notify affiliates when they earn a new referral', 'affiliate-wp' ),
+			'admin_new_referral_email'             => __( 'Notify site admin when a new referral has been created', 'affiliate-wp' ),
+			'affiliate_application_accepted_email' => __( 'Notify affiliate when their affiliate application is accepted', 'affiliate-wp' ),
+			'affiliate_new_referral_email'         => __( 'Notify affiliate when they earn a new referral', 'affiliate-wp' ),
 		);
 
 		if ( affiliate_wp()->settings->get( 'require_approval' ) || true === $install ) {
