@@ -610,7 +610,25 @@ class Affiliate_WP_Settings {
 						'desc' => sprintf( __( 'Choose the integrations to enable. If you are not using any of these, you may use the <strong>[affiliate_conversion_script]</strong> shortcode to track and create referrals. Refer to the <a href="%s" target="_blank">documentation</a> for help using this.', 'affiliate-wp' ), 'http://docs.affiliatewp.com/article/66-generic-referral-tracking-script' ),
 						'type' => 'multicheck',
 						'options' => affiliate_wp()->integrations->get_integrations()
+					),
+				)
+			),
+			/** Opt-In Settings */
+
+			/**
+			 * Filters the default opt-in settings.
+			 *
+			 * @param array $integrations The enabled integrations. Defaults to `affiliate_wp()->integrations->opt_in->platforms`.
+			 */
+			'opt_in_forms' => apply_filters( 'affwp_settings_opt_in_forms',
+				array(
+					'opt_in_platform' => array(
+						'name' => __( 'Platform', 'affiliate-wp' ),
+						'desc' => __( 'Select the opt-in platform provider you wish to use then click Save Changes to configure the settings. The opt-in form can be displayed on any page using the [opt_in] shortcode. <a href="http://docs.affiliatewp.com">Learn more</a>.', 'affiliate-wp' ),
+						'type' => 'select',
+						'options' => array_merge( array( '' => __( '(select one)', 'affiliate-wp' ) ), affiliate_wp()->integrations->opt_in->platforms )
 					)
+					// Individual platform settings are registered through their platform classes in includes/integrations/opt-in-platforms/
 				)
 			),
 			/** Email Settings */
