@@ -16,7 +16,7 @@ $payment_email          = affwp_get_affiliate_payment_email( $affiliate_id, $use
 			<input id="affwp-payment-email" type="email" name="payment_email" value="<?php echo esc_attr( $payment_email ); ?>" />
 		</div>
 
-		<?php if ( true === affwp_email_referral_notifications( absint( $affiliate_id ) ) ) : ?>
+		<?php if ( affwp_email_referral_notifications( absint( $affiliate_id ) ) ) : ?>
 		<div class="affwp-wrap affwp-send-notifications-wrap">
 			<input id="affwp-referral-notifications" type="checkbox" name="referral_notifications" value="1" <?php checked( true, get_user_meta( $affiliate_user_id, 'affwp_referral_notifications', true ) ); ?>/>
 			<label for="affwp-referral-notifications"><?php _e( 'Enable New Referral Notifications', 'affiliate-wp' ); ?></label>
