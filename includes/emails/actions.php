@@ -301,7 +301,7 @@ function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
 		return;
 	}
 
-	$send = (bool) affiliate_wp()->settings->get( 'admin_referral_notifications', false );
+	$send = affwp_email_notification_enabled( 'admin_new_referral_email' );
 
 	/**
 	 * Filters whether to notify admins when a new referral is generated.
