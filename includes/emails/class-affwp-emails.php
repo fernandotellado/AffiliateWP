@@ -540,8 +540,10 @@ class Affiliate_WP_Emails {
 
 		$disabled = false;
 
+		$enabled_email_notifications = affwp_get_enabled_email_notifications();
+
 		// Emails are deemed disabled if no notifications are enabled.
-		if ( empty( affwp_get_enabled_email_notifications() ) ) {
+		if ( empty( $enabled_email_notifications ) ) {
 			$disabled = true;
 		}
 
