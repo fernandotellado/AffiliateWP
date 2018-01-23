@@ -16,12 +16,13 @@ class MailChimp extends Opt_In\Platform {
 		$this->platform_id = 'mailchimp';
 		$this->api_key     = affiliate_wp()->settings->get( 'mailchimp_api_key' );
 		$this->list_id     = affiliate_wp()->settings->get( 'mailchimp_list_id' );
+		$data_center       = 'us4';
 
 		if( ! empty( $this->api_key ) ) {
 			$data_center   = substr( $this->api_key, strpos( $this->api_key, '-' ) + 1 );
 		}
 
-		$this->api_url     = 'https://' . $data_center . '.api.mailchimp.com/3.0/lists/' . $this->list_id . '/members/';	
+		$this->api_url     = 'https://' . $data_center . '.api.mailchimp.com/3.0/lists/' . $this->list_id . '/members/';
 	}
 
 	public function subscribe_contact() {
@@ -60,4 +61,4 @@ class MailChimp extends Opt_In\Platform {
 		return $settings;
 	}
 
-}	
+}
