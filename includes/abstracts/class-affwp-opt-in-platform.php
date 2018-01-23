@@ -17,7 +17,7 @@ abstract class Platform {
 	 * @var    string
 	 */
 	public $platform_id = '';
-	
+
 	/**
 	 * Contact details to be subscribed to the platform.
 	 * @param array  $contact {
@@ -59,7 +59,7 @@ abstract class Platform {
 	 * @var    string
 	 */
 	protected $api_key = '';
-	
+
 	/**
 	 * API request URL for the  platform.
 	 *
@@ -68,6 +68,15 @@ abstract class Platform {
 	 * @var    string
 	 */
 	protected $api_url = '';
+
+	/**
+	 * Flag to determine if API data should be sent in JSON
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    bool
+	 */
+	public $json = true;
 
 	public function __construct() {
 
@@ -103,6 +112,10 @@ abstract class Platform {
 			'body'        => apply_filters( 'affwp_opt_in_platform_subscribe_args', $body, $this ),
 		);
 
+		if( $this->json ) {
+			$args['body'] = json_encode( $args['body'] );
+		}
+
 		$request = wp_remote_post( $url, $args );
 
 		if( is_wp_error( $request ) ) {
@@ -129,4 +142,4 @@ abstract class Platform {
 		$this->errors[ $error_id ] = $message;
 	}
 
-}	
+}
