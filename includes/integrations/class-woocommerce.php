@@ -969,7 +969,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			if( $referral ) {
 				echo '<a href="' . affwp_admin_url( 'referrals', array( 'referral_id' => $referral->referral_id, 'action' => 'edit_referral' ) ) . '">#' . $referral->referral_id . '</a>';
 			} else {
-				echo '<span class="na">–</span>';
+				echo '<span aria-hidden="true">&mdash;</span>';
 			}
 
 		}
