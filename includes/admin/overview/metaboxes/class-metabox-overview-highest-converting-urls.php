@@ -43,10 +43,22 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 	 */
 	public function content() {
 
-		$referrers = affiliate_wp()->visits->get_visits( array(
-			'number'       => -1,
-			'fields'       => array( 'referrer', 'referral_id' )
-		) ); ?>
+		global $wpdb;
+
+		$prefix  = ( defined( 'AFFILIATE_WP_NETWORK_WIDE' ) && AFFILIATE_WP_NETWORK_WIDE ) ? null : $wpdb->prefix;
+
+		$cache_key = md5( 'affwp_visits_highest_converting_urls' );
+
+		$referrers = wp_cache_get( $cache_key, 'visits' );
+
+		if ( false === $referrers ) {
+
+			$referrers = $wpdb->get_results( "SELECT referrer FROM {$prefix}affiliate_wp_visits WHERE referral_id  > ''" );
+
+			$referrers = wp_list_pluck( $referrers, 'referrer' );
+		}
+
+		wp_cache_add( $cache_key, $referrers, 'visits', HOUR_IN_SECONDS ); ?>
 
 		<table class="affwp_table">
 
@@ -63,12 +75,6 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 				<?php if( $referrers ) : ?>
 
 					<?php
-
-						$referrers = array_filter( $referrers, function( $referrer ) {
-						    return ! empty( $referrer->referral_id );
-						});
-
-						$referrers = wp_list_pluck( array_values( $referrers ), 'referrer' );
 
 						$referrers = array_count_values( array_map( function( $referrer ) {
 							if ( empty( $referrer ) ) {
