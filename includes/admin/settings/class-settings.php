@@ -657,18 +657,18 @@ class Affiliate_WP_Settings {
 						'options' => $this->email_notifications()
 					),
 					'registration_options_header' => array(
-						'name' => '<strong>' . __( 'Registration Email Options', 'affiliate-wp' ) . '</strong>',
+						'name' => '<strong>' . __( 'Registration Email Admin Options', 'affiliate-wp' ) . '</strong>',
 						'desc' => '',
 						'type' => 'header'
 					),
 					'registration_subject' => array(
-						'name' => __( 'Registration Email Subject', 'affiliate-wp' ),
+						'name' => __( 'Registration Email Admin Subject', 'affiliate-wp' ),
 						'desc' => __( 'Enter the subject line for the registration email sent to admins when new affiliates register.', 'affiliate-wp' ),
 						'type' => 'text',
 						'std' => __( 'New Affiliate Registration', 'affiliate-wp' )
 					),
 					'registration_email' => array(
-						'name' => __( 'Registration Email Content', 'affiliate-wp' ),
+						'name' => __( 'Registration Email Admin Content', 'affiliate-wp' ),
 						'desc' => __( 'Enter the email to send when a new affiliate registers. HTML is accepted. Available template tags:', 'affiliate-wp' ) . '<br />' . $emails_tags_list,
 						'type' => 'rich_editor',
 						'std' => sprintf( __( 'A new affiliate has registered on your site, %s', 'affiliate-wp' ), home_url() ) . "\n\n" . __( 'Name: ', 'affiliate-wp' ) . "{name}\n\n{website}\n\n{promo_method}"
