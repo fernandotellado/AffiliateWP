@@ -78,6 +78,11 @@ abstract class Platform {
 	 */
 	public $json = true;
 
+	/**
+	 * @access public
+	 * @since  2.2
+	 * @return void
+	 */
 	public function __construct() {
 
 		add_filter( 'affwp_settings_opt_in_forms', array( $this, 'settings' ) );
@@ -85,13 +90,42 @@ abstract class Platform {
 		$this->init();
 	}
 
+	/**
+	 * Get things started. This is where public properties should be defined if needed. 
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return void
+	 */
 	public function init() {}
 
+	/**
+	 * Setup the API call to the platform to subscribe a contact
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return WP_Error|array
+	 */
 	public function subscribe_contact() {}
+	
+	/**
+	 * Setup settings for the platform
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array
+	 */
 	public function settings( $settings ) {
 		return $settings;
 	}
 
+	/**
+	 * Call platform API URL with specified parameters
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return WP_Error|array
+	 */
 	protected function call_api( $url = '', $body = array(), $headers = array() ) {
 
 		if( empty( $url ) ) {
