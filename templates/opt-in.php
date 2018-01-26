@@ -1,7 +1,10 @@
 <?php
 global $affwp_opt_in_redirect;
 affiliate_wp()->integrations->opt_in->print_errors();
-?>
+
+if ( isset( $_GET['affwp-notice'] ) && 'opted-in' == $_GET['affwp-notice'] ) : ?>
+	<p class="affwp-notice"><?php _e( 'You have subscribed successfully.', 'affiliate-wp' ); ?></p>
+<?php endif ?>
 
 <form id="affwp-opt-in-form" class="affwp-form" action="" method="post">
 	<?php do_action( 'affwp_affiliate_opt_in_form_top' ); ?>

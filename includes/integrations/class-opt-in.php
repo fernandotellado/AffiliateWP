@@ -121,7 +121,7 @@ class Opt_In {
 				'last_name'  => $data['affwp_last_name']
 			);
 
-			$this->subscribe_contact();
+			$result = $this->subscribe_contact();
 
 			if( empty( $this->errors ) ) {
 
@@ -144,7 +144,7 @@ class Opt_In {
 				do_action( 'affwp_opt_in_success', $this, $referral_id );
 
 				$redirect = empty( $data['affwp_redirect'] ) ? affiliate_wp()->tracking->get_current_page_url() : $data['affwp_redirect'];
-
+				$redirect = add_query_arg( 'affwp-notice', 'opted-in', $redirect );
 				$redirect = apply_filters( 'affwp_opt_in_redirect', $redirect );
 
 				if ( $redirect ) {
