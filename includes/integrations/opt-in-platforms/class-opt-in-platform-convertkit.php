@@ -16,15 +16,15 @@ class ConvertKit extends Opt_In\Platform {
 		$this->platform_id = 'convertkit';
 		$this->api_key     = affiliate_wp()->settings->get( 'convertkit_api_key' );
 		$this->list_id     = affiliate_wp()->settings->get( 'convertkit_list_id' );
-		$this->api_url     = 'https://api.convertkit.com/v3/forms/' . $this->list_id . '/subscribe';	
+		$this->api_url     = 'https://api.convertkit.com/v3/forms/' . $this->list_id . '/subscribe?api_key=' . $this->api_key;
+		$this->json        = false;	
 	}
 
 	public function subscribe_contact() {
 
 		$body = array(
-			'api_key'       => $this->api_key,
 			'email'         => $this->contact['email'],
-		    'first_name'    => $this->contact['first_name'],
+			'first_name'    => $this->contact['first_name'],
 			'fields'        => array(
 		    	'last_name' => $this->contact['last_name']
 			)
