@@ -130,7 +130,7 @@ function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status 
 	
 	if ( ! is_wp_error( $key ) && ! empty( $_POST['user_email'] ) ) {
 		$message .= __( 'To set your password, visit the following address:', 'affiliate-wp' ) . "\r\n\r\n";
-		$message .= '' . network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n";
+		$message .= network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n";
 	}
 	
 	/**
