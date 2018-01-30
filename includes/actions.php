@@ -59,6 +59,10 @@ function affwp_remove_query_args( $query_args ) {
 
 	$query_args[] = 'affwp_notice';
 
+	if ( isset( $_GET['register_affiliate'] ) ) {
+		$query_args[] = 'register_affiliate';
+	}
+	
 	return $query_args;
 }
 add_filter( 'removable_query_args', 'affwp_remove_query_args' );
