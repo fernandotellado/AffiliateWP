@@ -546,8 +546,9 @@ class Affiliate_WP_Tracking {
 			if ( false !== strpos( $path, $this->get_referral_var() . '/' ) ) {
 
 				$pieces = explode( '/', str_replace( '?', '/', $path ) );
-				$pieces = array_map( 'sanitize_key', $pieces );
 				$key    = array_search( $this->get_referral_var(), $pieces );
+
+				$pieces[ $key + 1 ] = strtolower( sanitize_user( $pieces[ $key + 1 ] ) );
 
 				if ( $key ) {
 
