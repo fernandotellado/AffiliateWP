@@ -72,7 +72,7 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 			</thead>
 
 			<tbody>
-				<?php if( $urls ) : ?>
+				<?php if ( $urls ) : ?>
 
 					<?php
 
@@ -94,11 +94,11 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 
 					?>
 
-					<?php if( $urls ) : ?>
+					<?php if ( $urls ) : ?>
 						<?php foreach( $urls as $url => $conversions ) : ?>
 							<tr>
 								<td>
-									<?php if( 'direct' == $url ): ?>
+									<?php if ( 'direct' == $url ): ?>
 
 										<?php _e( 'Direct traffic', 'affiliate-wp' ); ?>
 
