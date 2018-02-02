@@ -376,7 +376,7 @@ jQuery(document).ready( function($) {
 	 * - $.cookie( 'some_cookie', ...) = cookie domain: host.tld
 	 * - $.cookie ('some_cookie', ... domain: 'host.tld' ) = .host.tld
 	 *
-	 * @since 2.x.x
+	 * @since 2.1.10
 	 *
 	 * @param {string} name cookie name, e.g. affwp_ref
 	 * @param {string} value cookie value
