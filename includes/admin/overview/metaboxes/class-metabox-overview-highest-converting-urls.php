@@ -49,16 +49,16 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 
 		$cache_key = md5( 'affwp_visits_highest_converting_urls' );
 
-		$referrers = wp_cache_get( $cache_key, 'visits' );
+		$urls = wp_cache_get( $cache_key, 'visits' );
 
-		if ( false === $referrers ) {
+		if ( false === $urls ) {
 
-			$referrers = $wpdb->get_results( "SELECT referrer FROM {$prefix}affiliate_wp_visits WHERE referral_id  > ''" );
+			$urls = $wpdb->get_results( "SELECT url FROM {$prefix}affiliate_wp_visits WHERE referral_id  > ''" );
 
-			$referrers = wp_list_pluck( $referrers, 'referrer' );
+			$urls = wp_list_pluck( $urls, 'url' );
 		}
 
-		wp_cache_add( $cache_key, $referrers, 'visits', HOUR_IN_SECONDS ); ?>
+		wp_cache_add( $cache_key, $urls, 'visits', HOUR_IN_SECONDS ); ?>
 
 		<table class="affwp_table">
 
@@ -72,18 +72,13 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 			</thead>
 
 			<tbody>
-				<?php if( $referrers ) : ?>
+				<?php if( $urls ) : ?>
 
 					<?php
 
-						$referrers = array_count_values( array_map( function( $referrer ) {
-							if ( empty( $referrer ) ) {
-								$referrer = 'direct';
-							}
-							return $referrer;
-						}, $referrers ) );
+						$urls = array_count_values( $urls );
 
-						arsort( $referrers );
+						arsort( $urls );
 
 						/**
 						 * Filters the number of highest converting urls to display
@@ -95,12 +90,12 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 						 */
 						$count = apply_filters( 'affwp_overview_highest_converting_urls_count', 5 );
 
-						$referrers = array_slice( $referrers, 0, $count, true );
+						$urls = array_slice( $urls, 0, $count, true );
 
 					?>
 
-					<?php if( $referrers ) : ?>
-						<?php foreach( $referrers as $url => $conversions ) : ?>
+					<?php if( $urls ) : ?>
+						<?php foreach( $urls as $url => $conversions ) : ?>
 							<tr>
 								<td>
 									<?php if( 'direct' == $url ): ?>
