@@ -652,7 +652,7 @@ class Affiliate_WP_Settings {
 					),
 					'email_notifications' => array(
 						'name' => __( 'Email Notifications', 'affiliate-wp' ),
-						'desc' => __( 'Select which email notifications should be enabled.', 'affiliate-wp' ),
+						'desc' => __( 'The email notifications sent to the admin and affiliate.', 'affiliate-wp' ),
 						'type' => 'multicheck',
 						'options' => $this->email_notifications()
 					),
