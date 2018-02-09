@@ -96,6 +96,8 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			
 			if ( $rate ) {
 				update_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', $rate );
+			} else {
+				delete_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate' );
 			}
 
 		} 
