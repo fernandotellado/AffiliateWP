@@ -53,7 +53,7 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 
 		if ( false === $urls ) {
 
-			$urls = $wpdb->get_results( "SELECT url FROM {$prefix}affiliate_wp_visits WHERE referral_id  > ''" );
+			$urls = $wpdb->get_results( "SELECT url FROM {$prefix}affiliate_wp_visits WHERE referral_id  > '' ORDER BY visit_id DESC LIMIT 10000" );
 
 			$urls = wp_list_pluck( $urls, 'url' );
 		}
