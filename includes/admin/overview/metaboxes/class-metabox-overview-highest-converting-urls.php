@@ -61,7 +61,7 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 			</thead>
 
 			<tbody>
-				<?php if ( $urls ) : ?>
+				<?php if ( ! empty( $urls ) ) : ?>
 
 					<?php
 
