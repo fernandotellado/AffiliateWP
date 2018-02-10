@@ -26,7 +26,7 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 	 *
 	 * @access  public
 	 * @return  void
-	 * @since   1.9
+	 * @since   2.1.12
 	 */
 	public function init() {
 		$this->action        = 'affwp_overview_meta_boxes';
@@ -39,26 +39,15 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 	 * Defines the content of the metabox.
 	 *
 	 * @return mixed content  The metabox content.
-	 * @since  1.9
+	 * @since  2.1.12
 	 */
 	public function content() {
 
-		global $wpdb;
-
-		$prefix  = ( defined( 'AFFILIATE_WP_NETWORK_WIDE' ) && AFFILIATE_WP_NETWORK_WIDE ) ? null : $wpdb->prefix;
-
-		$cache_key = md5( 'affwp_visits_highest_converting_urls' );
-
-		$urls = wp_cache_get( $cache_key, 'visits' );
-
-		if ( false === $urls ) {
-
-			$urls = $wpdb->get_results( "SELECT url FROM {$prefix}affiliate_wp_visits WHERE referral_id  > '' ORDER BY visit_id DESC LIMIT 10000" );
-
-			$urls = wp_list_pluck( $urls, 'url' );
-		}
-
-		wp_cache_add( $cache_key, $urls, 'visits', HOUR_IN_SECONDS ); ?>
+		$urls = affiliate_wp()->visits->get_visits( array(
+			'number'          => 10000,
+			'referral_status' => 'converted',
+			'fields'          => 'url',
+		) ); ?>
 
 		<table class="affwp_table">
 
@@ -88,38 +77,32 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 						 * @param integer $count The number of highest converting urls to display
 						 *
 						 */
-						$count = apply_filters( 'affwp_overview_highest_converting_urls_count', 5 );
+						$count = (int) apply_filters( 'affwp_overview_highest_converting_urls_count', 5 );
 
 						$urls = array_slice( $urls, 0, $count, true );
 
 					?>
 
-					<?php if ( $urls ) : ?>
+					<?php if ( ! empty( $urls ) ) : ?>
 						<?php foreach( $urls as $url => $conversions ) : ?>
 							<tr>
 								<td>
-									<?php if ( 'direct' == $url ): ?>
-
-										<?php _e( 'Direct traffic', 'affiliate-wp' ); ?>
-
-									<?php else: ?>
-
-										<a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $url ); ?></a>
-
-									<?php endif; ?>
+									<a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $url ); ?></a>
 								</td>
-								<td><?php echo affwp_format_amount( absint( $conversions ), false ); ?></td>
+								<td>
+									<?php echo affwp_format_amount( absint( $conversions ), false ); ?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
-					<?php else: ?>
+					<?php else : ?>
 						<tr>
-							<td colspan="2"><?php _e( 'No highest converting urls recorded yet', 'affiliate-wp' ); ?></td>
+							<td colspan="2"><?php _e( 'No highest converting urls recorded yet.', 'affiliate-wp' ); ?></td>
 						</tr>
 					<?php endif; ?>
 
-				<?php else: ?>
+				<?php else : ?>
 					<tr>
-						<td colspan="2"><?php _e( 'No highest converting urls recorded yet', 'affiliate-wp' ); ?></td>
+						<td colspan="2"><?php _e( 'No highest converting urls recorded yet.', 'affiliate-wp' ); ?></td>
 					</tr>
 				<?php endif; ?>
 			</tbody>
