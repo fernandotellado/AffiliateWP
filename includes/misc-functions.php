@@ -1233,3 +1233,20 @@ function affwp_maybe_unserialize( $original ) {
 
 	return $value;
 }
+
+/**
+ * Retrieves the current page number.
+ *
+ * @since 2.1.12
+ *
+ * @return int The current page number.
+ */
+function affwp_get_current_page_number() {
+	if ( is_front_page() ) {
+		$page = get_query_var( 'page', 1 );
+	} else {
+		$page = get_query_var( 'paged', 1 );
+	}
+
+	return $page;
+}
