@@ -43,6 +43,12 @@ class Affiliate_WP_Integrations {
 
 	}
 
+	/**
+	 * Retrienves a map of all integration keys and their associated class names.
+	 *
+	 * @since 2.2
+	 * @return array
+	 */
 	public function get_integration_classes() {
 
 		return apply_filters( 'affwp_integration_classes', array(
@@ -82,6 +88,12 @@ class Affiliate_WP_Integrations {
 		return affiliate_wp()->settings->get( 'integrations', array() );
 	}
 
+	/**
+	 * Retrieves the class name for a specific integration
+	 *
+	 * @since 2.2
+	 * @return bool|string
+	 */
 	public function get_integration_class( $integration = '' ) {
 
 		if( array_key_exists( $integration, $this->get_integration_classes() ) ) {
