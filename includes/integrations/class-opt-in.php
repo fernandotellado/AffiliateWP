@@ -130,18 +130,18 @@ class Opt_In {
 				if( affiliate_wp()->tracking->was_referred() ) {
 
 					$referral_args = array(
-						'description' => $data['affwp_first_name'] . ' ' . $data['affwp_last_name'],
-						'amount'      => 0.00,
+						'description'  => $data['affwp_first_name'] . ' ' . $data['affwp_last_name'],
+						'amount'       => affiliate_wp()->settings->get( 'opt_in_referral_amount', 0.00 ),
 						'affiliate_id' => affiliate_wp()->tracking->get_affiliate_id(),
-						'type'        => 'opt-in',
-						'reference'   => $data['affwp_email'],
-						'status'      => 'pending'
+						'type'         => 'opt-in',
+						'reference'    => $data['affwp_email'],
+						'status'       => 'pending'
 					);
 
 					$referral_id = affiliate_wp()->referrals->add( $referral_args );
 				}
 
-				do_action( 'affwp_opt_in_success', $this, $referral_id );
+				do_action( 'affwp_opt_in_success', $this, $referral_id, $referral_args );
 
 				$redirect = empty( $data['affwp_redirect'] ) ? affiliate_wp()->tracking->get_current_page_url() : $data['affwp_redirect'];
 				$redirect = add_query_arg( 'affwp-notice', 'opted-in', $redirect );
@@ -164,7 +164,7 @@ class Opt_In {
 	public function subscribe_contact() {
 
 		do_action( 'affwp_opt_in_pre_subscribe_contact', $this );
-	
+
 		$this->platform_obj->contact = $this->contact;
 
 		$ret = $this->platform_obj->subscribe_contact( $this->contact );
@@ -172,7 +172,7 @@ class Opt_In {
 		$this->errors = $this->platform_obj->errors;
 
 		do_action( 'affwp_opt_in_post_subscribe_contact', $this );
-	
+
 		return $ret;
 
 	}

@@ -17,7 +17,7 @@ class ConvertKit extends Opt_In\Platform {
 		$this->api_key     = affiliate_wp()->settings->get( 'convertkit_api_key' );
 		$this->list_id     = affiliate_wp()->settings->get( 'convertkit_list_id' );
 		$this->api_url     = 'https://api.convertkit.com/v3/forms/' . $this->list_id . '/subscribe?api_key=' . $this->api_key;
-		$this->json        = false;	
+		$this->json        = false;
 	}
 
 	public function subscribe_contact() {
@@ -51,4 +51,4 @@ class ConvertKit extends Opt_In\Platform {
 		return $settings;
 	}
 
-}	
+}

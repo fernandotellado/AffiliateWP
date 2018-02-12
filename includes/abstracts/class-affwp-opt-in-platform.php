@@ -91,7 +91,7 @@ abstract class Platform {
 	}
 
 	/**
-	 * Get things started. This is where public properties should be defined if needed. 
+	 * Get things started. This is where public properties should be defined if needed.
 	 *
 	 * @access public
 	 * @since  2.2
@@ -107,7 +107,7 @@ abstract class Platform {
 	 * @return WP_Error|array
 	 */
 	public function subscribe_contact() {}
-	
+
 	/**
 	 * Setup settings for the platform
 	 *
