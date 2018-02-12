@@ -31,7 +31,14 @@ class ActiveCampaign extends Opt_In\Platform {
 		    'status[' . $this->list_id . ']' => 1,
 		);
 
-		return $this->call_api( $this->api_url, $body );
+		$response = $this->call_api( $this->api_url, $body );
+		$response = json_decode( $response['body'] );
+
+		if( empty( $response->result_code ) ) {
+			$this->add_error( 'affwp_active_campaign_error', $response->result_message );
+		}
+
+		return $response;
 
 	}
 
