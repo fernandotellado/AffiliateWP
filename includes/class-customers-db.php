@@ -359,7 +359,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
 		}
 
-		if( $existing ) {
+		if( ! empty( $existing ) ) {
 
 			unset( $args['customer_id'] );
 			unset( $args['date_created'] );
