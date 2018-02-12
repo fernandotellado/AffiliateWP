@@ -156,6 +156,53 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Retrieves the customer details for a specific subscription key
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  array
+	*/
+	public function get_customer( $subscription_key = 0 ) {
+
+		global $wpdb;
+
+		if( ! empty( $subscription_key ) ) {
+
+			$user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'rcp_subscription_key' AND meta_value = '%s' LIMIT 1;", $subscription_key ) );
+
+			if( $user_id ) {
+
+				$user = get_userdata( $user_id );
+
+				$customer = array(
+					'first_name'   => is_user_logged_in() ? $user->last_name : '',
+					'last_name'    => is_user_logged_in() ? $user->first_name : '',
+					'email'        => is_user_logged_in() ? $user->user_email : $this->email,
+					'user_id'      => $user_id,
+					'affiliate_id' => $this->affiliate_id
+				);
+
+			}
+
+		}
+
+		if( emprt( $customer ) ) {
+
+			$customer = array(
+				'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',
+				'last_name'    => is_user_logged_in() ? wp_get_current_user()->first_name : '',
+				'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : $this->email,
+				'user_id'      => get_current_user_id(),
+				'ip'           => affiliate_wp()->tracking->get_ip(),
+				'affiliate_id' => $this->affiliate_id
+			);
+
+		}
+
+		return $customer;
+	}
+
+	/**
 	 * Sets a referral to complet when a payment is inserted
 	 *
 	 * @access  public
