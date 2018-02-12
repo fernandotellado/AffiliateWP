@@ -99,6 +99,7 @@ class Referrals_DB_Tests extends UnitTestCase {
 			'referral_id' => '%d',
 			'affiliate_id'=> '%d',
 			'visit_id'    => '%d',
+			'customer_id' => '%d',
 			'description' => '%s',
 			'status'      => '%s',
 			'amount'      => '%s',
