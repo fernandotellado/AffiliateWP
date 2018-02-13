@@ -1248,5 +1248,5 @@ function affwp_get_current_page_number() {
 		$page = get_query_var( 'paged', 1 );
 	}
 
-	return $page;
+	return max( $page, 1 );
 }
