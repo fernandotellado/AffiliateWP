@@ -60,7 +60,74 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'my_account_affiliate_area_link' ), 100 );
 		add_filter( 'woocommerce_get_endpoint_url',   array( $this, 'my_account_endpoint_url' ), 100, 2 );
 		add_filter( 'woocommerce_get_settings_account', array( $this, 'account_settings' ) );
+
+		// Per category referral rates
+		add_action( 'product_cat_add_form_fields', array( $this, 'add_product_category_rate' ), 10, 2 );
+		add_action( 'product_cat_edit_form_fields', array( $this, 'edit_product_category_rate' ), 10 );
+		add_action( 'edited_product_cat', array( $this, 'save_product_category_rate' ) );  
+		add_action( 'create_product_cat', array( $this, 'save_product_category_rate' ) );
+
 	}
+
+	/**
+	 * Add download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function add_product_category_rate( $category ) {
+		?>
+		<div class="form-field">
+			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_edd_category_rate" id="download-category-rate">
+			<p class="description"><?php printf( __( 'The referral rate for this %s category', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Edit download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function edit_product_category_rate( $category ) {
+		$category_id   = $category->term_id;
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
+		?>
+		<tr class="form-field">
+			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+
+			<td>
+				<input type="text" name="_affwp_edd_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<p class="description"><?php printf( __( 'The referral rate for this %s category', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+			</td>
+		</tr>
+	<?php
+	}
+	
+	/**
+	 * Save download_category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function save_product_category_rate( $category_id ) {
+
+		if ( isset( $_POST['_affwp_edd_category_rate'] ) ) {
+
+			$rate     = $_POST['_affwp_edd_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
+			if ( $rate ) {
+				update_term_meta( $category_id, $meta_key, $rate );
+			} else {
+				delete_term_meta( $category_id, $meta_key );
+			}
+
+		} 
+
+	}  
 
 	/**
 	 * Store a pending referral when a new order is created
