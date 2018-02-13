@@ -92,12 +92,13 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 		if ( isset( $_POST['_affwp_edd_category_rate'] ) ) {
 
-			$rate = $_POST['_affwp_edd_category_rate'];
-			
+			$rate     = $_POST['_affwp_edd_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
 			if ( $rate ) {
-				update_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', $rate );
+				update_term_meta( $category_id, $meta_key, $rate );
 			} else {
-				delete_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate' );
+				delete_term_meta( $category_id, $meta_key );
 			}
 
 		} 
