@@ -55,7 +55,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		?>
 		<div class="form-field">
 			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
-			<input type="text" class="small-text" name="_affwp_edd_category_rate" id="download-category-rate">
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate">
 			<p class="description"><?php printf( __( 'The referral rate for this %s category', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
 		</div>
 	<?php
@@ -75,7 +75,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
 
 			<td>
-				<input type="text" name="_affwp_edd_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
 				<p class="description"><?php printf( __( 'The referral rate for this %s category', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
 			</td>
 		</tr>
