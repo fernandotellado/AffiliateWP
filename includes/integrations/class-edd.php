@@ -101,9 +101,9 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 				delete_term_meta( $category_id, $meta_key );
 			}
 
-		} 
+		}
 
-	}  
+	}
 	
 	/**
 	 * Records a pending referral when a pending payment is created
