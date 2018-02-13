@@ -90,7 +90,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	 */
 	public function save_download_category_rate( $category_id ) {
 
-		if ( isset( $_POST['_affwp_edd_category_rate'] ) ) {
+		if ( isset( $_POST['_affwp_'. $this->context . '_category_rate'] ) ) {
 
 			$rate     = $_POST['_affwp_edd_category_rate'];
 			$meta_key = '_affwp_' . $this->context . '_category_rate';
