@@ -78,8 +78,8 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	public function add_product_category_rate( $category ) {
 		?>
 		<div class="form-field">
-			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
-			<input type="text" class="small-text" name="_affwp_edd_category_rate" id="download-category-rate">
+			<label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate">
 			<p class="description"><?php _e( 'The referral rate for this category', 'affiliate-wp' ); ?></p>
 		</div>
 	<?php
@@ -96,10 +96,10 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
 		?>
 		<tr class="form-field">
-			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+			<th><label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
 
 			<td>
-				<input type="text" name="_affwp_edd_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
 				<p class="description"><?php _e( 'The referral rate for this category', 'affiliate-wp' ); ?></p>
 			</td>
 		</tr>
@@ -107,16 +107,16 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	}
 	
 	/**
-	 * Save download_category referral rate field.
+	 * Save product category referral rate field.
 	 *
 	 * @access  public
 	 * @since   2.2
 	 */
 	public function save_product_category_rate( $category_id ) {
 
-		if ( isset( $_POST['_affwp_edd_category_rate'] ) ) {
+		if ( isset( $_POST['_affwp_'. $this->context . '_category_rate'] ) ) {
 
-			$rate     = $_POST['_affwp_edd_category_rate'];
+			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
 			$meta_key = '_affwp_' . $this->context . '_category_rate';
 
 			if ( $rate ) {
@@ -125,9 +125,9 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 				delete_term_meta( $category_id, $meta_key );
 			}
 
-		} 
+		}
 
-	}  
+	}
 
 	/**
 	 * Store a pending referral when a new order is created
