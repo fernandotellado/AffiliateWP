@@ -46,66 +46,6 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	}
 
 	/**
-	 * Add download_category referral rate field.
-	 * 
-	 * @access  public
-	 * @since   2.2
-	 */
-	public function add_download_category_rate( $category ) {
-		?>
-		<div class="form-field">
-			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
-			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate">
-			<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
-		</div>
-	<?php
-	}
-
-	/**
-	 * Edit download_category referral rate field.
-	 * 
-	 * @access  public
-	 * @since   2.2
-	 */
-	public function edit_download_category_rate( $category ) {
-		$category_id   = $category->term_id;
-		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
-		?>
-		<tr class="form-field">
-			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
-
-			<td>
-				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
-				<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
-			</td>
-		</tr>
-	<?php
-	}
-	
-	/**
-	 * Save download_category referral rate field.
-	 *
-	 * @access  public
-	 * @since   2.2
-	 */
-	public function save_download_category_rate( $category_id ) {
-
-		if ( isset( $_POST['_affwp_' . $this->context . '_category_rate'] ) ) {
-
-			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
-			$meta_key = '_affwp_' . $this->context . '_category_rate';
-
-			if ( $rate ) {
-				update_term_meta( $category_id, $meta_key, $rate );
-			} else {
-				delete_term_meta( $category_id, $meta_key );
-			}
-
-		}
-
-	}
-	
-	/**
 	 * Records a pending referral when a pending payment is created
 	 *
 	 * @access  public
@@ -718,6 +658,65 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		$fields[] = '_affwp_edd_product_rate';
 		$fields[] = '_affwp_edd_referrals_disabled';
 		return $fields;
+	}
+
+	/**
+	 * Add download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function add_download_category_rate( $category ) {
+		?>
+		<div class="form-field">
+			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate">
+			<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Edit download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function edit_download_category_rate( $category ) {
+		$category_id   = $category->term_id;
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
+		?>
+		<tr class="form-field">
+			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+			<td>
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+			</td>
+		</tr>
+	<?php
+	}
+	
+	/**
+	 * Save download_category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function save_download_category_rate( $category_id ) {
+
+		if ( isset( $_POST['_affwp_' . $this->context . '_category_rate'] ) ) {
+
+			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
+			if ( $rate ) {
+				update_term_meta( $category_id, $meta_key, $rate );
+			} else {
+				delete_term_meta( $category_id, $meta_key );
+			}
+
+		}
+
 	}
 
 }

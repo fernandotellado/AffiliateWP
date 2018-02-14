@@ -70,66 +70,6 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	}
 
 	/**
-	 * Add product category referral rate field.
-	 * 
-	 * @access  public
-	 * @since   2.2
-	 */
-	public function add_product_category_rate( $category ) {
-		?>
-		<div class="form-field">
-			<label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
-			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate">
-			<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
-		</div>
-	<?php
-	}
-
-	/**
-	 * Edit product category referral rate field.
-	 * 
-	 * @access  public
-	 * @since   2.2
-	 */
-	public function edit_product_category_rate( $category ) {
-		$category_id   = $category->term_id;
-		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
-		?>
-		<tr class="form-field">
-			<th><label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
-
-			<td>
-				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
-				<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
-			</td>
-		</tr>
-	<?php
-	}
-	
-	/**
-	 * Save product category referral rate field.
-	 *
-	 * @access  public
-	 * @since   2.2
-	 */
-	public function save_product_category_rate( $category_id ) {
-
-		if ( isset( $_POST['_affwp_'. $this->context . '_category_rate'] ) ) {
-
-			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
-			$meta_key = '_affwp_' . $this->context . '_category_rate';
-
-			if ( $rate ) {
-				update_term_meta( $category_id, $meta_key, $rate );
-			} else {
-				delete_term_meta( $category_id, $meta_key );
-			}
-
-		}
-
-	}
-
-	/**
 	 * Store a pending referral when a new order is created
 	 *
 	 * @access  public
@@ -958,6 +898,66 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$settings = array_merge( $settings, $affwp_settings );
 
 		return $settings;
+	}
+
+	/**
+	 * Add product category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function add_product_category_rate( $category ) {
+		?>
+		<div class="form-field">
+			<label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate">
+			<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Edit product category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function edit_product_category_rate( $category ) {
+		$category_id   = $category->term_id;
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
+		?>
+		<tr class="form-field">
+			<th><label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+
+			<td>
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
+			</td>
+		</tr>
+	<?php
+	}
+	
+	/**
+	 * Save product category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function save_product_category_rate( $category_id ) {
+
+		if ( isset( $_POST['_affwp_'. $this->context . '_category_rate'] ) ) {
+
+			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
+			if ( $rate ) {
+				update_term_meta( $category_id, $meta_key, $rate );
+			} else {
+				delete_term_meta( $category_id, $meta_key );
+			}
+
+		}
+
 	}
 
 }
