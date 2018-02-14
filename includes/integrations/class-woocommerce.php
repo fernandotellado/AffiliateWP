@@ -207,6 +207,12 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					continue; // Referrals are disabled on this variation
 				}
 
+				// Get the categories associated with the download.
+				$categories = get_the_terms( $product['product_id'], 'product_cat' );
+
+				// Get the first category ID for the product.
+				$category_id = $categories && ! is_wp_error( $categories ) ? $categories[0]->term_id : 0;
+
 				// The order discount has to be divided across the items
 				$product_total = $product['line_total'];
 				$shipping      = 0;
@@ -228,7 +234,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 				if( ! empty( $product['variation_id'] ) && $this->get_product_rate( $product['variation_id'] ) ) {
 					$product_id_for_rate = $product['variation_id'];
 				}
-				$amount += $this->calculate_referral_amount( $product_total, $order_id, $product_id_for_rate, $affiliate_id );
+				$amount += $this->calculate_referral_amount( $product_total, $order_id, $product_id_for_rate, $affiliate_id, $category_id );
 
 			}
 
