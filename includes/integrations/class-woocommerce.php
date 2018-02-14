@@ -70,7 +70,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	}
 
 	/**
-	 * Add download_category referral rate field.
+	 * Add product category referral rate field.
 	 * 
 	 * @access  public
 	 * @since   2.2
@@ -86,7 +86,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	}
 
 	/**
-	 * Edit download_category referral rate field.
+	 * Edit product category referral rate field.
 	 * 
 	 * @access  public
 	 * @since   2.2
