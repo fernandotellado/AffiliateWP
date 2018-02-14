@@ -80,7 +80,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		<div class="form-field">
 			<label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
 			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate">
-			<p class="description"><?php _e( 'The referral rate for this category', 'affiliate-wp' ); ?></p>
+			<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
 		</div>
 	<?php
 	}
@@ -100,7 +100,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 			<td>
 				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
-				<p class="description"><?php _e( 'The referral rate for this category', 'affiliate-wp' ); ?></p>
+				<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
 			</td>
 		</tr>
 	<?php

@@ -56,7 +56,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		<div class="form-field">
 			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
 			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate">
-			<p class="description"><?php printf( __( 'The referral rate for this %s category', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+			<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
 		</div>
 	<?php
 	}
@@ -76,7 +76,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 			<td>
 				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
-				<p class="description"><?php printf( __( 'The referral rate for this %s category', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+				<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
 			</td>
 		</tr>
 	<?php
@@ -315,7 +315,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				// Get the categories associated with the download.
 				$categories = get_the_terms( $download['id'], 'download_category' );
-
+				
 				// Get the first category ID for the download.
 				$category_id = $categories && ! is_wp_error( $categories ) ? $categories[0]->term_id : 0;
 
