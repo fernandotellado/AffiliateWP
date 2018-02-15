@@ -37,7 +37,7 @@ class Database extends \Affiliate_WP_DB {
 	public function __construct() {
 		global $wpdb;
 
-		// Global table.
+		// Site-level table.
 		$this->table_name  = $wpdb->prefix . 'affiliate_wp_rest_consumers';
 
 		$this->primary_key = 'consumer_id';

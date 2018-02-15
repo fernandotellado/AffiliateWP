@@ -278,6 +278,14 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				}
 
+				if ( class_exists( 'edd_dp' ) ) {
+
+					if( isset( $download['fees']['dp_'.$download['id']] ) ) {
+						$amount += $download['fees']['dp_'.$download['id']]['amount'];
+					}
+
+				}
+
 				// Check for Recurring Payments signup fee
 				if( ! empty( $download['item_number']['options']['recurring']['signup_fee'] ) ) {
 					$amount += $download['item_number']['options']['recurring']['signup_fee'];
@@ -446,7 +454,13 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 				continue; // Referrals are disabled on this product
 			}
 
-			$description[] = get_the_title( $item['id'] );
+			$desc = get_the_title( $item['id'] );
+
+			if ( isset( $item['options']['price_id'] ) && null !== $item['options']['price_id'] ) {
+				$desc .= ' - ' . edd_get_price_option_name( $item['id'], $item['options']['price_id'] );
+			}
+
+			$description[] = $desc;
 		}
 
 		return implode( ', ', $description );
