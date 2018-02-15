@@ -359,11 +359,13 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			return;
 		}
 
-		$amount       = affwp_currency_filter( affwp_format_amount( $referral->amount ) );
-		$affiliate_id = $referral->affiliate_id;
-		$name         = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
+		$amount         = affwp_currency_filter( affwp_format_amount( $referral->amount ) );
+		$affiliate_id   = $referral->affiliate_id;
+		$name           = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
+		$referral_link  = affwp_admin_link( 'referrals', esc_html( '#' . $referral->referral_id ), array( 'action' => 'edit_referral', 'referral_id' => $referral->referral_id ) );
 
-		edd_insert_payment_note( $payment_id, sprintf( __( 'Referral #%d for %s recorded for %s', 'affiliate-wp' ), $referral->referral_id, $amount, $name ) );
+		/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name */
+		edd_insert_payment_note( $payment_id, sprintf( __( 'Referral %1$s for %2$s recorded for %3$s', 'affiliate-wp' ), $referral_link, $amount, $name ) );
 
 	}
 
