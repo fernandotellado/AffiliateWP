@@ -456,7 +456,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 			$desc = get_the_title( $item['id'] );
 
-			if ( isset( $item['options']['price_id'] ) && null !== $item['options']['price_id'] ) {
+			if ( ! empty( $item['options']['price_id'] ) ) {
 				$desc .= ' - ' . edd_get_price_option_name( $item['id'], $item['options']['price_id'] );
 			}
 
