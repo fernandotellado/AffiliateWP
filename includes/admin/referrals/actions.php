@@ -38,15 +38,15 @@ function affwp_process_add_referral( $data ) {
 
 	} else {
 
-		if ( isset( $errors ) ) {
-			echo '<div class="error">';
-				foreach( $errors as $error ) {
-					echo '<p>' . $error . '</p>';
-				}
-			echo '</div>';
+		if ( isset( $errors[ 'invalid_affiliate'] ) ) {
+
+			wp_safe_redirect( affwp_admin_url( 'referrals', array( 'action' => 'add_referral', 'affwp_notice' => 'referral_add_invalid_affiliate' ) ) );
+			exit;
+
 		}
 
-		return false;
+		wp_safe_redirect( affwp_admin_url( 'referrals', array( 'affwp_notice' => 'referral_add_failed' ) ) );
+		exit;
 
 	}
 
