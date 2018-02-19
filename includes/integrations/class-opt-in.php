@@ -135,7 +135,7 @@ class Opt_In {
 						'affiliate_id' => affiliate_wp()->tracking->get_affiliate_id(),
 						'type'         => 'opt-in',
 						'reference'    => $data['affwp_email'],
-						'status'       => 'pending'
+						'status'       => affiliate_wp()->settings->get( 'opt_in_referral_status', 'pending' )
 					);
 
 					$referral_id = affiliate_wp()->referrals->add( $referral_args );

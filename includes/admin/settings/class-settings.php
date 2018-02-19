@@ -634,6 +634,16 @@ class Affiliate_WP_Settings {
 						'size' => 'small',
 						'std'  => '0.00',
 						'desc' => __( 'Enter the amount affiliates should receive for each opt-in referral. Default is 0.00.', 'affiliate-wp' ),
+					),
+					'opt_in_referral_status' => array(
+						'name' => __( 'Opt-In Referral Status', 'affiliate-wp' ),
+						'type' => 'radio',
+						'options'  => array(
+							'pending' => __( 'Pending', 'affiliate-wp' ),
+							'unpaid'  => __( 'Unpaid', 'affiliate-wp' ),
+						),
+						'std' => 'pending',
+						'desc' => __( 'Select the status that should be assigned to opt-in referrals by default.', 'affiliate-wp' ),
 					)
 					// Individual platform settings are registered through their platform classes in includes/integrations/opt-in-platforms/
 				)
