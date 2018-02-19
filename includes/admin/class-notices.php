@@ -227,7 +227,7 @@ class Affiliate_WP_Admin_Notices {
 
 				case 'referral_add_failed' :
 
-					$message = __( 'Referral wasn&#8217;t created, please try again', 'affiliate-wp' );
+					$message = __( 'Referral wasn&#8217;t created, please try again.', 'affiliate-wp' );
 					$class   = 'error';
 
 					break;

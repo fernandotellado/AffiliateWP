@@ -293,7 +293,7 @@ class Tests extends UnitTestCase {
 			'affwp_notice' => 'referral_add_failed'
 		) );
 
-		$expected = '<div class="error"><p>Referral wasn&#8217;t created, please try again</p></div>';
+		$expected = '<div class="error"><p>Referral wasn&#8217;t created, please try again.</p></div>';
 
 		$this->assertContains( $expected, self::$notices->show_notices() );
 	}
