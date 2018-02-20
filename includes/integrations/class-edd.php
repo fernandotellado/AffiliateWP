@@ -479,14 +479,17 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 		foreach ( $downloads as $key => $item ) {
 
-			if ( get_post_meta( $item['id'], '_affwp_' . $this->context . '_referrals_disabled', true ) ) {
+			$download_id = $item['id'];
+			$download    = new EDD_Download( $download_id );
+
+			if ( get_post_meta( $download_id, '_affwp_' . $this->context . '_referrals_disabled', true ) ) {
 				continue; // Referrals are disabled on this product
 			}
 
-			$desc = get_the_title( $item['id'] );
+			$desc = get_the_title( $download_id );
 
-			if ( isset( $item['options']['price_id'] ) && null !== $item['options']['price_id'] ) {
-				$desc .= ' - ' . edd_get_price_option_name( $item['id'], $item['options']['price_id'] );
+			if ( $download->has_variable_prices() ) {
+				$desc .= ' - ' . edd_get_price_option_name( $download_id, $item['options']['price_id'] );
 			}
 
 			$description[] = $desc;
