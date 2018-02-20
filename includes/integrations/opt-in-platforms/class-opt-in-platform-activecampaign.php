@@ -65,4 +65,4 @@ class ActiveCampaign extends Opt_In\Platform {
 		return $settings;
 	}
 
-}	
+}
