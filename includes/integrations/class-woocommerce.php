@@ -628,38 +628,36 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$rate_type = get_post_meta( $variation->ID, '_affwp_' . $this->context . '_product_rate_type', true );
 		$disabled  = get_post_meta( $variation->ID, '_affwp_woocommerce_referrals_disabled', true );
 ?>
+
 		<div id="affwp_product_variation_settings">
 
-			<div class="form-row form-row-full">
+			<p class="form-row form-row-full">
+				<?php _e( 'Configure affiliate rates for this product variation', 'affiliate-wp' ); ?>
+			</p>
 
-				<p class="form-row form-row-full options">
-					<?php _e( 'Configure affiliate rates for this product variation', 'affiliate-wp' ); ?>
-				</p>
+			<p class="form-row form-row-full">
+				<label for="_affwp_woocommerce_variation_rate_types[<?php echo $variation->ID; ?>]"><?php echo __( 'Referral Rate Type', 'affiliate-wp' ); ?></label>
+				<select name="_affwp_woocommerce_variation_rate_types[<?php echo $variation->ID; ?>]" id="_affwp_woocommerce_variation_rate_types[<?php echo $variation->ID; ?>]">
+					<option value=""><?php _e( 'Site Default', 'affiliate-wp' ); ?></option>
+					<?php foreach( affwp_get_affiliate_rate_types() as $key => $type ) : ?>
+						<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $rate_type, $key ); ?>><?php echo esc_html( $type ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
 
-				<p class="form-row form-row-full">
-					<label for="_affwp_woocommerce_variation_rate_types[<?php echo $variation->ID; ?>]"><?php echo __( 'Referral Rate Type', 'affiliate-wp' ); ?></label>
-					<select name="_affwp_woocommerce_variation_rate_types[<?php echo $variation->ID; ?>]" class="select">
-						<option value=""><?php _e( 'Site Default', 'affiliate-wp' ); ?></option>
-						<?php foreach( affwp_get_affiliate_rate_types() as $key => $type ) : ?>
-							<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $rate_type, $key ); ?>><?php echo esc_html( $type ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</p>
+			<p class="form-row form-row-full">
+				<label for="_affwp_woocommerce_variation_rates[<?php echo $variation->ID; ?>]"><?php echo __( 'Referral Rate', 'affiliate-wp' ); ?></label>
+				<input type="text" size="5" name="_affwp_woocommerce_variation_rates[<?php echo $variation->ID; ?>]" value="<?php echo esc_attr( $rate ); ?>" class="wc_input_price" id="_affwp_woocommerce_variation_rates[<?php echo $variation->ID; ?>]" placeholder="<?php esc_attr_e( 'Referral rate (optional)', 'affiliate-wp' ); ?>" />
+			</p>
 
-				<p class="form-row form-row-full">
-					<label for="_affwp_woocommerce_variation_rates[<?php echo $variation->ID; ?>]"><?php echo __( 'Referral Rate', 'affiliate-wp' ); ?></label>
-					<input type="text" size="5" name="_affwp_woocommerce_variation_rates[<?php echo $variation->ID; ?>]" value="<?php echo esc_attr( $rate ); ?>" class="wc_input_price" placeholder="<?php esc_attr_e( 'Referral rate (optional)', 'affiliate-wp' ); ?>" />
-				</p>
-
-				<p class="form-row form-row-full options">
-					<label>
-						<input type="checkbox" class="checkbox" name="_affwp_woocommerce_variation_referrals_disabled[<?php echo $variation->ID; ?>]" <?php checked( $disabled, true ); ?> /> <?php _e( 'Disable referrals for this product variation', 'affiliate-wp' ); ?>
-					</label>
-				</p>
-
-			</div>
+			<p class="form-row form-row-full options">
+				<label for="_affwp_woocommerce_variation_referrals_disabled[<?php echo $variation->ID; ?>]">
+					<input type="checkbox" class="checkbox" name="_affwp_woocommerce_variation_referrals_disabled[<?php echo $variation->ID; ?>]" id="_affwp_woocommerce_variation_referrals_disabled[<?php echo $variation->ID; ?>]" <?php checked( $disabled, true ); ?> /> <?php _e( 'Disable referrals for this product variation', 'affiliate-wp' ); ?>
+				</label>
+			</p>
 
 		</div>
+
 <?php
 
 	}
