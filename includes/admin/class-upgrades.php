@@ -704,6 +704,68 @@ class Affiliate_WP_Upgrades {
 
 		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
 
+		$registration_notifications   = 'registration_notifications';
+		$admin_referral_notifications = 'admin_referral_notifications';
+		$disable_all_emails           = 'disable_all_emails';
+
+		/**
+		 * Enable all email notifications by default.
+		 * Fresh installations of AffiliateWP and upgrades should enable all notifications.
+		 */
+		$email_notifications = affiliate_wp()->settings->email_notifications( true );
+
+		/**
+		 * If "Disable All Emails" checkbox option was previously enabled, 
+		 * clear out the email notification array, essentially disabling all notifications.
+		 */
+		if ( affiliate_wp()->settings->get( $disable_all_emails ) ) {
+			$email_notifications = array();
+		}
+
+		// Enable the new admin affiliate registration email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $registration_notifications ) ) {
+			$email_notifications['admin_affiliate_registration_email'] = __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin affiliate registration email if it was previously unchecked.
+			unset( $email_notifications['admin_affiliate_registration_email'] );
+		}
+
+		// Enable the new admin referral notification email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $admin_referral_notifications ) ) {
+			$email_notifications['admin_new_referral_email'] = __( 'Notify site admin when new referrals are earned', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin referral notification email if it was previously unchecked.
+			unset( $email_notifications['admin_new_referral_email'] );
+		}
+
+		// Make the required changes to the Email Notifications.
+		@affiliate_wp()->settings->set( array(
+			'email_notifications' => $email_notifications
+		), $save = true );
+
+		// Get all settings.
+		$settings = affiliate_wp()->settings->get_all();
+
+		// Remove old "Disable All Emails" setting.
+		if ( isset( $settings[$disable_all_emails] ) ) {
+			unset( $settings[$disable_all_emails] );
+		}
+
+		// Remove old "Notify Admin" setting.
+		if ( isset( $settings[$registration_notifications] ) ) {
+			unset( $settings[$registration_notifications] );
+		}
+
+		// Remove old "Notify Admin of Referrals" setting.
+		if ( isset( $settings[$admin_referral_notifications] ) ) {
+			unset( $settings[$admin_referral_notifications] );
+		}
+
+		// Update affwp_settings option.
+		update_option( 'affwp_settings', $settings );
+
 		$this->upgraded = true;
+		
 	}
+
 }

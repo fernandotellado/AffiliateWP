@@ -434,10 +434,24 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 			}
 
 			$this->referral_type = affiliate_wp()->settings->get( 'cf7_referral_type_' . $form_id );
-			$reference           = $form_id . '-' . date_i18n( 'U' );
-			$affiliate_id        = $this->get_affiliate_id( $reference );
-			$referral_total      = $this->calculate_referral_amount( $base_amount, $reference, $product_id, $affiliate_id );
-			$referral_id         = $this->insert_pending_referral( $referral_total, $reference, $description, $product_id );
+
+			/**
+			 * Filters the referral description for the AffiliateWP Contact Form 7 integration.
+			 *
+			 * @since  2.1.12
+			 *
+			 * @param string $description   Item description or CF7 form title
+			 * @param string $form_id       CF7 form id
+			 * @param object $contact_form  CF7 form submission object.
+			 * @param object $result        Submitted CF7 form submission data.
+			 *
+			 */
+			$description = apply_filters( 'affwp_cf7_referral_description', $description, $form_id, $contact_form, $result );
+
+			$reference       = $form_id . '-' . date_i18n( 'U' );
+			$affiliate_id    = $this->get_affiliate_id( $reference );
+			$referral_total  = $this->calculate_referral_amount( $base_amount, $reference, $product_id, $affiliate_id );
+			$referral_id     = $this->insert_pending_referral( $referral_total, $reference, $description, $product_id );
 
 			if ( empty( $referral_total ) ) {
 				$this->complete_referral( $reference );
