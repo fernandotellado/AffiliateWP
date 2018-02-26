@@ -58,6 +58,8 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 
 		$this->referral_type = isset( $args['type'] ) ? $args['type'] : 'sale';
 
+		$referral_total = $this->calculate_referral_amount( $referral_total, $reference );
+
 		$this->insert_pending_referral( $referral_total, $reference, $description );
 		$this->complete_referral( $reference );
 	}

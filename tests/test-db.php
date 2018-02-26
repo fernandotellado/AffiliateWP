@@ -510,4 +510,89 @@ class Tests extends UnitTestCase {
 		$this->assertSame( $expected, $actual );
 	}
 
+	/**
+	 * @covers \Affiliate_WP_DB::insert()
+	 * @group filters
+	 */
+	public function test_insert_with_pre_insert_type_data_filter_falsey_array_should_prevent_insertion() {
+		/** @var \Affiliate_WP_DB $db */
+		$db = $this->getMockForAbstractClass( 'Affiliate_WP_DB' );
+
+		add_filter( 'affwp_pre_insert_payout_data', '__return_empty_array' );
+
+		$result = $db->insert( array( 'affiliate_id' => 5 ), 'payout' );
+
+		remove_filter( 'affwp_pre_insert_payout_data', '__return_empty_array' );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB::insert()
+	 * @group filters
+	 */
+	public function test_insert_with_pre_insert_type_data_filter_false_value_should_prevent_insertion() {
+		/** @var \Affiliate_WP_DB $db */
+		$db = $this->getMockForAbstractClass( 'Affiliate_WP_DB' );
+
+		add_filter( 'affwp_pre_insert_payout_data', '__return_false' );
+
+		$result = $db->insert( array( 'affiliate_id' => 5 ), 'payout' );
+
+		remove_filter( 'affwp_pre_insert_payout_data', '__return_false' );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB::insert()
+	 * @group filters
+	 */
+	public function test_insert_with_pre_insert_type_data_filter_empty_value_should_prevent_insertion() {
+		/** @var \Affiliate_WP_DB $db */
+		$db = $this->getMockForAbstractClass( 'Affiliate_WP_DB' );
+
+		add_filter( 'affwp_pre_insert_payout_data', '__return_empty_string' );
+
+		$result = $db->insert( array( 'affiliate_id' => 5 ), 'payout' );
+
+		remove_filter( 'affwp_pre_insert_payout_data', '__return_empty_string' );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB::insert()
+	 * @group filters
+	 */
+	public function test_insert_with_pre_insert_type_data_filter_null_value_should_prevent_insertion() {
+		/** @var \Affiliate_WP_DB $db */
+		$db = $this->getMockForAbstractClass( 'Affiliate_WP_DB' );
+
+		add_filter( 'affwp_pre_insert_payout_data', '__return_null' );
+
+		$result = $db->insert( array( 'affiliate_id' => 5 ), 'payout' );
+
+		remove_filter( 'affwp_pre_insert_payout_data', '__return_null' );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB::insert()
+	 * @group filters
+	 */
+	public function test_insert_with_pre_insert_type_data_filter_zero_value_should_prevent_insertion() {
+		/** @var \Affiliate_WP_DB $db */
+		$db = $this->getMockForAbstractClass( 'Affiliate_WP_DB' );
+
+		add_filter( 'affwp_pre_insert_payout_data', '__return_zero' );
+
+		$result = $db->insert( array( 'affiliate_id' => 5 ), 'payout' );
+
+		remove_filter( 'affwp_pre_insert_payout_data', '__return_zero' );
+
+		$this->assertFalse( $result );
+	}
+
 }
