@@ -11,13 +11,13 @@ class Affiliate_WP_Integrations {
 	public function get_integrations() {
 
 		return apply_filters( 'affwp_integrations', array(
+			'caldera-forms'  => 'Caldera Forms',
 			'contactform7'   => 'Contact Form 7',
 			'edd'            => 'Easy Digital Downloads',
-			'caldera-forms'  => 'Caldera Forms',
 			'formidablepro'  => 'Formidable Pro',
 			'give'           => 'Give',
 			'gravityforms'   => 'Gravity Forms',
-			'exchange'       => 'iThemes Exchange',
+			'exchange'       => 'ExchangeWP (iThemes Exchange)',
 			'jigoshop'       => 'Jigoshop',
 			'lifterlms'      => 'LifterLMS',
 			'marketpress'    => 'MarketPress',
