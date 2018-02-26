@@ -313,6 +313,9 @@ class Affiliate_WP_Register {
 
 			$user_id = wp_insert_user( $args );
 
+			// Enable referral notifications by default for new users.
+			update_user_meta( $user_id, 'affwp_referral_notifications', true );
+
 		} else {
 
 			$user_id = get_current_user_id();

@@ -12,7 +12,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
 
 
 /**
- * Send email on affiliate registration
+ * Sends an admin email on affiliate registration
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -22,7 +22,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
  */
 function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = array() ) {
 
-	if( ! affiliate_wp()->settings->get( 'registration_notifications' ) ) {
+	if ( ! affwp_email_notification_enabled( 'admin_affiliate_registration_email' ) ) {
 		return;
 	}
 
@@ -73,7 +73,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
 
 
 /**
- * Send email on affiliate approval
+ * Sends affiliate an email on affiliate approval
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -82,7 +82,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
  */
 function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
-	if ( array_key_exists( 'application_accepted_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_accepted_email' ) ) {
 		return;
 	}
 
@@ -152,7 +152,7 @@ function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status 
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
 
 /**
- * Send email on pending affiliate registration
+ * Sends affiliate an email on pending affiliate registration
  *
  * @since 1.6.1
  * @param int $affiliate_id The ID of the registered affiliate
@@ -161,7 +161,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
  */
 function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $status = '', $args ) {
 
-	if ( array_key_exists( 'application_pending_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_pending_email' ) ) {
 		return;
 	}
 
@@ -195,7 +195,7 @@ add_action( 'affwp_register_user', 'affwp_notify_on_pending_affiliate_registrati
 add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_registration', 10, 3 );
 
 /**
- * Send email on rejected affiliate registration
+ * Sends affiliate an email on rejected affiliate registration
  *
  * @since 1.6.1
  * @param int $affiliate_id The ID of the registered affiliate
@@ -204,7 +204,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_regis
  */
 function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $status = '', $old_status = '' ) {
 
-	if ( array_key_exists( 'application_rejected_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_rejected_email' ) ) {
 		return;
 	}
 
@@ -236,7 +236,7 @@ function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $st
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_registration', 10, 3 );
 
 /**
- * Send email on new referrals
+ * Sends affiliate an email on new referrals
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -244,7 +244,7 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_re
  */
 function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
-	if ( array_key_exists( 'new_referral_emails', affiliate_wp()->settings->get( 'disable_emails' ) ) ) {
+	if ( ! affwp_email_notification_enabled( 'affiliate_new_referral_email', $affiliate_id ) ) {
 		return;
 	}
 
@@ -308,7 +308,7 @@ function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
 		return;
 	}
 
-	$send = (bool) affiliate_wp()->settings->get( 'admin_referral_notifications', false );
+	$send = affwp_email_notification_enabled( 'admin_new_referral_email', $affiliate_id );
 
 	/**
 	 * Filters whether to notify admins when a new referral is generated.
