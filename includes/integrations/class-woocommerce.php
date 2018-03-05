@@ -65,6 +65,10 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		// Filter Orders list table to add a referral column
 		add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_orders_column' ) );
 		add_action( 'manage_posts_custom_column', array( $this, 'render_orders_referral_column' ), 10, 2 );
+
+		// Filter Order preview to display referral
+		add_filter( 'woocommerce_admin_order_preview_get_order_details', array( $this, 'order_preview_get_referral' ), 10, 2 );
+		add_action( 'woocommerce_admin_order_preview_end', array( $this, 'render_order_preview_referral' ) );
 	}
 
 	/**
@@ -958,6 +962,41 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 		}
+
+	}
+
+	public function order_preview_get_referral( $order_details, $order ) {
+
+		$order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
+
+		$referral = affiliate_wp()->referrals->get_by( 'reference', $order_id, $this->context );
+
+		$referral_html = '<div class="wc-order-preview-affwp-referral">';
+		$referral_html .= '<strong>'. __( 'Affiliate Referral', 'affiliate_wp' ) . '</strong>';
+
+		if( $referral ) {
+
+			$referral_html .= '<a href="' . affwp_admin_url( 'referrals', array( 'referral_id' => $referral->referral_id, 'action' => 'edit_referral' ) ) . '">#' . $referral->referral_id . '</a>';
+
+		} else {
+
+			$referral_html .= '<span aria-hidden="true">&mdash;</span>';
+
+		}
+
+		$referral_html .= '</div>';
+
+		$order_details['referral'] = $referral_html;
+
+		return $order_details;
+
+	}
+
+	public function render_order_preview_referral() {
+
+?>
+		{{{ data.referral }}}
+<?php
 
 	}
 }
