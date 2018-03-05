@@ -965,6 +965,16 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Add "Affiliate Referral" to the Order preview screen.
+	 *
+	 * @access public
+	 * @since  2.1.16
+	 *
+	 * @param array $order_details Order details to send to the preview screen.
+	 * @param WC_Order $order Order object.
+	 * @return array $order_details Modified order details.
+	 */
 	public function order_preview_get_referral( $order_details, $order ) {
 
 		$order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
@@ -986,6 +996,13 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Render the "Affiliate Referral" section in the order preview screen.
+	 *
+	 * @access public
+	 * @since  2.1.16
+	 *
+	 */
 	public function render_order_preview_referral() {
 
 ?>
