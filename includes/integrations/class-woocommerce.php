@@ -971,22 +971,16 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		$referral = affiliate_wp()->referrals->get_by( 'reference', $order_id, $this->context );
 
-		$referral_html = '<div class="wc-order-preview-affwp-referral">';
-		$referral_html .= '<strong>'. __( 'Affiliate Referral', 'affiliate_wp' ) . '</strong>';
-
 		if( $referral ) {
 
+			$referral_html = '<div class="wc-order-preview-affwp-referral">';
+			$referral_html .= '<strong>'. __( 'Affiliate Referral', 'affiliate_wp' ) . '</strong>';
 			$referral_html .= '<a href="' . affwp_admin_url( 'referrals', array( 'referral_id' => $referral->referral_id, 'action' => 'edit_referral' ) ) . '">#' . $referral->referral_id . '</a>';
+			$referral_html .= '</div>';
 
-		} else {
-
-			$referral_html .= '<span aria-hidden="true">&mdash;</span>';
+			$order_details['referral'] = $referral_html;
 
 		}
-
-		$referral_html .= '</div>';
-
-		$order_details['referral'] = $referral_html;
 
 		return $order_details;
 
@@ -995,7 +989,9 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	public function render_order_preview_referral() {
 
 ?>
-		{{{ data.referral }}}
+		<# if ( data.referral ) { #>
+			{{{ data.referral }}}
+		<# } #>
 <?php
 
 	}
