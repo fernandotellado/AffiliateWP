@@ -157,12 +157,12 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
 
         }
 
-        $referral_total = $this->get_total( $action_settings );
+        $total          = $this->get_total( $action_settings );
         $reference      = $data[ 'actions' ][ 'save' ][ 'sub_id' ];
         $description    = $this->get_description( $action_settings, $data );
         $customer_email = $this->get_customer_email( $action_settings );
 
-        $args = $data[ 'extra' ][ 'affiliatewp' ] = compact( 'referral_total', 'reference', 'description', 'customer_email' );
+        $args = $data[ 'extra' ][ 'affiliatewp' ] = compact( 'total', 'reference', 'description', 'customer_email' );
 
         /**
          * Fires when adding a referral via Ninja Forms.
@@ -176,19 +176,18 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
 
 
     /**
-     * Get the total of the referral.
+     * Get the total of the form.
      *
      * @since  1.8.6
      *
      * @param  array  $action_settings  The form action settings.
      *
-     * @return int                      The total amount of the referral.
+     * @return int                      The total amount of the form.
      */
     private function get_total( $action_settings ) {
         $total = 0;
         if( isset( $action_settings[ 'affiliatewp_total' ] ) ) {
             $total = $action_settings[ 'affiliatewp_total' ];
-            $total = affwp_calc_referral_amount( $total );
         }
         return $total;
     }
