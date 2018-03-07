@@ -104,12 +104,12 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 				$referral_id = affiliate_wp()->referrals->add( apply_filters( 'affwp_insert_pending_referral', array(
 					'amount'       => $amount,
-					'reference'    => $subscription_key,
+					'reference'    => $key,
 					'description'  => $subscription,
 					'affiliate_id' => $this->affiliate_id,
 					'context'      => $this->context,
 					'campaign'     => affiliate_wp()->tracking->get_campaign(),
-				), $amount, $subscription_key, $subscription, $this->affiliate_id, $visit_id, array(), $this->context ) );
+				), $amount, $key, $subscription, $this->affiliate_id, $visit_id, array(), $this->context ) );
 
 			}
 
@@ -125,9 +125,9 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 				return; // Customers cannot refer themselves
 			}
-			
+
 			$subscription_level = $rcp_levels_db->get_level( $subscription_id );
-			
+
 			if ( ! empty( $subscription_level->trial_duration ) && ! $member->has_trialed() ) {
 				$total = 0;
 			} else {
