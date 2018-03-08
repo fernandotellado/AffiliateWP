@@ -224,9 +224,13 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
      *                                   title if no custom description is defined.
      */
     private function get_description( $action_settings, $data ) {
+
         $description = '';
-        if( ! empty( $this->get_products( $data ) ) ) {
-            $description = $this->get_products( $data );
+
+        $products    = $this->get_products( $data );
+
+        if( ! empty( $products ) ) {
+            $description = $products;
         }elseif( ! empty( $action_settings[ 'affiliatewp_description' ] ) ) {
             $description = $action_settings[ 'affiliatewp_description' ];
         } elseif( ! empty( $data[ 'settings' ][ 'title' ] ) ) {
