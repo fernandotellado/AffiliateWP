@@ -134,11 +134,17 @@ class Opt_In {
 						'amount'       => affiliate_wp()->settings->get( 'opt_in_referral_amount', 0.00 ),
 						'affiliate_id' => affiliate_wp()->tracking->get_affiliate_id(),
 						'type'         => 'opt-in',
+						'visit_id'     => affiliate_wp()->tracking->get_visit_id(),
 						'reference'    => $data['affwp_email'],
 						'status'       => affiliate_wp()->settings->get( 'opt_in_referral_status', 'pending' )
 					);
 
 					$referral_id = affiliate_wp()->referrals->add( $referral_args );
+					
+					if( 'unpaid' == $referral_args['status'] || 'paid' == $referral_args['status'] ) {
+						affiliate_wp()->visits->update( $referral->visit_id, array( 'referral_id' => $referral_id ), '', 'visit' );
+					}
+
 				}
 
 				do_action( 'affwp_opt_in_success', $this, $referral_id, $referral_args );
