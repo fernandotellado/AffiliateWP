@@ -164,7 +164,9 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 
 			$form            = FrmForm::getOne( $form_id );
 			$description     = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $form->options['affiliatewp']['referral_description_field'] );
+			$description     = ! empty( $description ) ? $description : '';
 			$purchase_amount = floatval( FrmEntryMeta::get_entry_meta_by_field( $entry_id, $form->options['affiliatewp']['purchase_amount_field'] ) );
+
 			$referral_total  = $this->calculate_referral_amount( $purchase_amount, $entry_id );
 
 			$this->insert_pending_referral( $referral_total, $entry_id, $description );
