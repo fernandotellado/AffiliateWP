@@ -213,8 +213,6 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 	 */
 	public function revoke_referral_on_refund( $entry_id, $form_id ) {
 
-		global $frm_entry_meta;
-
 		$this->reject_referral( $entry_id );
 
 		$referral = affiliate_wp()->referrals->get_by( 'reference', $entry_id, $this->context );
@@ -222,7 +220,7 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 		$name     = affiliate_wp()->affiliates->get_affiliate_name( $referral->affiliate_id );
 		$note     = sprintf( __( 'AffiliateWP: Referral #%d for %s for %s rejected', 'affiliate-wp' ), $referral->referral_id, $amount, $name );
 
-		$frm_entry_meta->add_entry_meta( $entry_id, 0, '', array( 'comment' => $note, 'user_id' => 0 ) );
+		FrmEntryMeta::add_entry_meta( $entry_id, 0, '', array( 'comment' => $note, 'user_id' => 0 ) );
 
 	}
 
