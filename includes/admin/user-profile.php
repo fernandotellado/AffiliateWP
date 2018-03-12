@@ -73,8 +73,10 @@ function affwp_user_profile_fields( $user ) {
 			</td>
 		</tr>
 
-		<?php if ( ! affiliate_wp()->emails->is_email_disabled()
+		<?php 
+		if ( ! affiliate_wp()->emails->is_email_disabled()
 			&& ( $affiliate && ! in_array( $affiliate->status, array( 'active', 'inactive' ), true ) )
+			&& affwp_email_notification_enabled( 'affiliate_application_accepted_email' )
 		) : ?>
 			<tr>
 				<th scope="row"><label for="disable-affiliate-email"><?php _e( 'Disable Affiliate Email',  'affiliate-wp' ); ?></label></th>
