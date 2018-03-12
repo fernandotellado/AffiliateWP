@@ -168,7 +168,7 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 			$field_purchase_amount      = $form->options['affiliatewp']['purchase_amount_field'];
 
 			// Return if the "Referral description" and "Purchase Amount" options were not configured in the form settings.
-			if ( empty( $field_referral_description ) && empty( $field_purchase_amount ) ) {
+			if ( empty( $field_referral_description ) || empty( $field_purchase_amount ) ) {
 				return;
 			}
 
