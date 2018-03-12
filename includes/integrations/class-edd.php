@@ -38,6 +38,11 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		add_action( 'edd_meta_box_settings_fields', array( $this, 'download_settings' ), 100 );
 		add_filter( 'edd_metabox_fields_save', array( $this, 'download_save_fields' ) );
 
+		// Per category referral rates
+		add_action( 'download_category_add_form_fields', array( $this, 'add_download_category_rate' ), 10, 2 );
+		add_action( 'download_category_edit_form_fields', array( $this, 'edit_download_category_rate' ), 10 );
+		add_action( 'edited_download_category', array( $this, 'save_download_category_rate' ) );  
+		add_action( 'create_download_category', array( $this, 'save_download_category_rate' ) );
 	}
 
 	/**
@@ -275,6 +280,12 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 			foreach ( $downloads as $key => $download ) {
 
+				// Get the categories associated with the download.
+				$categories = get_the_terms( $download['id'], 'download_category' );
+				
+				// Get the first category ID for the download.
+				$category_id = $categories && ! is_wp_error( $categories ) ? $categories[0]->term_id : 0;
+
 				if ( get_post_meta( $download['id'], '_affwp_' . $this->context . '_referrals_disabled', true ) ) {
 					continue; // Referrals are disabled on this product
 				}
@@ -318,7 +329,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 					$amount += $download['item_number']['options']['recurring']['signup_fee'];
 				}
 
-				$referral_total += $this->calculate_referral_amount( $amount, $payment_id, $download['id'], $affiliate_id );
+				$referral_total += $this->calculate_referral_amount( $amount, $payment_id, $download['id'], $affiliate_id, $category_id );
 			}
 
 		} else {
@@ -329,7 +340,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 				$amount = edd_get_payment_amount( $payment_id );
 			}
 
-			$referral_total = $this->calculate_referral_amount( $amount, $payment_id, '', $affiliate_id );
+			$referral_total = $this->calculate_referral_amount( $amount, $payment_id, '', $affiliate_id, $category_id );
 		}
 
 		return $referral_total;
@@ -693,6 +704,65 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		$fields[] = '_affwp_edd_product_rate';
 		$fields[] = '_affwp_edd_referrals_disabled';
 		return $fields;
+	}
+
+	/**
+	 * Add download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function add_download_category_rate( $category ) {
+		?>
+		<div class="form-field">
+			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate">
+			<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Edit download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function edit_download_category_rate( $category ) {
+		$category_id   = $category->term_id;
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
+		?>
+		<tr class="form-field">
+			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+			<td>
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+			</td>
+		</tr>
+	<?php
+	}
+	
+	/**
+	 * Save download_category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function save_download_category_rate( $category_id ) {
+
+		if ( isset( $_POST['_affwp_' . $this->context . '_category_rate'] ) ) {
+
+			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
+			if ( $rate ) {
+				update_term_meta( $category_id, $meta_key, $rate );
+			} else {
+				delete_term_meta( $category_id, $meta_key );
+			}
+
+		}
+
 	}
 
 }
