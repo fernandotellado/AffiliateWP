@@ -162,10 +162,19 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 
 		if ( $this->was_referred() ) {
 
-			$form            = FrmForm::getOne( $form_id );
-			$description     = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $form->options['affiliatewp']['referral_description_field'] );
+			$form = FrmForm::getOne( $form_id );
+
+			$field_referral_description = $form->options['affiliatewp']['referral_description_field'];
+			$field_purchase_amount      = $form->options['affiliatewp']['purchase_amount_field'];
+
+			// Return if the "Referral description" and "Purchase Amount" options were not configured in the form settings.
+			if ( empty( $field_referral_description ) && empty( $field_purchase_amount ) ) {
+				return;
+			}
+
+			$description     = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $field_referral_description );
 			$description     = ! empty( $description ) ? $description : '';
-			$purchase_amount = floatval( FrmEntryMeta::get_entry_meta_by_field( $entry_id, $form->options['affiliatewp']['purchase_amount_field'] ) );
+			$purchase_amount = floatval( FrmEntryMeta::get_entry_meta_by_field( $entry_id, $field_purchase_amount ) );
 
 			$referral_total  = $this->calculate_referral_amount( $purchase_amount, $entry_id );
 
