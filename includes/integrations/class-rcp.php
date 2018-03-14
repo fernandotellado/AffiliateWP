@@ -192,7 +192,7 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 		}
 
-		if( emprt( $customer ) ) {
+		if( empty( $customer ) ) {
 
 			$customer = array(
 				'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',
