@@ -187,6 +187,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 * @since   1.5
 	 *
 	 * @param int|AffWP\Referral $referral Referral ID or object.
+	 * @return bool True if the referral was successfully updated, otherwise false.
 	*/
 	public function update_referral( $referral = 0, $data = array() ) {
 
@@ -226,9 +227,20 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		 */
 		$new_status = ! empty( $data['status'] ) ? sanitize_key( $data['status'] ) : $referral->status;
 
-		$update = $this->update( $referral->ID, $args, '', 'referral' );
+		$updated = $this->update( $referral->ID, $args, '', 'referral' );
 
-		if( $update ) {
+		/**
+		 * Fires immediately after a referral update has been attempted.
+		 *
+		 * @since 2.1.9
+		 *
+		 * @param \AffWP\Referral $updated_referral Updated referral object.
+		 * @param \AffWP\Referral $referral         Original referral object.
+		 * @param bool            $updated          Whether the referral was successfully updated.
+		 */
+		do_action( 'affwp_updated_referral', affwp_get_referral( $referral ), $referral, $updated );
+
+		if( $updated ) {
 
 			if( ! empty( $new_status ) && $referral->status !== $new_status ) {
 
@@ -263,7 +275,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				}
 			}
 
-			return $update;
+			return true;
 		}
 
 		return false;
@@ -773,6 +785,22 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		}
 
 		return $this->count( $args );
+	}
+
+	/**
+	 * Count the total number of paid referrals
+	 *
+	 * @access  public
+	 * @since   2.1.11
+	 *
+	 * @see count_by_status()
+	 *
+	 * @param string $date         Optional. Date range in which to search. Accepts 'month'. Default empty.
+	 * @param int    $affiliate_id Optional. Affiliate ID. Default 0.
+	 * @return int Number of referrals for the given status or 0 if the affiliate doesn't exist.
+	*/
+	public function paid_count( $date = '', $affiliate_id = 0 ) {
+		return $this->count_by_status( 'paid', $affiliate_id, $date );
 	}
 
 	/**

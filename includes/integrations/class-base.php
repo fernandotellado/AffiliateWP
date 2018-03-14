@@ -361,21 +361,57 @@ abstract class Affiliate_WP_Base {
 	 * @param int        $affiliate_id Optional. Affiliate ID.
 	 * @return string Referral amount.
 	 */
-	public function calculate_referral_amount( $base_amount = '', $reference = '', $product_id = 0, $affiliate_id = 0 ) {
+	public function calculate_referral_amount( $base_amount = '', $reference = '', $product_id = 0, $affiliate_id = 0, $category_id = 0 ) {
 
 		// the affiliate ID can be optionally passed in to override the referral amount
 		$affiliate_id = ! empty( $affiliate_id ) ? $affiliate_id : $this->get_affiliate_id( $reference );
 
 		$rate = '';
 
-		if ( ! empty( $product_id ) ) {
-			$rate = $this->get_product_rate( $product_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) );
+		if ( ! empty( $category_id ) && $get_rate = $this->get_category_rate( $category_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) ) ) {
+			$rate = $get_rate;
+		}
+
+		if ( ! empty( $product_id ) && $get_rate = $this->get_product_rate( $product_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) ) ) {
+			$rate = $get_rate;
 		}
 
 		$amount = affwp_calc_referral_amount( $base_amount, $affiliate_id, $reference, $rate, $product_id );
 
 		return $amount;
 
+	}
+
+	/**
+	 * Retrieves the rate and type for a specific category.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  float
+	*/
+	public function get_category_rate( $category_id = 0, $args = array() ) {
+
+		$args = wp_parse_args( $args, array(
+			'reference'   => '',
+			'affiliate_id' => 0
+		) );
+		
+		$affiliate_id = isset( $args['affiliate_id'] ) ? $args['affiliate_id'] : $this->get_affiliate_id( $args['reference'] );
+
+		$rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true );
+		
+		/**
+		 * Filters the integration category rate.
+		 *
+		 * @since 2.2
+		 *
+		 * @param float   $rate         Category-level referral rate.
+		 * @param int    $category_id  Category ID.
+		 * @param array  $args         Arguments for retrieving the product rate.
+		 * @param int    $affiliate_id  Affiliate ID.
+		 * @param string $context      Order context.
+		 */
+		return apply_filters( 'affwp_get_product_rate', $rate, $category_id, $args, $affiliate_id, $this->context );
 	}
 
 	/**

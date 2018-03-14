@@ -11,13 +11,13 @@ class Affiliate_WP_Integrations {
 	public function get_integrations() {
 
 		return apply_filters( 'affwp_integrations', array(
+			'caldera-forms'  => 'Caldera Forms',
 			'contactform7'   => 'Contact Form 7',
 			'edd'            => 'Easy Digital Downloads',
-			'caldera-forms'  => 'Caldera Forms',
 			'formidablepro'  => 'Formidable Pro',
 			'give'           => 'Give',
 			'gravityforms'   => 'Gravity Forms',
-			'exchange'       => 'iThemes Exchange',
+			'exchange'       => 'ExchangeWP (iThemes Exchange)',
 			'jigoshop'       => 'Jigoshop',
 			'lifterlms'      => 'LifterLMS',
 			'marketpress'    => 'MarketPress',
@@ -43,6 +43,16 @@ class Affiliate_WP_Integrations {
 
 	}
 
+	public function get_enabled_integrations() {
+		return affiliate_wp()->settings->get( 'integrations', array() );
+	}
+
+	/**
+	 * Retrienves a map of all integration keys and their associated class names.
+	 *
+	 * @since 2.2
+	 * @return array
+	 */
 	public function get_integration_classes() {
 
 		return apply_filters( 'affwp_integration_classes', array(
@@ -78,10 +88,12 @@ class Affiliate_WP_Integrations {
 
 	}
 
-	public function get_enabled_integrations() {
-		return affiliate_wp()->settings->get( 'integrations', array() );
-	}
-
+	/**
+	 * Retrieves the class name for a specific integration
+	 *
+	 * @since 2.2
+	 * @return bool|string
+	 */
 	public function get_integration_class( $integration = '' ) {
 
 		if( array_key_exists( $integration, $this->get_integration_classes() ) ) {
@@ -91,7 +103,6 @@ class Affiliate_WP_Integrations {
 
 		return false;
 	}
-
 
 	public function load() {
 
