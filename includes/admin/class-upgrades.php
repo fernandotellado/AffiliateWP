@@ -702,6 +702,9 @@ class Affiliate_WP_Upgrades {
 	 */
 	private function v22_upgrade() {
 
+		// New 'customer_id' column for referrals.
+		@affiliate_wp()->referrals->create_table();
+
 		$registration_notifications   = 'registration_notifications';
 		$admin_referral_notifications = 'admin_referral_notifications';
 		$disable_all_emails           = 'disable_all_emails';
