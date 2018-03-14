@@ -74,7 +74,7 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 		$total_to_process = $this->get_total_count();
 
 		if ( false === $total_to_process ) {
-			
+
 			$total_to_process = affiliate_wp()->referrals->count( array(
 				'number' => -1,
 			) );
@@ -122,10 +122,13 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 					$customer = $integration->get_customer( $referral->reference );
 					$customer['affiliate_id'] = $referral->affiliate_id;
 
-					$inserted[] = affwp_add_customer( $customer );
+					$customer_id = affwp_add_customer( $customer );
+					$inserted[]  = $customer_id;
+
+					$referral->set( 'customer_id', $customer_id, true );
 
 				} catch ( Exception $e ) {
-	
+
 					// Something happened here
 
 				}

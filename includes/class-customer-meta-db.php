@@ -12,12 +12,12 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * Sets up the Customer Meta DB class.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	*/
 	public function __construct() {
 		global $wpdb;
 
-		if( defined( 'customer_WP_NETWORK_WIDE' ) && customer_WP_NETWORK_WIDE ) {
+		if( defined( 'AFFILIATE_WP_NETWORK_WIDE' ) && AFFILIATE_WP_NETWORK_WIDE ) {
 			// Allows a single customer meta table for the whole network
 			$this->table_name  = 'affiliate_wp_customermeta';
 		} else {
@@ -27,23 +27,23 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 		$this->version     = '1.0';
 
 		add_action( 'plugins_loaded', array( $this, 'register_table' ), 11 );
-		add_filter( 'get_customer_metadata', array( $this, 'sanitize_meta' ), 100, 4 );
+		add_filter( 'get_affwp_customer_metadata', array( $this, 'sanitize_meta' ), 100, 4 );
 	}
 
 	/**
 	 * Retrieves the table columns and data types.
 	 *
 	 * @access public
-	 * @since  1.7.18
+	 * @since  2.2
 	 *
 	 * @return array List of customer meta table columns and their respective types.
 	*/
 	public function get_columns() {
 		return array(
-			'meta_id'      => '%d',
-			'customer_id' => '%d',
-			'meta_key'     => '%s',
-			'meta_value'   => '%s',
+			'meta_id'           => '%d',
+			'affwp_customer_id' => '%d',
+			'meta_key'          => '%s',
+			'meta_value'        => '%s',
 		);
 	}
 
@@ -51,20 +51,20 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * Registers the table with $wpdb so the metadata api can find it.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 */
 	public function register_table() {
 		global $wpdb;
-		$wpdb->customermeta = $this->table_name;
+		$wpdb->affwp_customermeta = $this->table_name;
 	}
 
 	/**
 	 * Retrieves an customer meta field for a customer.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 *
 	 * @param int    $customer_id Optional. customer ID. Default 0.
 	 * @param string $meta_key     Optional. The meta key to retrieve. Default empty.
@@ -73,14 +73,14 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 *
 	 */
 	function get_meta( $customer_id = 0, $meta_key = '', $single = false ) {
-		return get_metadata( 'customer', $customer_id, $meta_key, $single );
+		return get_metadata( 'affwp_customer', $customer_id, $meta_key, $single );
 	}
 
 	/**
 	 * Adds a meta data field to a customer.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 *
 	 * @param int    $customer_id Optional. customer ID. Default 0.
 	 * @param string $meta_key     Optional. Meta data key. Default empty.
@@ -89,7 +89,7 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * @return bool False for failure. True for success.
 	 */
 	function add_meta( $customer_id = 0, $meta_key = '', $meta_value = '', $unique = false ) {
-		return add_metadata( 'customer', $customer_id, $meta_key, $meta_value, $unique );
+		return add_metadata( 'affwp_customer', $customer_id, $meta_key, $meta_value, $unique );
 	}
 
 	/**
@@ -101,7 +101,7 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * If the meta field for the customer does not exist, it will be added.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 *
 	 * @param int    $customer_id Optional. customer ID. Default 0.
 	 * @param string $meta_key     Optional. Meta data key. Default empty.
@@ -110,7 +110,7 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * @return bool False on failure, true if success.
 	 */
 	function update_meta( $customer_id = 0, $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		return update_metadata( 'customer', $customer_id, $meta_key, $meta_value, $prev_value );
+		return update_metadata( 'affwp_customer', $customer_id, $meta_key, $meta_value, $prev_value );
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * allows removing all metadata matching key, if needed.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 *
 	 * @param int    $customer_id Optional. customer ID. Default 0.
 	 * @param string $meta_key     Optional. Meta data key. Default empty.
@@ -129,7 +129,7 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * @return bool False for failure. True for success.
 	 */
 	function delete_meta( $customer_id = 0, $meta_key = '', $meta_value = '' ) {
-		return delete_metadata( 'customer', $customer_id, $meta_key, $meta_value );
+		return delete_metadata( 'affwp_customer', $customer_id, $meta_key, $meta_value );
 	}
 
 	/**
@@ -145,10 +145,10 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 */
 	public function sanitize_meta( $value, $customer_id, $meta_key, $single ) {
 
-		$meta_cache = wp_cache_get( $customer_id, 'customer_meta' );
+		$meta_cache = wp_cache_get( $customer_id, 'affwp_customer_meta' );
 
 		if ( ! $meta_cache ) {
-			$meta_cache = update_meta_cache( 'customer', array( $customer_id ) );
+			$meta_cache = update_meta_cache( 'affwp_customer', array( $customer_id ) );
 			$meta_cache = $meta_cache[ $customer_id ];
 		}
 
@@ -170,7 +170,7 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	 * Creates the table.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 *
 	 * @see dbDelta()
 	*/
@@ -179,11 +179,11 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 
 		$sql = "CREATE TABLE {$this->table_name} (
 			meta_id bigint(20) NOT NULL AUTO_INCREMENT,
-			customer_id bigint(20) NOT NULL DEFAULT '0',
+			affwp_customer_id bigint(20) NOT NULL DEFAULT '0',
 			meta_key varchar(255) DEFAULT NULL,
 			meta_value longtext,
 			PRIMARY KEY  (meta_id),
-			KEY customer_id (customer_id),
+			KEY affwp_customer_id (affwp_customer_id),
 			KEY meta_key (meta_key)
 			) CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
