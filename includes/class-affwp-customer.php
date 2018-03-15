@@ -209,7 +209,7 @@ final class Customer extends Base_Object {
 	public function get_canonical_affiliate_id() {
 		global $wpdb;
 		$table_name   = affiliate_wp()->customer_meta->table_name;
-		$affiliate_id = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$table_name} WHERE meta_key = 'affiliate_id' AND customer_id = %d ORDER BY meta_id ASC LIMIT 1;", $this->customer_id ) );
+		$affiliate_id = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$table_name} WHERE meta_key = 'affiliate_id' AND affwp_customer_id = %d ORDER BY meta_id ASC LIMIT 1;", $this->customer_id ) );
 		return apply_filters( 'affwp_get_canonical_customer_affiliate_id', $affiliate_id, $this );
 	}
 }
