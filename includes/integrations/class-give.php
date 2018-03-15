@@ -269,22 +269,27 @@ class Affiliate_WP_Give extends Affiliate_WP_Base {
 	 * @return  array
 	*/
 	public function get_customer( $payment_id = 0 ) {
-		
-		$customer     = array();
-		$donor        = new Give_Donor( give_get_payment_donor_id( $payment_id ) );
-		$names        = explode( ' ', $donor->name );
-		$first_name   = $names[0];
-		$last_name    = '';
-		if( ! empty( $names[1] ) ) {
-			unset( $names[0] );
-			$last_name = implode( ' ', $names );
-		}
 
-		$customer['user_id']    = $donor->user_id;
-		$customer['email']      = $donor->email;
-		$customer['first_name'] = $first_name;
-		$customer['last_name']  = $last_name;
-		$customer['ip']         = give_get_payment_user_ip( $payment_id );
+		$customer = array();
+
+		if ( class_exists( 'Give_Donor' ) ) {
+
+			$donor        = new Give_Donor( give_get_payment_donor_id( $payment_id ) );
+			$names        = explode( ' ', $donor->name );
+			$first_name   = $names[0];
+			$last_name    = '';
+			if( ! empty( $names[1] ) ) {
+				unset( $names[0] );
+				$last_name = implode( ' ', $names );
+			}
+
+			$customer['user_id']    = $donor->user_id;
+			$customer['email']      = $donor->email;
+			$customer['first_name'] = $first_name;
+			$customer['last_name']  = $last_name;
+			$customer['ip']         = give_get_payment_user_ip( $payment_id );
+
+		}
 
 		return $customer;
 	}

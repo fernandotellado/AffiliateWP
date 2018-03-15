@@ -358,13 +358,18 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	public function get_customer( $order_id = 0 ) {
 
 		$customer = array();
-		$order    = new WC_Order( $order_id );
 
-		$customer['user_id']    = $order->get_user_id();
-		$customer['email']      = $order->get_billing_email();
-		$customer['first_name'] = $order->get_billing_first_name();
-		$customer['last_name']  = $order->get_billing_last_name();
-		$customer['ip']         = $order->get_customer_ip_address();
+		if ( class_exists( 'WC_Order' ) ) {
+
+			$order    = new WC_Order( $order_id );
+
+			$customer['user_id']    = $order->get_user_id();
+			$customer['email']      = $order->get_billing_email();
+			$customer['first_name'] = $order->get_billing_first_name();
+			$customer['last_name']  = $order->get_billing_last_name();
+			$customer['ip']         = $order->get_customer_ip_address();
+
+		}
 
 		return $customer;
 	}
