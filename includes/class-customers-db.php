@@ -9,7 +9,7 @@
 /**
  * Class Affiliate_WP_Customers_DB
  *
- * @property-read \AffWP\Affiliate\REST\v1\Endpoints $REST Affiliates REST endpoints.
+ * @property-read \AffWP\Affiliate\REST\v1\Endpoints $REST Customers REST endpoints.
  */
 class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
