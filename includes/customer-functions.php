@@ -36,7 +36,14 @@ function affwp_get_customer( $customer = null ) {
  * Adds a new customer to the database.
  *
  * @since 2.2
+ * @param array $data {
+ *     Arguments for setting up the customer record.
  *
+ *     @type string       $first_name     First name for the customer.
+ *     @type string       $last_name      Last  anme for the customer.
+ *     @type string       $email          Email address for the customer.
+ *     @type int          $affiliate_id   ID of the affiliate that generated this customer.
+ * }
  * @return int|false ID of the newly-created customer, otherwise false.
  */
 function affwp_add_customer( $data = array() ) {
