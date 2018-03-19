@@ -115,18 +115,17 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	 *     @type int          $number       Number of customers to query for. Default 20.
 	 *     @type int          $offset       Number of customers to offset the query for. Default 0.
 	 *     @type int|array    $exclude      Affiliate ID or array of IDs to explicitly exclude.
-	 *     @type int|array    $user_id      User ID or array of user IDs that correspond to the affiliate user.
-	 *     @type int|array    $affiliate_id Affiliate ID or array of affiliate IDs to retrieve.
-	 *     @type string       $order        How to order returned affiliate results. Accepts 'ASC' or 'DESC'.
+	 *     @type int|array    $user_id      User ID or array of user IDs that correspond to the customer.
+	 *     @type str|array    $email        Email or array of emails that correspond to the customer.
+	 *     @type string       $order        How to order returned customer results. Accepts 'ASC' or 'DESC'.
 	 *                                      Default 'DESC'.
-	 *     @type string       $orderby      Affiliates table column to order results by. Also accepts 'paid',
-	 *                                      'unpaid', 'rejected', or 'pending' referral statuses, 'name'
-	 *                                      (user display_name), or 'username' (user user_login). Default 'affiliate_id'.
-	 *     @type string|array $fields       Specific fields to retrieve. Accepts 'ids', a single affiliate field, or an
+	 *     @type string       $orderby      Customers table column to order results by.
+	 *                                   	Default 'customer_id'.
+	 *     @type string|array $fields       Specific fields to retrieve. Accepts 'ids', a single customer field, or an
 	 *                                      array of fields. Default '*' (all).
 	 * }
 	 * @param bool  $count Optional. Whether to return only the total number of results found. Default false.
-	 * @return array|int Array of affiliate objects or field(s) (if found), int if `$count` is true.
+	 * @return array|int Array of customer objects or field(s) (if found), int if `$count` is true.
 	 */
 	public function get_customers( $args = array(), $count = false ) {
 		global $wpdb;
@@ -136,7 +135,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			'offset'       => 0,
 			'exclude'      => array(),
 			'user_id'      => 0,
-			'affiliate_id' => 0,
+			'email'        => '',
 			'status'       => '',
 			'order'        => 'DESC',
 			'orderby'      => 'customer_id',
@@ -165,10 +164,10 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 				$exclude = intval( $args['exclude'] );
 			}
 
-			$where .= "`affiliate_id` NOT IN( {$exclude} )";
+			$where .= "`customer_id` NOT IN( {$exclude} )";
 		}
 
-		// affiliates for specific users
+		// customers for specific users
 		if ( ! empty( $args['user_id'] ) ) {
 
 			if ( is_array( $args['user_id'] ) ) {
@@ -179,25 +178,20 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
 			$where .= "WHERE `user_id` IN( {$user_ids} ) ";
 
-		}		/*
+		}
 
-		/* TODO: this has to be a meta join */
+		// customers with specific emails
+		if ( ! empty( $args['email'] ) ) {
 
-		/*
-		// Specific affiliates.
-		if ( ! empty( $args['affiliate_id'] ) ) {
-			if ( is_array( $args['affiliate_id'] ) ) {
-				$affiliates = implode( ',', array_map( 'intval', $args['affiliate_id'] ) );
+			if ( is_array( $args['email'] ) ) {
+				$emails = implode( ',', array_map( 'sanitize_text_field', $args['email'] ) );
 			} else {
-				$affiliates = intval( $args['affiliate_id'] );
+				$emails = sanitize_text_field( $args['email'] );
 			}
 
-			if ( empty( $args['user_id'] ) ) {
-				$where .= "WHERE `affiliate_id` IN( {$affiliates} )";
-			} else {
-				$where .= "AND `affiliate_id` IN( {$affiliates} )";
-			}
-		}*/
+			$where .= "WHERE `email` IN( {$emails} ) ";
+
+		}
 
 		if ( ! empty( $args['search'] ) ) {
 			$search_value = $args['search'];
