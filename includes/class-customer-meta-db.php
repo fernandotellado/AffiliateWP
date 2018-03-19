@@ -1,5 +1,12 @@
 <?php
 /**
+ * Customer meta database
+ *
+ * @since 2.2
+ * @package Affiliate_WP
+ */
+
+ /**
  * Core class used to implement customer meta.
  *
  * @since 2.2

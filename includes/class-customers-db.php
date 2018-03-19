@@ -1,4 +1,10 @@
 <?php
+/**
+ * Customer database
+ *
+ * @since 2.2
+ * @package Affiliate_WP
+ */
 
 /**
  * Class Affiliate_WP_Customers_DB
@@ -44,7 +50,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			$this->table_name  = $wpdb->prefix . 'affiliate_wp_customers';
 		}
 		$this->primary_key = 'customer_id';
-		$this->version     = '2.2';
+		$this->version     = '1.0';
 
 		// REST endpoints.
 		if ( version_compare( $wp_version, '4.4', '>=' ) ) {
