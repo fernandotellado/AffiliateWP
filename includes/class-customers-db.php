@@ -380,6 +380,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			/**
 			 * Fires immediately after an customer has been added to the database.
 			 *
+			 * @since 2.2
 			 * @param int   $add  The new customer ID.
 			 * @param array $args The arguments passed to the insert method.
 			 */
