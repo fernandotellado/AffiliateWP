@@ -2,13 +2,26 @@
 
 class Affiliate_WP_Integrations {
 
+	/**
+	 * Get things started.
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
 	public function __construct() {
 
 		$this->load();
 
 	}
 
+	/**
+	 * Retrienves an array of all supported integrations.
+	 *
+	 * @since 1.0
+	 * @return array
+	 */
 	public function get_integrations() {
+
 
 		return apply_filters( 'affwp_integrations', array(
 			'caldera-forms'  => 'Caldera Forms',
@@ -43,6 +56,12 @@ class Affiliate_WP_Integrations {
 
 	}
 
+	/**
+	 * Retrienves an array of all enabled integrations.
+	 *
+	 * @since 1.0
+	 * @return array
+	 */
 	public function get_enabled_integrations() {
 		return affiliate_wp()->settings->get( 'integrations', array() );
 	}
@@ -104,6 +123,12 @@ class Affiliate_WP_Integrations {
 		return false;
 	}
 
+	/**
+	 * Load integration classes for each enabled integration.
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
 	public function load() {
 
 		// Load each enabled integrations
