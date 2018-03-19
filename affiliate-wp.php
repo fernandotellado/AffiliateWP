@@ -89,7 +89,7 @@ final class Affiliate_WP {
 	 * The customer meta DB instance variable.
 	 *
 	 * @access public
-	 * @since  1.6
+	 * @since  2.2
 	 * @var    Affiliate_WP_Customer_Meta_DB
 	 */
 	public $customer_meta;

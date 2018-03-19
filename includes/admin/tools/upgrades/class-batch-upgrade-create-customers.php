@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Implements an upgrade routine for creatingg customer records.
  *
+ * @since 2.2
  * @see \AffWP\Utils\Batch_Process\Recount_Affiliate_Stats
  */
 class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With_PreFetch {
@@ -19,7 +20,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Batch process ID.
 	 *
-	 * @access public
 	 * @since  2.2
 	 * @var    string
 	 */
@@ -28,7 +28,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Capability needed to perform the current batch process.
 	 *
-	 * @access public
 	 * @since  2.2
 	 * @var    string
 	 */
@@ -37,7 +36,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Number of referrals to process per step.
 	 *
-	 * @access public
 	 * @since  2.2
 	 * @var    int
 	 */
@@ -46,8 +44,7 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Initializes the batch process.
 	 *
-	 * @access public
-	 * @since  2.2.5
+	 * @since  2.2
 	 */
 	public function init( $data = null ) {
 
@@ -66,7 +63,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Handles pre-fetching user IDs for accounts in migration.
 	 *
-	 * @access public
 	 * @since  2.2
 	 */
 	public function pre_fetch() {
@@ -86,7 +82,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Executes a single step in the batch process.
 	 *
-	 * @access public
 	 * @since  2.2
 	 *
 	 * @return int|string|\WP_Error Next step number, 'done', or a WP_Error object.
@@ -151,7 +146,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Retrieves a message based on the given message code.
 	 *
-	 * @access public
 	 * @since  2.2
 	 *
 	 * @param string $code Message code.
@@ -177,7 +171,6 @@ class Upgrade_Create_Customers extends Utils\Batch_Process implements Batch\With
 	/**
 	 * Defines logic to execute after the batch processing is complete.
 	 *
-	 * @access public
 	 * @since  2.2
 	 *
 	 * @param string $batch_id Batch process ID.
