@@ -1,8 +1,15 @@
 <?php
 /**
+ * Customer functions
+ *
+ * @since 2.2
+ * @package Affiliate_WP
+ */
+
+/**
  * Retrieves the customer object
  *
- * @since 1.1.4
+ * @since 2.2
  *
  * @param int|AffWP\Customer $creative Customer ID or object.
  * @return AffWP\Customer|false Customer object, otherwise false.
