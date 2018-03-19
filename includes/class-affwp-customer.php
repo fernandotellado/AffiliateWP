@@ -18,7 +18,7 @@ namespace AffWP;
  * @see AffWP\Base_Object
  * @see affwp_get_affiliate()
  *
- * @property-read int      $ID   Alias for `$affiliate_id`.
+ * @property-read int      $ID   Alias for `$customer_id`.
  * @property      stdClass $user User object.
  * @property      array    $meta Meta array.
  * @property-read string   $date Alias for `$date_registered`.
