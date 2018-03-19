@@ -316,8 +316,15 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	 * @access public
 	 *
 	 * @param array $args {
-	 *     Optional. Array of arguments for adding a new customer. Default empty array.
+	 *     Arguments for setting up the customer record.
 	 *
+	 *     @type string       $first_name     First name for the customer.
+	 *     @type string       $last_name      Last  anme for the customer.
+	 *     @type string       $email          Email address for the customer.
+	 *     @type int          $affiliate_id   ID of the affiliate that generated this customer.
+	 *     @type int          $user_id        ID of the user to associate with the customer.
+	 *     @type string       $date_created   The date this customer was created in Y-m-d H:i:s format.
+	 * }
 	 *     @type string $date_created Date the customer was registered. Default is the current time.
 	 *     @type int    $user_id         User ID used to correspond to the customer.
 	 *
@@ -325,6 +332,16 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	*/
 	public function add( $args = array() ) {
 	
+		$defaults = array(
+			'first_name'   => '',
+			'last_name'    => '',
+			'email'        => '',
+			'user_id'      => 0,
+			'affiliate_id' => 0,
+			'date_created' => '',
+		);
+
+		$args = wp_parse_args( $args, $defaults );
 
 		if ( isset( $args['date_created'] ) ) {
 

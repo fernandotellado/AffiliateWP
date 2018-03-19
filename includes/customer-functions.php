@@ -43,17 +43,12 @@ function affwp_get_customer( $customer = null ) {
  *     @type string       $last_name      Last  anme for the customer.
  *     @type string       $email          Email address for the customer.
  *     @type int          $affiliate_id   ID of the affiliate that generated this customer.
+ *     @type int          $user_id        ID of the user to associate with the customer.
+ *     @type string       $date_created   The date this customer was created in Y-m-d H:i:s format.
  * }
  * @return int|false ID of the newly-created customer, otherwise false.
  */
 function affwp_add_customer( $data = array() ) {
-
-	$args = array(
-		'first_name'   => ! empty( $data['first_name'] ) ? sanitize_text_field( $data['first_name'] ) : '',
-		'last_name'    => ! empty( $data['last_name'] ) ? sanitize_text_field( $data['last_name'] ) : '',
-		'email'        => ! empty( $data['email'] ) ? sanitize_text_field( $data['email'] ) : '',
-		'affiliate_id' => ! empty( $data['affiliate_id'] ) ? absint( $data['affiliate_id'] ) : '',
-	);
 
 	if ( $customer_id = affiliate_wp()->customers->add( $args ) ) {
 		return $customer_id;
