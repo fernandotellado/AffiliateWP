@@ -302,7 +302,7 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	 * @since  2.2
 	 *
 	 * @param array $args Optional. Any valid get_customers() arguments. Default empty array.
-	 * @return int Number of affiliates found for the given arguments.
+	 * @return int Number of customers found for the given arguments.
 	 */
 	public function count( $args = array() ) {
 		return $this->get_customers( $args, true );
