@@ -704,6 +704,11 @@ class Affiliate_WP_Upgrades {
 
 		// New 'customer_id' column for referrals.
 		@affiliate_wp()->referrals->create_table();
+		@affiliate_wp()->capabilities->add_caps();
+		@affiliate_wp()->customers->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customers table has been created.' );
+		@affiliate_wp()->customer_meta->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customer meta table has been created.' );
 
 		$registration_notifications   = 'registration_notifications';
 		$admin_referral_notifications = 'admin_referral_notifications';
