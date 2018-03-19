@@ -856,8 +856,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 *
 	 * @access  private
 	 * @since   2.2
+	 * @param array $args {
+	 *     Optional. Arguments for setting up the customer record.
+	 *
+	 *     @type int          $customer_id   ID of an existing customer record to attribute the referral to.
+	 *     @type string       $email         Email address for the customer.
+	 * }
 	 * @return  int $customer_id The ID of the customer record for the referral.
-	*/
+	 */
 	private function setup_customer( $args = array() ) {	
 
 		$existing      = false;
