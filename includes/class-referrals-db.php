@@ -885,9 +885,9 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	
 		}
 
-		if( ! $existing && ! empty( $customer_args['email'] ) ) {
+		if( ! $existing && is_array( $args['customer'] ) && ! empty( $args['customer']['email'] ) ) {
 
-			$customer = affiliate_wp()->customers->get_by( 'email', $customer_args['email'] );
+			$customer = affiliate_wp()->customers->get_by( 'email', $args['customer']['email'] );
 
 			if( $customer ) {
 				$existing = true;
