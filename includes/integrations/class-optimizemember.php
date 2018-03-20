@@ -125,8 +125,12 @@ class Affiliate_WP_OptimizeMember extends Affiliate_WP_Base {
 				);
 
 				if( $user_id ) {
+
 					$user = get_userdata( $user_id );
-					$this->email = $user->user_email;
+
+					if( $user ) {
+						$this->email = $user->user_email;
+					}
 				}
 
 				$this->add_pending_referral( $args );
