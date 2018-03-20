@@ -411,6 +411,28 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	}
 
 	/**
+	 * Updates an existing record in the database.
+	 *
+	 * @since 2.2
+	 *
+	 * @param  int    $row_id Row ID for the record being updated.
+	 * @param  array  $data   Optional. Array of columns and associated data to update. Default empty array.
+	 * @param  string $where  Optional. Column to match against in the WHERE clause. If empty, $primary_key
+	 *                        will be used. Default empty.
+	 * @return bool           False if the record could not be updated, true otherwise.
+	 */
+	public function update( $row_id, $data = array(), $where = '', $type = 'customer' ) {
+
+		if( isset( $data['affiliate_id'] ) ) {
+			$affiliate_id = absint( $args['affiliate_id'] );
+			affwp_add_customer_meta( $row_id, 'affiliate_id', $affiliate_id, false );
+			unset( $args['affiliate_id'] );
+		}
+
+		return parent::update( $row_id, $data, $where, $type );
+	}
+
+	/**
 	 * Create the table
 	 *
 	 * @access public

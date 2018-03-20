@@ -72,14 +72,7 @@ function affwp_update_customer( $data = array() ) {
 		return false;
 	}
 
-	$args = array(
-		'first_name'   => ! empty( $data['first_name'] ) ? sanitize_text_field( $data['first_name'] ) : '',
-		'last_name'    => ! empty( $data['last_name'] ) ? sanitize_text_field( $data['last_name'] ) : '',
-		'email'        => ! empty( $data['email'] ) ? sanitize_text_field( $data['email'] ) : '',
-		'affiliate_id' => ! empty( $data['affiliate_id'] ) ? absint( $data['affiliate_id'] ) : '',
-	);
-
-	if ( affiliate_wp()->customers->update( $customer->ID, $args, '', 'customer' ) ) {
+	if ( affiliate_wp()->customers->update( $customer->ID, $data, '', 'customer' ) ) {
 		return true;
 	}
 
