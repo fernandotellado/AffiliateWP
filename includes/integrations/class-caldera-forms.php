@@ -2,6 +2,12 @@
 
 class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 
+	/**
+	 * The current form being submitted
+	 *
+	 * @access  public
+	 * @since   2.2
+	*/
 	public $form = null; 
 
 	/**
@@ -267,9 +273,10 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	 * Retrieves the customer details for an entry
 	 *
 	 * @access  public
+	 * @param   $entry_id int The ID of the entry to retrieve customer details for.
 	 * @since   2.2
-	 * @return  array
-	*/
+	 * @return  array An array of the customer details
+	 */
 	public function get_customer( $entry_id = 0 ) {
 
 		$customer = array();
