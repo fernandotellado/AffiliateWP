@@ -182,9 +182,9 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 				$user = get_userdata( $user_id );
 
 				$customer = array(
-					'first_name'   => is_user_logged_in() ? $user->last_name : '',
-					'last_name'    => is_user_logged_in() ? $user->first_name : '',
-					'email'        => is_user_logged_in() ? $user->user_email : $this->email,
+					'first_name'   => is_user_logged_in() && $user ? $user->last_name : '',
+					'last_name'    => is_user_logged_in() && $user ? $user->first_name : '',
+					'email'        => is_user_logged_in() && $user ? $user->user_email : $this->email,
 					'user_id'      => $user_id,
 					'affiliate_id' => $this->affiliate_id
 				);
