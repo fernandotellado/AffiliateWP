@@ -378,8 +378,9 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	 * Retrieves the customer details for a form submission
 	 *
 	 * @access  public
+	 * @param   $entry_id int The ID of the entry to retrieve customer details for.
 	 * @since   2.2
-	 * @return  array
+	 * @return  array An array of the customer details
 	*/
 	public function get_customer( $entry_id = 0 ) {
 

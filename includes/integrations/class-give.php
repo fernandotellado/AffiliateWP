@@ -265,8 +265,9 @@ class Affiliate_WP_Give extends Affiliate_WP_Base {
 	 * Retrieves the customer details for a donation
 	 *
 	 * @access  public
+	 * @param   $payment_id int The ID of the payment to retrieve customer details for.
 	 * @since   2.2
-	 * @return  array
+	 * @return  array An array of the customer details
 	*/
 	public function get_customer( $payment_id = 0 ) {
 
