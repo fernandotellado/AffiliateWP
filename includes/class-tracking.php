@@ -673,6 +673,12 @@ class Affiliate_WP_Tracking {
 	 */
 	public function set_visit_id( $visit_id = 0 ) {
 		setcookie( 'affwp_ref_visit_id', $visit_id, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, $this->get_cookie_domain() );
+
+		$integrations = affiliate_wp()->integrations->get_enabled_integrations();
+
+		if ( array_key_exists( 'optimizemember', $integrations ) || array_key_exists( 's2member', $integrations ) ) {
+			$_COOKIE['affwp_ref_visit_id'] = $visit_id;
+		}
 	}
 
 	/**
@@ -756,6 +762,12 @@ class Affiliate_WP_Tracking {
 	 */
 	public function set_affiliate_id( $affiliate_id = 0 ) {
 		setcookie( 'affwp_ref', $affiliate_id, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, $this->get_cookie_domain() );
+
+		$integrations = affiliate_wp()->integrations->get_enabled_integrations();
+
+		if ( array_key_exists( 'optimizemember', $integrations ) || array_key_exists( 's2member', $integrations ) ) {
+			$_COOKIE['affwp_ref'] = $affiliate_id;
+		}
 	}
 
 	/**
@@ -765,6 +777,12 @@ class Affiliate_WP_Tracking {
 	 */
 	public function set_campaign( $campaign = '' ) {
 		setcookie( 'affwp_campaign', $campaign, strtotime( '+' . $this->get_expiration_time() . ' days' ), COOKIEPATH, $this->get_cookie_domain() );
+
+		$integrations = affiliate_wp()->integrations->get_enabled_integrations();
+
+		if ( array_key_exists( 'optimizemember', $integrations ) || array_key_exists( 's2member', $integrations ) ) {
+			$_COOKIE['affwp_campaign'] = $campaign;
+		}
 	}
 
 	/**
