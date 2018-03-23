@@ -8,7 +8,7 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	 * @access  public
 	 * @since   2.2
 	*/
-	public $form = null; 
+	public $form;
 
 	/**
 	 * Get things started
