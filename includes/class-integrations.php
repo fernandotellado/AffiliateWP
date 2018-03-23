@@ -57,20 +57,22 @@ class Affiliate_WP_Integrations {
 	}
 
 	/**
-	 * Retrienves an array of all enabled integrations.
+	 * Retrieves an array of all enabled integrations.
 	 *
-	 * @since 1.0
-	 * @return array
+	 * @since 2.2
+	 *
+	 * @return array The list of enabled integrations.
 	 */
 	public function get_enabled_integrations() {
 		return affiliate_wp()->settings->get( 'integrations', array() );
 	}
 
 	/**
-	 * Retrienves a map of all integration keys and their associated class names.
+	 * Retrieves a map of all integration keys and their associated class names.
 	 *
 	 * @since 2.2
-	 * @return array
+	 *
+	 * @return array The list of integration classes.
 	 */
 	public function get_integration_classes() {
 
