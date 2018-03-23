@@ -346,4 +346,12 @@ class Sub_Commands extends Base {
 
 }
 
-\WP_CLI::add_command( 'affwp creative', 'AffWP\Creative\CLI\Sub_Commands' );
+try {
+
+	\WP_CLI::add_command( 'affwp creative', 'AffWP\Creative\CLI\Sub_Commands' );
+
+} catch( \Exception $exception ) {
+
+	affiliate_wp()->utils->log( $exception->getCode() . ' - ' . $exception->getMessage() );
+
+}
