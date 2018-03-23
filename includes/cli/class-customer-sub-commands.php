@@ -115,7 +115,11 @@ class Sub_Commands extends Base {
 		$email = Utils\get_flag_value(  $assoc_args, 'email', '' );
 
 		if ( empty( $email ) ) {
-			\WP_CLI::error( __( 'A --email value must be specified to add a new customer.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'A --email value must be specified to add a new customer.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		$data['email']        = $email;
@@ -131,7 +135,11 @@ class Sub_Commands extends Base {
 			$customer = affiliate_wp()->customers->get_by( 'email', $data['email'] );
 			\WP_CLI::success( sprintf( __( 'A customer with the ID %d has been successfully created.', 'affiliate-wp' ), $customer->customer_id ) );
 		} else {
-			\WP_CLI::error( __( 'The customer could not be created.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'The customer could not be created.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 	}
 
@@ -170,11 +178,19 @@ class Sub_Commands extends Base {
 	 */
 	public function update( $args, $assoc_args ) {
 		if ( empty( $args[0] ) ) {
-			\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		if ( ! $customer = affwp_get_customer( $args[0] ) ) {
-			\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		$data['email']        = Utils\get_flag_value(  $assoc_args, 'email', ''      );
@@ -190,7 +206,11 @@ class Sub_Commands extends Base {
 		if ( $updated ) {
 			\WP_CLI::success( __( 'The customer was successfully updated.', 'affiliate-wp' ) );
 		} else {
-			\WP_CLI::error( __( 'The customer could not be updated.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'The customer could not be updated.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 	}
 
@@ -214,11 +234,19 @@ class Sub_Commands extends Base {
 	 */
 	public function delete( $args, $assoc_args ) {
 		if ( empty( $args[0] ) ) {
-			\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		if ( ! $customer = affwp_get_customer( $args[0] ) ) {
-			\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'A valid customer ID is required to proceed.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		$deleted = affwp_delete_customer( $customer );
@@ -226,7 +254,11 @@ class Sub_Commands extends Base {
 		if ( $deleted ) {
 			\WP_CLI::success( __( 'The customer was successfully deleted.', 'affiliate-wp' ) );
 		} else {
-			\WP_CLI::error( __( 'The customer could not be deleted.', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'The customer could not be deleted.', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 	}
 

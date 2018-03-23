@@ -21,7 +21,11 @@ class Command extends \WP_CLI_Command {
 	 */
 	public function details( $_, $assoc_args ) {
 		if ( ! class_exists( 'Affiliate_WP' ) ) {
-			\WP_CLI::error( __( 'AffiliateWP is not installed', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'AffiliateWP is not installed', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		// Version.
