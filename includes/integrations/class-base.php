@@ -460,10 +460,10 @@ abstract class Affiliate_WP_Base {
 	/**
 	 * Retrieves the customer details for an order
 	 *
-	 * @access  public
-	 * @param   $order_id int The ID of the order to retrieve customer details for.
-	 * @since   2.2
-	 * @return  array An array of the customer details
+	 * @since 2.2
+	 *
+	 * @param int $order_id The ID of the order to retrieve customer details for.
+	 * @return array An array of the customer details
 	 */
 	public function get_customer( $order_id = 0 ) {
 
@@ -480,7 +480,7 @@ abstract class Affiliate_WP_Base {
 	}
 
 	/**
-	 * Write log message
+	 * Writes a log message.
 	 *
 	 * @since 1.8
 	 */
