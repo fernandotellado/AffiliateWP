@@ -164,10 +164,10 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 	/**
 	 * Retrieves the customer details for a specific subscription key
 	 *
-	 * @access  public
-	 * @param   $subscription_key int The subscription key to retrieve customer details for.
-	 * @since   2.2
-	 * @return  array An array of the customer details
+	 * @since 2.2
+	 *
+	 * @param int $subscription_key The subscription key to retrieve customer details for.
+	 * @return array An array of the customer details
 	*/
 	public function get_customer( $subscription_key = 0 ) {
 
