@@ -93,7 +93,7 @@ class Sub_Commands extends Base {
 	 * : Optional. User ID identifier to be associated with the customer.
 	 *
 	 * [--affiliate_id=<affiliate ID>]
-	 * : Optional. Affiliate IDd to link to customer.
+	 * : Optional. Affiliate ID to link to customer.
 	 *
 	 * ## EXAMPLES
 	 *
