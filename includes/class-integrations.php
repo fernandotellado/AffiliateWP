@@ -15,7 +15,7 @@ class Affiliate_WP_Integrations {
 	}
 
 	/**
-	 * Retrienves an array of all supported integrations.
+	 * Retrieves an array of all supported integrations.
 	 *
 	 * @since 1.0
 	 * @return array
