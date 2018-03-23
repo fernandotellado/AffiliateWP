@@ -48,8 +48,10 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	/**
 	 * Records a pending referral when a pending payment is created
 	 *
-	 * @access  public
-	 * @since   1.0
+	 * @since 1.0
+	 *
+	 * @param int   $payment_id   Optional. Payment ID. Defualt 0.
+	 * @param array $payment_data Optional. Payment data. Default empty array.
 	*/
 	public function add_pending_referral( $payment_id = 0, $payment_data = array() ) {
 
@@ -384,11 +386,12 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	}
 
 	/**
-	 * Retrieves the customer details for an order
+	 * Retrieves the customer details for an order.
 	 *
-	 * @access  public
-	 * @since   2.2
-	 * @return  array
+	 * @since 2.2
+	 *
+	 * @param int $payment_id Optional. Payment ID. Default 0.
+	 * @return array Customer details.
 	*/
 	public function get_customer( $payment_id = 0 ) {
 
