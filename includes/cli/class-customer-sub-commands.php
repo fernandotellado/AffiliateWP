@@ -20,8 +20,7 @@ class Sub_Commands extends Base {
 	 * Customer display fields.
 	 *
 	 * @since 2.2
-	 * @access protected
-	 * @var array
+	 * @var   array
 	 */
 	protected $obj_fields = array(
 		'ID',
@@ -38,7 +37,6 @@ class Sub_Commands extends Base {
 	 * Sets up the fetcher for sanity-checking.
 	 *
 	 * @since 2.2
-	 * @access public
 	 *
 	 * @see \AffWP\Customer\CLI\Fetcher
 	 */
@@ -67,6 +65,8 @@ class Sub_Commands extends Base {
 	 *
 	 *     # Retrieve customer ID 12.
 	 *     wp affwp customer get 12
+	 *
+	 * @since 2.2
 	 */
 	public function get( $args, $assoc_args ) {
 		parent::get( $args, $assoc_args );
@@ -107,7 +107,6 @@ class Sub_Commands extends Base {
 	 *     wp affwp customer create --first_name=Susan --last_name=Jones --affiliate_id=27
 	 *
 	 * @since 2.2
-	 * @access public
 	 *
 	 * @param array $_          Top-level arguments (unused).
 	 * @param array $assoc_args Associated arguments (flags).
@@ -165,7 +164,6 @@ class Sub_Commands extends Base {
 	 *     wp affwp customer update 53 --email='soso@so.com'
 	 *
 	 * @since 2.2
-	 * @access public
 	 *
 	 * @param array $args       Top-level arguments.
 	 * @param array $assoc_args Associated arguments (flags).
@@ -210,7 +208,6 @@ class Sub_Commands extends Base {
 	 *     wp affwp customer delete 20
 	 *
 	 * @since 2.2
-	 * @access public
 	 *
 	 * @param array $args       Top-level arguments.
 	 * @param array $assoc_args Associated arguments (flags).
@@ -276,7 +273,6 @@ class Sub_Commands extends Base {
 	 * @subcommand list
 	 *
 	 * @since 2.2
-	 * @access public
 	 *
 	 * @param array $args       Top-level arguments.
 	 * @param array $assoc_args Associated arguments (flags).
@@ -326,7 +322,6 @@ class Sub_Commands extends Base {
 	 * Reformats the date for display.
 	 *
 	 * @since 2.2
-	 * @access protected
 	 *
 	 * @param \AffWP\customer $item Affiliate object (passed by reference).
 	 */
