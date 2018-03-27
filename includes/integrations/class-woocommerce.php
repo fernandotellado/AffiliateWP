@@ -20,8 +20,6 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		$this->context = 'woocommerce';
 
-		add_action( 'woocommerce_checkout_order_processed', array( $this, 'add_pending_referral' ), 10 );
-		// Necessary for Apple Pay support
 		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_pending_referral' ), 10 );
 
 		// Add an order note if a contained referral is updated.
@@ -70,6 +68,10 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		// Per product referral rate types
 		add_filter( 'affwp_calc_referral_amount', array( $this, 'calculate_referral_amount_type' ), 10, 5 );
+
+		// Filter Order preview to display referral
+		add_filter( 'woocommerce_admin_order_preview_get_order_details', array( $this, 'order_preview_get_referral' ), 10, 2 );
+		add_action( 'woocommerce_admin_order_preview_end', array( $this, 'render_order_preview_referral' ) );
 	}
 
 	/**
@@ -81,19 +83,6 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	public function add_pending_referral( $order_id = 0 ) {
 
 		$this->order = apply_filters( 'affwp_get_woocommerce_order', new WC_Order( $order_id ) );
-
-		if( function_exists( 'doing_action' ) ) {
-
-			if( doing_action( 'woocommerce_checkout_update_order_meta' ) && did_action( 'woocommerce_checkout_order_processed' ) ) {
-
-				// woocommerce_checkout_order_processed does not fire during Apple Pay processing. If it has fired, this is not an Applee Pay purchase and we need to bail
-				if ( 'stripe' === ( version_compare( WC_VERSION, '3.0.0', '<' ) ? $this->order->payment_method : $this->order->get_payment_method() ) ) {
-					return;
-				}
-
-			}
-
-		}
 
 		// Check if an affiliate coupon was used
 		$coupon_affiliate_id = $this->get_coupon_affiliate_id();
@@ -1060,6 +1049,54 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 		}
+
+	}
+
+	/**
+	 * Add "Affiliate Referral" to the Order preview screen.
+	 *
+	 * @access public
+	 * @since  2.1.16
+	 *
+	 * @param array $order_details Order details to send to the preview screen.
+	 * @param WC_Order $order Order object.
+	 * @return array $order_details Modified order details.
+	 */
+	public function order_preview_get_referral( $order_details, $order ) {
+
+		$order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
+
+		$referral = affiliate_wp()->referrals->get_by( 'reference', $order_id, $this->context );
+
+		if( $referral ) {
+
+			$referral_html = '<div class="wc-order-preview-affwp-referral">';
+			$referral_html .= '<strong>'. __( 'Affiliate Referral', 'affiliate_wp' ) . '</strong>';
+			$referral_html .= '<a href="' . affwp_admin_url( 'referrals', array( 'referral_id' => $referral->referral_id, 'action' => 'edit_referral' ) ) . '">#' . $referral->referral_id . '</a>';
+			$referral_html .= '</div>';
+
+			$order_details['referral'] = $referral_html;
+
+		}
+
+		return $order_details;
+
+	}
+
+	/**
+	 * Render the "Affiliate Referral" section in the order preview screen.
+	 *
+	 * @access public
+	 * @since  2.1.16
+	 *
+	 */
+	public function render_order_preview_referral() {
+
+?>
+		<# if ( data.referral ) { #>
+			{{{ data.referral }}}
+		<# } #>
+<?php
 
 	}
 }
