@@ -69,6 +69,13 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
+	 * @covers ::$version
+	 */
+	public function test_db_version_is_10() {
+		$this->assertSame( '1.0', affiliate_wp()->customers->version );
+	}
+
+	/**
 	 * @covers ::get_object()
 	 */
 	public function test_get_object_should_return_valid_object_when_passed_a_valid_customer_id() {
