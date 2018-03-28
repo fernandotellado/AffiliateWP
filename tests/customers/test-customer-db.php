@@ -86,7 +86,7 @@ class Tests extends UnitTestCase {
 	/**
 	 * @covers ::get_object()
 	 */
-	public function test_get_object_should_Return_false_when_passed_an_invalid_customer_id() {
+	public function test_get_object_should_return_false_when_passed_an_invalid_customer_id() {
 		$this->assertFalse( affiliate_wp()->customers->get_object( 0 ) );
 	}
 
@@ -115,7 +115,7 @@ class Tests extends UnitTestCase {
 			'date_created' => '%s'
 		);
 
-		$this->assertEqualSets( $expected, $columns );
+		$this->assertEqualSetsWithIndex( $expected, $columns );
 	}
 
 	/**
