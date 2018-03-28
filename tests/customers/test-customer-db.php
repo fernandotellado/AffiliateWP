@@ -130,7 +130,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_should_return_array_of_Customer_objects_if_not_count_query() {
 		$results = affiliate_wp()->customers->get_customers();
@@ -139,7 +139,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_should_return_integer_if_count_query() {
 		$results = affiliate_wp()->customers->get_customers( array(), $count = true );
@@ -148,7 +148,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_number_should_return_that_number_if_available() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -159,7 +159,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_number_all_should_return_all() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -170,7 +170,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_offset_should_offset_that_number() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -185,7 +185,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_exclude_with_single_customer_id_should_exclude_that_customer() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -197,7 +197,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_exclude_with_multiple_customer_ids_should_exclude_those_customers() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -209,7 +209,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_default_orderby_should_order_by_customer_id() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -222,7 +222,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_orderby_date_should_order_by_registered_date() {
 		affwp_update_customer( array(
@@ -259,7 +259,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_orderby_invalid_column_should_default_to_order_by_primary_key() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -272,7 +272,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_order_ASC_should_order_ascending() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -284,7 +284,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_order_DESC_should_order_descending() {
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -295,7 +295,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_fields_ids_should_return_an_array_of_ids_only() {
@@ -307,7 +307,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_fields_ids_should_return_an_array_of_integer_ids() {
@@ -319,7 +319,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_with_no_fields_should_return_an_array_of_customer_objects() {
@@ -329,7 +329,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_with_multiple_valid_fields_should_return_an_array_of_stdClass_objects() {
@@ -341,7 +341,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_fields_valid_field_should_return_array_of_that_field_only() {
@@ -353,7 +353,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_invalid_fields_arg_should_return_regular_customer_object_results() {
@@ -367,7 +367,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_fields_array_with_only_one_valid_field_should_return_an_array_of_those_values() {
@@ -379,7 +379,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_fields_array_with_multiple_valid_fields_should_return_objects_with_those_fields_only() {
@@ -395,7 +395,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group database-fields
 	 */
 	public function test_get_customers_fields_array_with_multiple_valid_fields_should_return_array_of_stdClass_objects() {
@@ -407,7 +407,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group dates
 	 */
 	public function test_get_customers_with_date_no_start_end_should_retrieve_customers_for_today() {
@@ -420,7 +420,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group dates
 	 */
 	public function test_get_customers_with_today_customers_yesterday_date_no_start_end_should_return_empty() {
@@ -433,7 +433,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group dates
 	 */
 	public function test_get_customers_date_start_should_only_retrieve_customers_created_after_that_date() {
@@ -452,7 +452,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers Affiliate_WP_DB_Customers::get_customers()
+	 * @covers ::get_customers()
 	 * @group dates
 	 */
 	public function test_get_customers_date_end_should_only_retrieve_customers_created_before_that_date() {
