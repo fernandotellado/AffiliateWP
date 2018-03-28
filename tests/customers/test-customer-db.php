@@ -133,9 +133,7 @@ class Tests extends UnitTestCase {
 	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_should_return_array_of_Customer_objects_if_not_count_query() {
-		$results = affiliate_wp()->customers->get_customers( array(
-			'fields' => 'ids',
-		) );
+		$results = affiliate_wp()->customers->get_customers();
 
 		$this->assertContainsOnlyType( 'AffWP\Customer', $results );
 	}
