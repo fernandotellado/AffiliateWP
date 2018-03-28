@@ -133,7 +133,9 @@ class Tests extends UnitTestCase {
 	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_should_return_array_of_Customer_objects_if_not_count_query() {
-		$results = affiliate_wp()->customers->get_customers();
+		$results = affiliate_wp()->customers->get_customers( array(
+			'fields' => 'ids',
+		) );
 
 		$this->assertContainsOnlyType( 'AffWP\Customer', $results );
 	}
@@ -152,6 +154,7 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_get_customers_number_should_return_that_number_if_available() {
 		$results = affiliate_wp()->customers->get_customers( array(
+			'fields' => 'ids',
 			'number' => 2
 		) );
 
@@ -163,6 +166,7 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_get_customers_number_all_should_return_all() {
 		$results = affiliate_wp()->customers->get_customers( array(
+			'fields' => 'ids',
 			'number' => -1
 		) );
 
