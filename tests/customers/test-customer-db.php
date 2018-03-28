@@ -6,7 +6,8 @@ use AffWP\Tests\UnitTestCase;
 /**
  * Tests for Affiliate_WP_DB_Customers class
  *
- * @covers Affiliate_WP_DB_Customers
+ * @coversDefaultClass Affiliate_WP_DB_Customers
+ *
  * @group database
  * @group customers
  */
@@ -22,7 +23,7 @@ class Tests extends UnitTestCase {
 	public static $users = array();
 
 	/**
-	 * Ccustomers fixture.
+	 * Customers fixture.
 	 *
 	 * @access protected
 	 * @var array
@@ -47,28 +48,28 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::$cache_group
+	 * @covers ::$cache_group
 	 */
 	public function test_cache_group_should_be_customers() {
 		$this->assertSame( 'customers', affiliate_wp()->customers->cache_group );
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::$query_object_type
+	 * @covers ::$query_object_type
 	 */
 	public function test_query_object_type_should_be_AffWP_Customer() {
 		$this->assertSame( 'AffWP\Customer', affiliate_wp()->customers->query_object_type );
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::$primary_key
+	 * @covers ::$primary_key
 	 */
 	public function test_primary_key_should_be_customer_id() {
 		$this->assertSame( 'customer_id', affiliate_wp()->customers->primary_key );
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::get_object()
+	 * @covers ::get_object()
 	 */
 	public function test_get_object_should_return_valid_object_when_passed_a_valid_customer_id() {
 		$object = affiliate_wp()->customers->get_object( self::$customers[0] );
@@ -76,14 +77,14 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::get_object()
+	 * @covers ::get_object()
 	 */
 	public function test_get_object_should_Return_false_when_passed_an_invalid_customer_id() {
 		$this->assertFalse( affiliate_wp()->customers->get_object( 0 ) );
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::get_object()
+	 * @covers ::get_object()
 	 */
 	public function test_get_object_should_return_valid_object_when_passed_a_valid_customer_object() {
 		$object = affiliate_wp()->customers->get_object( affwp_get_customer( self::$customers[0] ) );
@@ -92,7 +93,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::get_columns()
+	 * @covers ::get_columns()
 	 */
 	public function test_get_columns_should_return_all_columns() {
 		$columns = affiliate_wp()->customers->get_columns();
@@ -111,7 +112,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::get_column_defaults()
+	 * @covers ::get_column_defaults()
 	 */
 	public function test_get_column_defaults_should_return_column_defaults() {
 		$expected = array(
@@ -462,14 +463,14 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::count()
+	 * @covers ::count()
 	 */
 	public function test_count_should_count_based_on_query_args() {
 		$this->assertSame( 4, affiliate_wp()->customers->count() );
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::add()
+	 * @covers ::add()
 	 */
 	public function test_add_successful_should_return_id_of_the_new_customer() {
 		$customer = affiliate_wp()->customers->add( array(
@@ -486,7 +487,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::add()
+	 * @covers ::add()
 	 * @group dates
 	 */
 	public function test_add_without_date_created_should_use_current_date_and_time() {
@@ -504,7 +505,7 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
-	 * @covers \Affiliate_WP_DB_Customers::add()
+	 * @covers ::add()
 	 * @group dates
 	 */
 	public function test_add_with_date_created_should_assume_local_time_and_remove_offset_on_add() {
