@@ -640,8 +640,9 @@ class Affiliate_WP_Settings {
 					),
 					'opt_in_referral_amount' => array(
 						'name' => __( 'Opt-In Referral Amount', 'affiliate-wp' ),
-						'type' => 'text',
+						'type' => 'number',
 						'size' => 'small',
+						'step' => '0.01',
 						'std'  => '0.00',
 						'desc' => __( 'Enter the amount affiliates should receive for each opt-in referral. Default is 0.00.', 'affiliate-wp' ),
 					),
