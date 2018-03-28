@@ -125,7 +125,8 @@ class Opt_In {
 
 			if( empty( $this->errors ) ) {
 
-				$referral_id = 0;
+				$referral_id   = 0;
+				$referral_args = array();
 
 				if( affiliate_wp()->tracking->was_referred() ) {
 
