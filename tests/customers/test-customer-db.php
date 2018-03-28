@@ -410,7 +410,7 @@ class Tests extends UnitTestCase {
 	public function test_get_customers_with_date_no_start_end_should_retrieve_customers_for_today() {
 		$results = affiliate_wp()->customers->get_customers( array(
 			'date_created' => 'today',
-			'fields'          => 'ids',
+			'fields'       => 'ids',
 		) );
 
 		$this->assertEqualSets( self::$customers, $results );
@@ -423,7 +423,7 @@ class Tests extends UnitTestCase {
 	public function test_get_customers_with_today_customers_yesterday_date_no_start_end_should_return_empty() {
 		$results = affiliate_wp()->customers->get_customers( array(
 			'date_created' => 'yesterday',
-			'fields'          => 'ids',
+			'fields'       => 'ids',
 		) );
 
 		$this->assertEqualSets( array(), $results );
@@ -439,7 +439,7 @@ class Tests extends UnitTestCase {
 		) );
 
 		$results = affiliate_wp()->customers->get_customers( array(
-			'fields'          => 'ids',
+			'fields'       => 'ids',
 			'date_created' => array(
 				'start' => '2016-01-02'
 			),
@@ -458,8 +458,10 @@ class Tests extends UnitTestCase {
 		) );
 
 		$results = affiliate_wp()->customers->get_customers( array(
-			'fields'          => 'ids',
-			'date_created' => array( 'end' => 'today' ),
+			'fields'       => 'ids',
+			'date_created' => array(
+				'end' => 'today'
+			),
 		) );
 
 		// Should catch all but the one just created +1 day.
@@ -503,7 +505,7 @@ class Tests extends UnitTestCase {
 
 		// Explicitly dropping seconds from the date strings for comparison.
 		$expected = gmdate( 'Y-m-d H:i' );
-		$actual   = gmdate( 'Y-m-d H:i', strtotime( $customer->date_created ) );
+		$actual   = gmdate( 'Y-m-d H:i', strtotime( $customer->date() ) );
 
 		$this->assertSame( $expected, $actual );
 	}
@@ -521,7 +523,7 @@ class Tests extends UnitTestCase {
 		$customer = affwp_get_customer( $customer_id );
 
 		$expected_date = gmdate( 'Y-m-d H:i', strtotime( '05/04/2017' ) - affiliate_wp()->utils->wp_offset );
-		$actual        = gmdate( 'Y-m-d H:i', strtotime( $customer->date_created ) );
+		$actual        = gmdate( 'Y-m-d H:i', strtotime( $customer->date() ) );
 
 		$this->assertSame( $expected_date, $actual );
 	}
