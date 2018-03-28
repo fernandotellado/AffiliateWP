@@ -229,14 +229,12 @@ class Tests extends UnitTestCase {
 	 * @covers ::get_customers()
 	 */
 	public function test_get_customers_orderby_date_should_order_by_registered_date() {
-		affwp_update_customer( array(
-			'customer_id' => self::$customers[0],
-			'date_created' => ( time() - WEEK_IN_SECONDS ),
+		$customer1 = $this->factory->customer->create( array(
+			'date_created' => ( time() - WEEK_IN_SECONDS )
 		) );
 
-		affwp_update_customer( array(
-			'customer_id' => self::$customers[1],
-			'date_created' => ( time() + WEEK_IN_SECONDS ),
+		$customer2 = $this->factory->customer->create( array(
+			'date_created' => ( time() + WEEK_IN_SECONDS )
 		) );
 
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -247,19 +245,14 @@ class Tests extends UnitTestCase {
 		$new_order = array(
 			self::$customers[3],
 			self::$customers[2],
+			self::$customers[1],
 			self::$customers[0],
-			self::$customers[1]
+			$customer1,
+			$customer2
 		);
 
-		// Order should be newest to oldest: 3, 2, 0, 1.
+		// Order should be newest to oldest: 1, 2
 		$this->assertEqualSets( $new_order, $results );
-
-		// Cleanup.
-		foreach ( self::$customers as $customer ) {
-			affwp_update_customer( array(
-				'date_created' => current_time( 'mysql' )
-			) );
-		}
 	}
 
 	/**
