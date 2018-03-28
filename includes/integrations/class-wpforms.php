@@ -77,18 +77,16 @@ class Affiliate_WP_WPForms extends Affiliate_WP_Base {
 			return;
 		}
 
-		$customer_email = '';
-
 		// get the customer email
 		foreach ( $fields as $field ) {
 			if ( $field['type'] === 'email' ) {
-				$customer_email = $field['value'];
+				$this->email = $field['value'];
 				break;
 			}
 		}
 
 		// Customers cannot refer themselves
-		if ( $this->is_affiliate_email( $customer_email, $affiliate_id ) ) {
+		if ( $this->is_affiliate_email( $this->email, $affiliate_id ) ) {
 
 			$this->log( 'Referral not created because affiliate\'s own account was used.' );
 

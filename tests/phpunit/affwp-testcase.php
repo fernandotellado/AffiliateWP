@@ -41,6 +41,8 @@ class UnitTestCase extends \WP_UnitTestCase {
 			affiliate_wp()->affiliates->table_name,
 			affiliate_wp()->affiliate_meta->table_name,
 			affiliate_wp()->creatives->table_name,
+			affiliate_wp()->customers->table_name,
+			affiliate_wp()->customer_meta->table_name,
 			affiliate_wp()->affiliates->payouts->table_name,
 			affiliate_wp()->referrals->table_name,
 			affiliate_wp()->REST->consumers->table_name,

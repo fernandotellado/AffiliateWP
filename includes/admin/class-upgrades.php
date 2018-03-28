@@ -183,6 +183,15 @@ class Affiliate_WP_Upgrades {
 			)
 		) );
 
+		$this->add_routine( 'upgrade_v22_create_customer_records', array(
+			'version' => '2.2',
+			'compare' => '<',
+			'batch_process' => array(
+				'id'    => 'create-customers-upgrade',
+				'class' => 'AffWP\Utils\Batch_Process\Upgrade_Create_Customers',
+				'file'  => AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/upgrades/class-batch-upgrade-create-customers.php'
+			)
+		) );
 	}
 
 	/**
@@ -704,6 +713,14 @@ class Affiliate_WP_Upgrades {
 
 		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
 
+		// New 'customer_id' column for referrals.
+		@affiliate_wp()->referrals->create_table();
+		@affiliate_wp()->capabilities->add_caps();
+		@affiliate_wp()->customers->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customers table has been created.' );
+		@affiliate_wp()->customer_meta->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customer meta table has been created.' );
+
 		$registration_notifications   = 'registration_notifications';
 		$admin_referral_notifications = 'admin_referral_notifications';
 		$disable_all_emails           = 'disable_all_emails';
@@ -715,7 +732,7 @@ class Affiliate_WP_Upgrades {
 		$email_notifications = affiliate_wp()->settings->email_notifications( true );
 
 		/**
-		 * If "Disable All Emails" checkbox option was previously enabled, 
+		 * If "Disable All Emails" checkbox option was previously enabled,
 		 * clear out the email notification array, essentially disabling all notifications.
 		 */
 		if ( affiliate_wp()->settings->get( $disable_all_emails ) ) {
@@ -765,7 +782,7 @@ class Affiliate_WP_Upgrades {
 		update_option( 'affwp_settings', $settings );
 
 		$this->upgraded = true;
-		
+
 	}
 
 }

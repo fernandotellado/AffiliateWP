@@ -157,10 +157,10 @@ class Affiliate_WP_S2Member extends Affiliate_WP_Base {
 
 		if ( affiliate_wp()->tracking->is_valid_affiliate( $args['affiliate_id'] ) ) {
 
-			$user           = get_userdata( $args['user_id'] );
-			$customer_email = $user->user_email;
+			$user        = get_userdata( $args['user_id'] );
+			$this->email = $user->user_email;
 
-			if ( $this->is_affiliate_email( $customer_email ) ) {
+			if ( $this->is_affiliate_email( $this->email ) ) {
 
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 

@@ -9,6 +9,8 @@ function affiliate_wp_install() {
 	$affiliate_wp_install                 = new stdClass();
 	$affiliate_wp_install->affiliates     = new Affiliate_WP_DB_Affiliates;
 	$affiliate_wp_install->affiliate_meta = new Affiliate_WP_Affiliate_Meta_DB;
+	$affiliate_wp_install->customers      = new Affiliate_WP_Customers_DB;
+	$affiliate_wp_install->customer_meta  = new Affiliate_WP_Customer_Meta_DB;
 	$affiliate_wp_install->referrals      = new Affiliate_WP_Referrals_DB;
 	$affiliate_wp_install->visits         = new Affiliate_WP_Visits_DB;
 	$affiliate_wp_install->campaigns      = new Affiliate_WP_Campaigns_DB;
@@ -19,6 +21,8 @@ function affiliate_wp_install() {
 
 	$affiliate_wp_install->affiliates->create_table();
 	$affiliate_wp_install->affiliate_meta->create_table();
+	$affiliate_wp_install->customers->create_table();
+	$affiliate_wp_install->customer_meta->create_table();
 	$affiliate_wp_install->referrals->create_table();
 	$affiliate_wp_install->visits->create_table();
 	$affiliate_wp_install->campaigns->create_view();
