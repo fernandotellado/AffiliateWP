@@ -300,7 +300,7 @@ class Tests extends UnitTestCase {
 			'fields' => 'ids'
 		) );
 
-		$this->assertContainsOnlyType( 'int', $results );
+		$this->assertEqualSets( self::$customers, $results );
 	}
 
 	/**
