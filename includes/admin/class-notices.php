@@ -465,14 +465,14 @@ class Affiliate_WP_Admin_Notices {
 			affwp_enqueue_admin_js();
 			?>
 			<div class="notice notice-info is-dismissible">
-				<p><?php _e( 'Your database needs to be upgraded following the latest AffiliateWP update.', 'affiliate-wp' ); ?></p>
+				<p><?php _e( 'Your database needs to be upgraded following the latest AffiliateWP update. Depending on the size of your database, this upgrade could take some time.', 'affiliate-wp' ); ?></p>
 				<form method="post" class="affwp-batch-form" data-batch_id="create-customers-upgrade" data-nonce="<?php echo esc_attr( wp_create_nonce( 'create-customers-upgrade_step_nonce' ) ); ?>">
 					<p>
 						<?php submit_button( __( 'Upgrade Database', 'affiliate-wp' ), 'secondary', 'v22-create-customers', false ); ?>
 					</p>
 				</form>
 			</div>
-		<?php endif;
+		<?phpendif;
 	}
 
 	/**
