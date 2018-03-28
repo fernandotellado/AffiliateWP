@@ -472,7 +472,7 @@ class Affiliate_WP_Admin_Notices {
 					</p>
 				</form>
 			</div>
-		<?phpendif;
+		<?php endif;
 	}
 
 	/**
