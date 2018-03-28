@@ -33,7 +33,7 @@ class MailChimp extends Opt_In\Platform {
 
 		$body = array(
 			'email_address' => $this->contact['email'],
-			'status'        => 'subscribed',
+			'status'        => affiliate_wp()->settings->get( 'mailchimp_double_opt_in' ) ? 'pending' : 'subscribed',
 			'merge_fields'  => array(
 		    	'FNAME'     => $this->contact['first_name'],
 		    	'LNAME'     => $this->contact['last_name']
@@ -56,6 +56,12 @@ class MailChimp extends Opt_In\Platform {
 			'name' => __( 'MailChimp List ID', 'affiliate-wp' ),
 			'type' => 'text',
 			'desc' => __( 'Enter the ID of the list you wish to subscribe contacts to.', 'affiliate-wp' ),
+		);
+
+		$settings['mailchimp_double_opt_in'] = array(
+			'name' => __( 'Double Opt-In', 'affiliate-wp' ),
+			'type' => 'checkbox',
+			'desc' => __( 'Should subscribers need to verify their subscription through a double opt-in email?', 'affiliate-wp' ),
 		);
 
 		return $settings;

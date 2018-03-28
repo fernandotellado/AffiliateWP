@@ -904,7 +904,7 @@ class Affiliate_WP_Settings {
 	 *
 	 * @since 2.2
 	 * @param boolean $install Whether or not the install script has been run.
-	 * 
+	 *
 	 * @return array $emails
 	 */
 	public function email_notifications( $install = false ) {
