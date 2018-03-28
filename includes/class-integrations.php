@@ -2,13 +2,26 @@
 
 class Affiliate_WP_Integrations {
 
+	/**
+	 * Get things started.
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
 	public function __construct() {
 
 		$this->load();
 
 	}
 
+	/**
+	 * Retrieves an array of all supported integrations.
+	 *
+	 * @since 1.0
+	 * @return array
+	 */
 	public function get_integrations() {
+
 
 		return apply_filters( 'affwp_integrations', array(
 			'caldera-forms'  => 'Caldera Forms',
@@ -44,10 +57,22 @@ class Affiliate_WP_Integrations {
 	}
 
 	/**
-	 * Retrienves a map of all integration keys and their associated class names.
+	 * Retrieves an array of all enabled integrations.
 	 *
 	 * @since 2.2
-	 * @return array
+	 *
+	 * @return array The list of enabled integrations.
+	 */
+	public function get_enabled_integrations() {
+		return affiliate_wp()->settings->get( 'integrations', array() );
+	}
+
+	/**
+	 * Retrieves a map of all integration keys and their associated class names.
+	 *
+	 * @since 2.2
+	 *
+	 * @return array The list of integration classes.
 	 */
 	public function get_integration_classes() {
 
@@ -84,10 +109,6 @@ class Affiliate_WP_Integrations {
 
 	}
 
-	public function get_enabled_integrations() {
-		return affiliate_wp()->settings->get( 'integrations', array() );
-	}
-
 	/**
 	 * Retrieves the class name for a specific integration
 	 *
@@ -104,7 +125,12 @@ class Affiliate_WP_Integrations {
 		return false;
 	}
 
-
+	/**
+	 * Load integration classes for each enabled integration.
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
 	public function load() {
 
 		// Load each enabled integrations

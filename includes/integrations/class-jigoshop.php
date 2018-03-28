@@ -60,6 +60,7 @@ class Affiliate_WP_Jigoshop extends Affiliate_WP_Base {
 				return; // Customers cannot refer themselves
 			}
 
+			$this->email = $this->order->billing_email;
 			$description = '';
 			$items       = $this->order->items;
 			foreach( $items as $key => $item ) {

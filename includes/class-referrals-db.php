@@ -79,6 +79,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'referral_id' => '%d',
 			'affiliate_id'=> '%d',
 			'visit_id'    => '%d',
+			'customer_id' => '%d',
 			'description' => '%s',
 			'status'      => '%s',
 			'amount'      => '%s',
@@ -102,6 +103,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	public function get_column_defaults() {
 		return array(
 			'affiliate_id' => 0,
+			'customer_id'  => 0,
 			'date'         => gmdate( 'Y-m-d H:i:s' ),
 			'currency'     => affwp_get_currency()
 		);
@@ -156,6 +158,8 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			$args['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
 		}
 
+		$args['customer_id'] = $this->setup_customer( $args );
+
 		$add = $this->insert( $args, 'referral' );
 
 		if ( $add ) {
@@ -204,6 +208,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 		$args['affiliate_id']  = ! empty( $data['affiliate_id' ] ) ? absint( $data['affiliate_id'] )             : $referral->affiliate_id;
 		$args['visit_id']      = ! empty( $data['visit_id' ] )     ? absint( $data['visit_id'] )                 : $referral->visit_id;
+		$args['customer_id']   = ! empty( $data['customer_id' ] )  ? absint( $data['customer_id'] )              : $referral->customer_id;
 		$args['description']   = ! empty( $data['description' ] )  ? sanitize_text_field( $data['description'] ) : '';
 		$args['amount']        = ! empty( $data['amount'] )        ? affwp_sanitize_amount( $data['amount'] )    : $referral->amount;
 		$args['currency']      = ! empty( $data['currency'] )      ? sanitize_text_field( $data['currency'] )    : '';
@@ -314,6 +319,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 *     @type int          $offset         Number of referrals to offset in the query. Default 0.
 	 *     @type int|array    $referral_id    Specific referral ID or array of IDs to query for. Default 0 (all).
 	 *     @type int|array    $affiliate_id   Affiliate ID or array of IDs to query referrals for. Default 0 (all).
+	 *     @type int|array    $customer_id    Customer ID or array of IDs to query referrals for. Default 0 (all).
 	 *     @type int|array    $payout_id      Payout ID or array of IDs to query referrals for. Default 0 (all).
 	 *     @type float|array  $amount {
 	 *         Specific amount to query for or min/max range. If float, can be used with `$amount_compare`.
@@ -359,6 +365,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'referral_id'    => 0,
 			'payout_id'      => 0,
 			'affiliate_id'   => 0,
+			'customer_id'    => 0,
 			'amount'         => 0,
 			'amount_compare' => '=',
 			'description'    => '',
@@ -403,6 +410,19 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			}
 
 			$where .= "WHERE `affiliate_id` IN( {$affiliate_ids} ) ";
+
+		}
+
+		// Referrals for specific customers
+		if( ! empty( $args['customer_id'] ) ) {
+
+			if( is_array( $args['customer_id'] ) ) {
+				$customer_ids = implode( ',', array_map( 'intval', $args['customer_id'] ) );
+			} else {
+				$customer_ids = intval( $args['customer_id'] );
+			}
+
+			$where .= "WHERE `customer_id` IN( {$customer_ids} ) ";
 
 		}
 
@@ -830,6 +850,70 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	}
 
 	/**
+	 * Set up the customer_id key for the args array.
+	 *
+	 * A customer record will be created if it does not already exist.
+	 *
+	 * @since 2.2
+	 *
+	 * @param array $args {
+	 *     Optional. Arguments for setting up the customer record.
+	 *
+	 *     @type int    $customer_id ID of an existing customer record to attribute the referral to.
+	 *     @type string $email       Email address for the customer.
+	 * }
+	 * @return int The ID of the customer record for the referral.
+	 */
+	private function setup_customer( $args = array() ) {	
+
+		$existing      = false;
+		$customer_id   = 0;
+		
+		if( ! isset( $args['customer'] ) ) {
+			return $customer_id;
+		}
+
+		if( ! empty( $args['customer_id'] ) ) {
+
+			// Ensure the provided customer ID exists
+			$customer = affwp_get_customer( absint( $args['customer_id'] ) );
+
+			if( $customer ) {
+				$existing    = true;
+				$customer_id = $customer->customer_id;
+			}
+	
+		}
+
+		if( ! $existing && is_array( $args['customer'] ) && ! empty( $args['customer']['email'] ) ) {
+
+			$customer = affiliate_wp()->customers->get_by( 'email', $args['customer']['email'] );
+
+			if( $customer ) {
+				$existing = true;
+				$customer_id = $customer->customer_id;
+			}
+
+		}
+	
+		if( $existing ) {
+
+			// Update the customer record
+			$args['customer_id'] = $customer_id;
+
+			affwp_update_customer( $args );
+
+		} else {
+
+			// Create a new customer record
+			$customer_id = affiliate_wp()->customers->add( $args['customer'] );
+
+		}
+
+		return $customer_id;
+	}
+
+	/**
 	 * Create the table
 	 *
 	 * @access  public
@@ -845,6 +929,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		referral_id bigint(20) NOT NULL AUTO_INCREMENT,
 		affiliate_id bigint(20) NOT NULL,
 		visit_id bigint(20) NOT NULL,
+		customer_id bigint(20) NOT NULL,
 		description longtext NOT NULL,
 		status tinytext NOT NULL,
 		amount mediumtext NOT NULL,

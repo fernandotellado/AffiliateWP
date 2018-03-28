@@ -67,7 +67,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		// Per-category referral rates.
 		add_action( 'product_cat_add_form_fields', array( $this, 'add_product_category_rate' ), 10, 2 );
 		add_action( 'product_cat_edit_form_fields', array( $this, 'edit_product_category_rate' ), 10 );
-		add_action( 'edited_product_cat', array( $this, 'save_product_category_rate' ) );  
+		add_action( 'edited_product_cat', array( $this, 'save_product_category_rate' ) );
 		add_action( 'create_product_cat', array( $this, 'save_product_category_rate' ) );
 
 		// Filter Orders list table to add a referral column.
@@ -112,13 +112,13 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 			if ( true === version_compare( WC()->version, '3.0.0', '>=' ) ) {
-				$billing_email = $this->order->get_billing_email();
+				$this->email = $this->order->get_billing_email();
 			} else {
-				$billing_email = $this->order->billing_email;
+				$this->email = $this->order->billing_email;
 			}
 
 			// Customers cannot refer themselves
-			if ( $this->is_affiliate_email( $billing_email, $affiliate_id ) ) {
+			if ( $this->is_affiliate_email( $this->email, $affiliate_id ) ) {
 
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
@@ -206,6 +206,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					'affiliate_id' => $affiliate_id,
 					'visit_id'     => $visit_id,
 					'products'     => $this->get_products(),
+					'customer'     => $this->get_customer( $order_id ),
 					'context'      => $this->context
 				) );
 
@@ -222,6 +223,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					'affiliate_id' => $affiliate_id,
 					'visit_id'     => $visit_id,
 					'products'     => $this->get_products(),
+					'customer'     => $this->get_customer( $order_id ),
 					'context'      => $this->context
 				), $amount, $order_id, $description, $affiliate_id, $visit_id, array(), $this->context ) );
 
@@ -347,6 +349,33 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Retrieves the customer details for an order.
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $order_id The ID of the order to retrieve customer details for.
+	 * @return array An array of the customer details
+	 */
+	public function get_customer( $order_id = 0 ) {
+
+		$customer = array();
+
+		if ( class_exists( 'WC_Order' ) ) {
+
+			$order    = new WC_Order( $order_id );
+
+			$customer['user_id']    = $order->get_user_id();
+			$customer['email']      = $order->get_billing_email();
+			$customer['first_name'] = $order->get_billing_first_name();
+			$customer['last_name']  = $order->get_billing_last_name();
+			$customer['ip']         = $order->get_customer_ip_address();
+
+		}
+
+		return $customer;
+	}
+
+	/**
 	 * Marks a referral as complete when payment is completed.
 	 *
 	 * @since 1.0
@@ -424,7 +453,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		$url   = get_edit_post_link( $reference );
 		$order = wc_get_order( $reference );
 
-		$reference = is_a( $order, 'WC_Order' ) ? $order->get_order_number() : $reference; 
+		$reference = is_a( $order, 'WC_Order' ) ? $order->get_order_number() : $reference;
 
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 	}
@@ -952,7 +981,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 	/**
 	 * Add product category referral rate field.
-	 * 
+	 *
 	 * @access  public
 	 * @since   2.2
 	 */
@@ -968,13 +997,13 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 	/**
 	 * Edit product category referral rate field.
-	 * 
+	 *
 	 * @access  public
 	 * @since   2.2
 	 */
 	public function edit_product_category_rate( $category ) {
 		$category_id   = $category->term_id;
-		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true );
 		?>
 		<tr class="form-field">
 			<th><label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
@@ -986,7 +1015,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		</tr>
 	<?php
 	}
-	
+
 	/**
 	 * Save product category referral rate field.
 	 *

@@ -36,6 +36,15 @@ abstract class Affiliate_WP_Base {
 	public $logs;
 
 	/**
+	 * Customer email address.
+	 *
+	 * @access  public
+	 * @since   1.8
+	 * @deprecated 2.2
+	 */
+	public $email;
+
+	/**
 	 * Constructor
 	 *
 	 * @access  public
@@ -119,8 +128,13 @@ abstract class Affiliate_WP_Base {
 			'visit_id'     => $visit_id,
 			'products'     => ! empty( $products ) ? maybe_serialize( $products ) : '',
 			'custom'       => ! empty( $data ) ? maybe_serialize( $data ) : '',
-			'context'      => $this->context
+			'context'      => $this->context,
+			'customer'     => $this->get_customer( $reference )
 		), $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
+
+		if( ! empty( $args['customer'] ) && empty( $args['customer']['affiliate_id'] ) ) {
+			$args['customer']['affiliate_id'] = $this->affiliate_id;
+		}
 
 		$referral_id = affiliate_wp()->referrals->add( $args );
 
@@ -444,7 +458,29 @@ abstract class Affiliate_WP_Base {
 	}
 
 	/**
-	 * Write log message
+	 * Retrieves the customer details for an order
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $order_id The ID of the order to retrieve customer details for.
+	 * @return array An array of the customer details
+	 */
+	public function get_customer( $order_id = 0 ) {
+
+		$customer = array(
+			'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',
+			'last_name'    => is_user_logged_in() ? wp_get_current_user()->first_name : '',
+			'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : $this->email,
+			'user_id'      => get_current_user_id(),
+			'ip'           => affiliate_wp()->tracking->get_ip(),
+			'affiliate_id' => $this->affiliate_id
+		);
+
+		return $customer;
+	}
+
+	/**
+	 * Writes a log message.
 	 *
 	 * @since 1.8
 	 */
