@@ -141,7 +141,7 @@ class Opt_In {
 					);
 
 					$referral_id = affiliate_wp()->referrals->add( $referral_args );
-					
+
 					if( 'unpaid' == $referral_args['status'] || 'paid' == $referral_args['status'] ) {
 						affiliate_wp()->visits->update( affiliate_wp()->tracking->get_visit_id(), array( 'referral_id' => $referral_id ), '', 'visit' );
 					}

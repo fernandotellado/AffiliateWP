@@ -632,12 +632,6 @@ class Affiliate_WP_Settings {
 			 */
 			'opt_in_forms' => apply_filters( 'affwp_settings_opt_in_forms',
 				array(
-					'opt_in_platform' => array(
-						'name' => __( 'Platform', 'affiliate-wp' ),
-						'desc' => __( 'Select the opt-in platform provider you wish to use then click Save Changes to configure the settings. The opt-in form can be displayed on any page using the [opt_in] shortcode. <a href="http://docs.affiliatewp.com">Learn more</a>.', 'affiliate-wp' ),
-						'type' => 'select',
-						'options' => array_merge( array( '' => __( '(select one)', 'affiliate-wp' ) ), affiliate_wp()->integrations->opt_in->platforms )
-					),
 					'opt_in_referral_amount' => array(
 						'name' => __( 'Opt-In Referral Amount', 'affiliate-wp' ),
 						'type' => 'number',
@@ -655,6 +649,18 @@ class Affiliate_WP_Settings {
 						),
 						'std' => 'pending',
 						'desc' => __( 'Select the status that should be assigned to opt-in referrals by default.', 'affiliate-wp' ),
+					),
+					'opt_in_success_message' => array(
+						'name' => __( 'Message shown upon opt-in success', 'affiliate-wp' ),
+						'type' => 'rich_editor',
+						'std'  => 'You have subscribed successfully.',
+						'desc' => __( 'Enter the message you would like to show subscribers after they have opted-in successfully.', 'affiliate-wp' ),
+					),
+					'opt_in_platform' => array(
+						'name' => __( 'Platform', 'affiliate-wp' ),
+						'desc' => __( 'Select the opt-in platform provider you wish to use then click Save Changes to configure the settings. The opt-in form can be displayed on any page using the [opt_in] shortcode. <a href="http://docs.affiliatewp.com">Learn more</a>.', 'affiliate-wp' ),
+						'type' => 'select',
+						'options' => array_merge( array( '' => __( '(select one)', 'affiliate-wp' ) ), affiliate_wp()->integrations->opt_in->platforms )
 					)
 					// Individual platform settings are registered through their platform classes in includes/integrations/opt-in-platforms/
 				)
