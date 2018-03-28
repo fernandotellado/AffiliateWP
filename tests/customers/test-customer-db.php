@@ -123,10 +123,10 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_get_column_defaults_should_return_column_defaults() {
 		$expected = array(
-			'date_created' => date( 'Y-m-d H:i:s' ),
+			'date_created' => gmdate( 'Y-m-d H:i:s' ),
 		);
 
-		$this->assertEqualSets( $expected, affiliate_wp()->customers->get_column_defaults() );
+		$this->assertEqualSetsWithIndex( $expected, affiliate_wp()->customers->get_column_defaults() );
 	}
 
 	/**
