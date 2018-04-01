@@ -8,6 +8,7 @@
  * Version: 2.1.16
  * Text Domain: affiliate-wp
  * Domain Path: languages
+ * GitHub Plugin URI: affiliatewp/affiliatewp
  *
  * AffiliateWP is distributed under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
