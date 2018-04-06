@@ -44,7 +44,7 @@ class Affiliate_WP_Jigoshop extends Affiliate_WP_Base {
 		add_action( 'jigoshop\order\after\jigoshop-refunded', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'jigoshop\order\after\jigoshop-cancelled', array( $this, 'revoke_referral' ), 10 );
 
-        add_action( 'jigoshop\service\coupon\save',  array( $this, 'store_discount_affiliate_new' ), 1, 1 );
+		add_action( 'jigoshop\service\coupon\save',  array( $this, 'store_discount_affiliate_new' ), 1, 1 );
 	}
 
 	/**
@@ -208,7 +208,7 @@ class Affiliate_WP_Jigoshop extends Affiliate_WP_Base {
 					$name           = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
 					$referral_link  = affwp_admin_link( 'referrals', esc_html( '#' . $referral_id ), array( 'action' => 'edit_referral', 'referral_id' => $referral_id ) );
 
-    				$orderService = \Jigoshop\Integration::getOrderService();
+					$orderService = \Jigoshop\Integration::getOrderService();
 
 					/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name */
 					$orderService->addNote( $this->order, sprintf( __( 'Referral %1$s for %2$s recorded for %3$s', 'affiliate-wp' ),
@@ -437,7 +437,7 @@ class Affiliate_WP_Jigoshop extends Affiliate_WP_Base {
 	*/
 	private function get_coupon_affiliate_id_new() {
 
-    	$coupons = $this->order->getDiscounts();
+		$coupons = $this->order->getDiscounts();
 
 		if ( empty( $coupons ) ) {
 			return false;
@@ -474,9 +474,9 @@ class Affiliate_WP_Jigoshop extends Affiliate_WP_Base {
 	*/
 	private function get_total_tax() {
 
-    	$taxes = $this->order->getCombinedTax();
+		$taxes = $this->order->getCombinedTax();
 
-    	$tax = 0;
+		$tax = 0;
 
 		if ( empty( $taxes ) ) {
 			return $tax;
@@ -504,7 +504,7 @@ class Affiliate_WP_Jigoshop extends Affiliate_WP_Base {
 
 			$description[] = $item->getName();
 
-	    }
+		}
 
 		$description = implode( ', ', $description );
 
