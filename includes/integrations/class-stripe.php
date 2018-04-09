@@ -72,20 +72,20 @@ class Affiliate_WP_Stripe extends Affiliate_WP_Base {
 			}
 
 			if( is_object( $object->customer ) && ! empty( $object->customer->email ) ) {
-				$email = $object->customer->email;
+				$this->email = $object->customer->email;
 			} else {
 				if ( isset( $_POST['stripeEmail'] ) ) {
 
 					// WP Simple Pay < 3.0
-					$email = sanitize_text_field( $_POST['stripeEmail'] );
+					$this->email = sanitize_text_field( $_POST['stripeEmail'] );
 				} elseif ( isset( $_POST['simpay_stripe_email'] ) ) {
 
 					// WP Simple Pay >= 3.0
-					$email = sanitize_text_field( $_POST['simpay_stripe_email'] );
+					$this->email = sanitize_text_field( $_POST['simpay_stripe_email'] );
 				}
 			}
 
-			if( $this->is_affiliate_email( $email, $this->affiliate_id ) ) {
+			if( $this->is_affiliate_email( $this->email, $this->affiliate_id ) ) {
 
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
