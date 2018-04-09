@@ -50,7 +50,7 @@ function affwp_get_customer( $customer = null ) {
  */
 function affwp_add_customer( $data = array() ) {
 
-	if ( $customer_id = affiliate_wp()->customers->add( $args ) ) {
+	if ( $customer_id = affiliate_wp()->customers->add( $data ) ) {
 		return $customer_id;
 	}
 
