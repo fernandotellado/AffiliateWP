@@ -6,7 +6,7 @@ $last_name  = isset( $_POST['affwp_last_name'] ) ? sanitize_text_field( $_POST['
 $email      = isset( $_POST['affwp_email'] ) && is_email( $_POST['affwp_email'] ) ? sanitize_text_field( $_POST['affwp_email'] ) : '';
 
 if ( isset( $_GET['affwp-notice'] ) && 'opted-in' == $_GET['affwp-notice'] ) : ?>
-	<div class="affwp-notice"><?php echo affiliate_wp()->settings->get( 'opt_in_success_message', __( 'You have subscribed successfully.', 'affiliate-wp' ) ); ?></div>
+	<?php echo wpautop( do_shortcode( affiliate_wp()->settings->get( 'opt_in_success_message', __( 'You have subscribed successfully.', 'affiliate-wp' ) ) ) ); ?>
 <?php
 	return;
 endif ?>
