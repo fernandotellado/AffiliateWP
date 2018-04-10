@@ -40,7 +40,18 @@ class MailChimp extends Opt_In\Platform {
 			)
 		);
 
-		return $this->call_api( $this->api_url, $body, $headers );
+		$response = $this->call_api( $this->api_url, $body, $headers );
+
+		if( ! empty ( $this->errors ) ) {
+
+			$body = json_decode( wp_remote_retrieve_body( $response ) );
+
+			$this->errors = null;
+			$this->add_error( wp_remote_retrieve_response_code( $response ), $body->detail );			
+
+		}
+
+		return $response;
 
 	}
 
