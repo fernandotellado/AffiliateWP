@@ -11,6 +11,13 @@ use AffWP\Integrations\Opt_In;
  */
 class MailChimp extends Opt_In\Platform {
 
+	/**
+	 * Initialize our API keys and platform variables.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return void
+	 */
 	public function init() {
 
 		$this->platform_id = 'mailchimp';
@@ -25,6 +32,13 @@ class MailChimp extends Opt_In\Platform {
 		$this->api_url     = 'https://' . $data_center . '.api.mailchimp.com/3.0/lists/' . $this->list_id . '/members/';
 	}
 
+	/**
+	 * Subscribe a contact.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array|WP_Error
+	 */
 	public function subscribe_contact() {
 
 		$headers = array(
@@ -105,6 +119,13 @@ class MailChimp extends Opt_In\Platform {
 		return $ret;
 	}
 
+	/**
+	 * Register our platform settings.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array
+	 */
 	public function settings( $settings ) {
 
 		$settings['mailchimp_api_key'] = array(

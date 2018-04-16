@@ -11,6 +11,13 @@ use AffWP\Integrations\Opt_In;
  */
 class ConvertKit extends Opt_In\Platform {
 
+	/**
+	 * Initialize our API keys and platform variables.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return void
+	 */
 	public function init() {
 
 		$this->platform_id = 'convertkit';
@@ -20,6 +27,13 @@ class ConvertKit extends Opt_In\Platform {
 		$this->json        = false;
 	}
 
+	/**
+	 * Subscribe a contact.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array|WP_Error
+	 */
 	public function subscribe_contact() {
 
 		$body = array(
@@ -34,6 +48,13 @@ class ConvertKit extends Opt_In\Platform {
 
 	}
 
+	/**
+	 * Register our platform settings.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array
+	 */
 	public function settings( $settings ) {
 
 		$settings['convertkit_api_key'] = array(

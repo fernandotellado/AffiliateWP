@@ -11,6 +11,13 @@ use AffWP\Integrations\Opt_In;
  */
 class ActiveCampaign extends Opt_In\Platform {
 
+	/**
+	 * Initialize our API keys and platform variables.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return void
+	 */
 	public function init() {
 
 		$this->json        = false;
@@ -20,6 +27,13 @@ class ActiveCampaign extends Opt_In\Platform {
 		$this->api_url     = trailingslashit( affiliate_wp()->settings->get( 'activecampaign_api_url' ) ) . 'admin/api.php?api_action=contact_add&api_output=json&api_key=' . $this->api_key;
 	}
 
+	/**
+	 * Subscribe a contact.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array|WP_Error
+	 */
 	public function subscribe_contact() {
 
 		$exists = $this->already_subscribed();
@@ -87,6 +101,13 @@ class ActiveCampaign extends Opt_In\Platform {
 		return $ret;
 	}
 
+	/**
+	 * Register our platform settings.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return array
+	 */
 	public function settings( $settings ) {
 
 		$settings['activecampaign_api_url'] = array(
