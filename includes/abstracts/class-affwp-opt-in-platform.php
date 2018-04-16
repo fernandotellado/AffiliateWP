@@ -109,6 +109,15 @@ abstract class Platform {
 	public function subscribe_contact() {}
 
 	/**
+	 * Determine if an email is already subscribed
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return true|false
+	 */
+	public function already_subscribed() {}
+
+	/**
 	 * Setup settings for the platform
 	 *
 	 * @access public

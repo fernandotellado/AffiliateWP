@@ -22,6 +22,15 @@ class ActiveCampaign extends Opt_In\Platform {
 
 	public function subscribe_contact() {
 
+		$exists = $this->already_subscribed();
+
+		if( $exists ) {
+
+			$this->add_error( 'already_subscribed', sprintf( __( '%s is already subscribed to this list.', 'affiliate-wp' ), $this->contact['email'] ) );
+			return;
+
+		}
+
 		$body = array(
 			'email'                          => $this->contact['email'],
 		    'first_name'                     => $this->contact['first_name'],
@@ -40,6 +49,42 @@ class ActiveCampaign extends Opt_In\Platform {
 
 		return $response;
 
+	}
+
+	/**
+	 * Determine if an email is already subscribed
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return true|false
+	 */
+	public function already_subscribed() {
+
+		$ret  = false;
+		$url  = $this->api_url . '&email=' . $this->contact['email'];
+		$args = array(
+			'timeout'     => 45,
+			'sslverify'   => false,
+			'httpversion' => '1.1',
+		);
+
+		$request = wp_remote_get( $url, $args );
+
+		if( is_wp_error( $request ) ) {
+
+			$this->add_error( $request->get_error_code(), $request->get_error_message() );
+
+		}
+
+		$response = json_decode( $request['body'] );
+
+		if( ! empty( $response->result_code ) ) {
+
+			$ret = true;
+
+		}
+
+		return $ret;
 	}
 
 	public function settings( $settings ) {

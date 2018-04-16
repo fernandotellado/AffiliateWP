@@ -31,12 +31,21 @@ class MailChimp extends Opt_In\Platform {
 			'Authorization' => 'Basic ' . base64_encode( 'user:' . $this->api_key )
 		);
 
+		$exists = $this->already_subscribed();
+
+		if( $exists ) {
+
+			$this->add_error( 'already_subscribed', sprintf( __( '%s is already subscribed to this list.', 'affiliate-wp' ), $this->contact['email'] ) );
+			return;
+
+		}
+
 		$body = array(
 			'email_address' => $this->contact['email'],
 			'status'        => affiliate_wp()->settings->get( 'mailchimp_double_opt_in' ) ? 'pending' : 'subscribed',
 			'merge_fields'  => array(
-		    	'FNAME'     => $this->contact['first_name'],
-		    	'LNAME'     => $this->contact['last_name']
+				'FNAME'     => $this->contact['first_name'],
+				'LNAME'     => $this->contact['last_name']
 			)
 		);
 
@@ -53,6 +62,47 @@ class MailChimp extends Opt_In\Platform {
 
 		return $response;
 
+	}
+
+	/**
+	 * Determine if an email is already subscribed
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @return true|false
+	 */
+	public function already_subscribed() {
+
+		$ret  = false;
+		$hash = md5( strtolower( $this->contact['email'] ) );
+		$url  = $this->api_url . $hash;
+
+		$headers = array(
+			'Authorization' => 'Basic ' . base64_encode( 'user:' . $this->api_key )
+		);
+
+		$args = array(
+			'timeout'     => 45,
+			'sslverify'   => false,
+			'httpversion' => '1.1',
+			'headers'     => $headers,
+		);
+
+		$request = wp_remote_get( $url, $args );
+
+		if( is_wp_error( $request ) ) {
+
+			$this->add_error( $request->get_error_code(), $request->get_error_message() );
+
+		}
+
+		if( 200 === wp_remote_retrieve_response_code( $request ) ) {
+
+			$ret = true;
+
+		}
+
+		return $ret;
 	}
 
 	public function settings( $settings ) {
