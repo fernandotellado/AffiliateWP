@@ -360,9 +360,9 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		$customer = array();
 
-		if ( class_exists( 'WC_Order' ) ) {
+		if ( function_exists( 'wc_get_order' ) ) {
 
-			$order = new WC_Order( $order_id );
+			$order = wc_get_order( $order_id );
 
 			if( $order ) {
 
