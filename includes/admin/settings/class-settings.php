@@ -628,7 +628,7 @@ class Affiliate_WP_Settings {
 			/**
 			 * Filters the default opt-in settings.
 			 *
-			 * @param array $integrations The enabled integrations. Defaults to `affiliate_wp()->integrations->opt_in->platforms`.
+			 * @param array $opt_in_forms The opt in form settings.
 			 */
 			'opt_in_forms' => apply_filters( 'affwp_settings_opt_in_forms',
 				array(
