@@ -701,6 +701,14 @@ class Affiliate_WP_Upgrades {
 	 * @since  2.2
 	 */
 	private function v22_upgrade() {
+		
+		global $wpdb;
+
+		// Add type column to referrals database.
+		@affiliate_wp()->referrals->create_table();
+		$table = affiliate_wp()->referrals->table_name;
+		$wpdb->query( "UPDATE $table SET type = 'sale' where type IS NULL;" );
+		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
 
 		// New 'customer_id' column for referrals.
 		@affiliate_wp()->referrals->create_table();
@@ -710,6 +718,7 @@ class Affiliate_WP_Upgrades {
 		@affiliate_wp()->customer_meta->create_table();
 		affiliate_wp()->utils->log( 'Upgrade: The customer meta table has been created.' );
 
+		// Update email settings
 		$registration_notifications   = 'registration_notifications';
 		$admin_referral_notifications = 'admin_referral_notifications';
 		$disable_all_emails           = 'disable_all_emails';

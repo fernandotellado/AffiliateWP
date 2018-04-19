@@ -149,6 +149,15 @@ final class Referral extends Base_Object {
 	public $date;
 
 	/**
+	 * Referral type.
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * Token to use for generating cache keys.
 	 *
 	 * @since 1.9
@@ -201,6 +210,27 @@ final class Referral extends Base_Object {
 
 		if ( 'custom' === $field ) {
 			$value = affwp_maybe_unserialize( affwp_maybe_unserialize( $value ) );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Retrieves the referral type name
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @static
+	 *
+	 * @return string Nice name of the referral type.
+	 */
+	public function type() {
+
+		$value = empty( $this->type ) ? 'sale' : $this->type;
+		$type  = affiliate_wp()->referrals->types_registry->get_type( $value );
+
+		if( $type ) {
+			$value = $type['label'];
 		}
 
 		return $value;

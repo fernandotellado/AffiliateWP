@@ -36,6 +36,14 @@ abstract class Affiliate_WP_Base {
 	public $logs;
 
 	/**
+	 * Referral type
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public $referral_type = 'sale';
+
+	/*
 	 * Customer email address.
 	 *
 	 * @access  public
@@ -128,6 +136,7 @@ abstract class Affiliate_WP_Base {
 			'visit_id'     => $visit_id,
 			'products'     => ! empty( $products ) ? maybe_serialize( $products ) : '',
 			'custom'       => ! empty( $data ) ? maybe_serialize( $data ) : '',
+			'type'         => $this->referral_type,
 			'context'      => $this->context,
 			'customer'     => $this->get_customer( $reference )
 		), $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );

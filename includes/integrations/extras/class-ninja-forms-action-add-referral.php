@@ -40,6 +40,14 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
     public function __construct() {
         parent::__construct();
 
+        $options = array();
+        foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) {
+            $options[] = array(
+                'label' => $type['label'],
+                'value' => $type_id
+            );
+        }
+
         $this->_nicename = __( 'Add Referral', 'affiliate-wp' );
 
         $this->_settings[ 'affiliatewp_total' ] = array(
@@ -78,7 +86,7 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
             'type'           => 'textbox',
             'width'          => 'full',
             'value'          => '',
-            'group'          => 'advanced',
+            'group'          => 'primary',
             'use_merge_tags' => array(
                 'exclude' => array(
                     'post',
@@ -86,6 +94,15 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
                     'system'
                 )
             )
+        );
+
+        $this->_settings[ 'affiliatewp_referral_type' ] = array(
+            'name'           => 'affiliatewp_referral_type',
+            'label'          => __( 'Referral Type', 'affiliate-wp' ),
+            'type'           => 'select',
+            'options'        => $options,
+            'width'          => 'full',
+            'group'          => 'primary',
         );
     }
 
@@ -161,8 +178,8 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
         $reference      = $data[ 'actions' ][ 'save' ][ 'sub_id' ];
         $description    = $this->get_description( $action_settings, $data );
         $customer_email = $this->get_customer_email( $action_settings );
-
-        $args = $data[ 'extra' ][ 'affiliatewp' ] = compact( 'total', 'reference', 'description', 'customer_email' );
+        $type           = $this->get_type( $action_settings );
+        $args           = $data[ 'extra' ][ 'affiliatewp' ] = compact( 'total', 'reference', 'description', 'customer_email', 'type' );
 
         /**
          * Fires when adding a referral via Ninja Forms.
@@ -257,6 +274,24 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
     }
 
     /**
+<<<<<<< HEAD
+     * Get the referral type.
+     *
+     * @since  2.2
+     *
+     * @param  array  $action_settings The settings for this action.
+     *
+     * @return string $type The referral type.
+     */
+    private function get_type( $action_settings ) {
+        $type = 'sale';;
+        if( isset( $action_settings[ 'affiliatewp_referral_type' ] ) ) {
+            $type = $action_settings[ 'affiliatewp_referral_type' ];
+        }
+        return $type;
+    }
+
+=======
      * Get the referral products.
      *
      * @since  2.1.16
@@ -288,4 +323,5 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
 
         return $products;
     }
+>>>>>>> release/2.2
 }

@@ -160,6 +160,9 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 			return false;
 		}
 
+		// Get the referral type we are creating
+		$this->referral_type = ! empty( $form['affwp_referral_type'] ) ? $form['affwp_referral_type'] : 'sale'; 
+
 		// Referral total
 		$referral_total = floatval( $args['referral_total'] );
 
@@ -250,6 +253,8 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	 * @return void
 	 */
 	public function add_settings( $element ) {
+		
+		$selected = isset( $element['affwp_referral_type'] ) ? $element['affwp_referral_type'] : '';
 		?>
 
 		<div class="caldera-config-group">
@@ -261,6 +266,16 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 					<label for="affwp-allow-referrals">
 						<input id="affwp-allow-referrals" type="checkbox" class="field-config" name="config[affwp_allow_referrals]" value="1" <?php if ( ! empty( $element[ 'affwp_allow_referrals' ] ) ){ ?>checked="checked"<?php } ?>>
 						<?php esc_html_e( 'Enable affiliate referral creation for this form', 'affiliate-wp' ); ?>
+					</label>
+				</div>
+				<div class="caldera-config-field">
+					<label for="affwp-referral-type">
+						<select name="config[affwp_referral_type]" id="affwp-referral-type" class="field-config">';
+							<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+								<option value="<?php echo esc_attr( $type_id ); ?>"<?php selected( $type_id, $selected ); ?>><?php echo esc_html( $type['label'] ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<?php esc_html_e( 'Select the referral type for this form.', 'affiliate-wp' ); ?>
 					</label>
 				</div>
 			</fieldset>

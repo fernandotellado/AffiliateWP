@@ -146,7 +146,8 @@ class Affiliate_WP_Tracking {
 			'reference'   => '',
 			'context'     => '',
 			'campaign'    => '',
-			'status'      => ''
+			'status'      => '',
+			'type'        => 'sale',
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -201,6 +202,7 @@ class Affiliate_WP_Tracking {
 						context     : '<?php echo $args["context"]; ?>',
 						reference   : '<?php echo $args["reference"]; ?>',
 						campaign    : '<?php echo $args["campaign"]; ?>',
+						type        : '<?php echo $args["type"]; ?>',
 						md5         : '<?php echo $md5; ?>'
 					},
 					url: affwp_scripts.ajaxurl,
@@ -417,6 +419,7 @@ class Affiliate_WP_Tracking {
 			$context     = sanitize_text_field( $_POST['context'] );
 			$campaign    = sanitize_text_field( $_POST['campaign'] );
 			$reference   = sanitize_text_field( $_POST['reference'] );
+			$type        = sanitize_text_field( $_POST['type'] );
 
 			// Create a new referral
 			$referral_id = affiliate_wp()->referrals->add( apply_filters( 'affwp_insert_pending_referral', array(
@@ -427,6 +430,7 @@ class Affiliate_WP_Tracking {
 					'context'      => $context,
 					'campaign'     => $campaign,
 					'reference'    => $reference,
+					'type'         => $type,
 					'visit_id'     => $visit_id,
 			), $amount, $reference, $description, $affiliate_id, $visit_id, array(), $context ) );
 

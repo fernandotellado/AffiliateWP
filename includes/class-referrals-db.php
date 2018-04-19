@@ -30,6 +30,15 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	public $query_object_type = 'AffWP\Referral';
 
 	/**
+	 * Referral types registry.
+	 *
+	 * @since 2.2
+	 * @access public
+	 * @var object
+	 */
+	public $types_registry;
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
@@ -51,6 +60,9 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		if ( version_compare( $wp_version, '4.4', '>=' ) ) {
 			$this->REST = new \AffWP\Referral\REST\v1\Endpoints;
 		}
+
+		$this->types_registry = new AffWP\Utils\Referral_Types\Registry;
+		$this->types_registry->init();
 	}
 
 	/**
@@ -90,6 +102,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'reference'   => '%s',
 			'products'    => '%s',
 			'payout_id'   => '%d',
+			'type'        => '%s',
 			'date'        => '%s',
 		);
 	}
@@ -105,7 +118,8 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'affiliate_id' => 0,
 			'customer_id'  => 0,
 			'date'         => gmdate( 'Y-m-d H:i:s' ),
-			'currency'     => affwp_get_currency()
+			'currency'     => affwp_get_currency(),
+			'type'         => 'sale',
 		);
 	}
 
@@ -127,7 +141,8 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 		$defaults = array(
 			'status' => 'pending',
-			'amount' => 0
+			'amount' => 0,
+			'type'   => 'sale'
 		);
 
 		$args = wp_parse_args( $data, $defaults );
@@ -156,6 +171,10 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			$time = strtotime( $args['date'] );
 
 			$args['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
+		}
+
+		if( ! empty( $args['type'] ) && ! $this->types_registry->get_type( $args['type'] ) ) {
+			$args['type'] = 'sale';
 		}
 
 		$args['customer_id'] = $this->setup_customer( $args );
@@ -216,6 +235,11 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		$args['context']       = ! empty( $data['context'] )       ? sanitize_text_field( $data['context'] )     : '';
 		$args['campaign']      = ! empty( $data['campaign'] )      ? sanitize_text_field( $data['campaign'] )    : '';
 		$args['reference']     = ! empty( $data['reference'] )     ? sanitize_text_field( $data['reference'] )   : '';
+		$args['type']          = ! empty( $data['type'] )          ? sanitize_text_field( $data['type'] )        : '';
+
+		if( ! empty( $args['type'] ) && ! $this->types_registry->get_type( $args['type'] ) ) {
+			$args['type'] = 'sale';
+		}
 
 		/*
 		 * Deliberately defer updating the status – it will be updated instead
@@ -340,6 +364,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 *                                        Default empty.
 	 *     @type string       $context        Specific context to query referrals for. Default empty.
 	 *     @type string       $campaign       Specific campaign to query referrals for. Default empty.
+	 *     @type string       $type           Specific referral type to query referrals for. Default empty.
 	 *     @type string       $description    Description to search referrals for. Fuzzy matching is permitted when
 	 *                                        `$search` is true.
 	 *     @type string|array $status         Referral status or array of statuses to query referrals for.
@@ -372,6 +397,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			'reference'      => '',
 			'context'        => '',
 			'campaign'       => '',
+			'type'           => '',
 			'status'         => '',
 			'orderby'        => 'referral_id',
 			'order'          => 'DESC',
@@ -539,6 +565,25 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			}
 
 		}
+
+		if( ! empty( $args['type'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
+			if( is_array( $args['type'] ) ) {
+				$where .= "`type` IN(" . implode( ',', array_map( 'esc_sql', $args['type'] ) ) . ") ";
+			} else {
+				$type = esc_sql( $args['type'] );
+
+				if ( ! empty( $args['search'] ) ) {
+					$where .= "`type` LIKE '%%" . $type . "%%' ";
+				} else {
+					$where .= "`type` = '" . $type . "' ";
+				}
+			}
+
+		}
+
 
 		// Description.
 		if( ! empty( $args['description'] ) ) {
@@ -937,6 +982,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		custom longtext NOT NULL,
 		context tinytext NOT NULL,
 		campaign varchar(30) NOT NULL,
+		type varchar(30) NOT NULL,
 		reference mediumtext NOT NULL,
 		products mediumtext NOT NULL,
 		payout_id bigint(20) NOT NULL,
