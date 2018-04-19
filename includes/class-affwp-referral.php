@@ -226,8 +226,8 @@ final class Referral extends Base_Object {
 	 */
 	public function type() {
 
-		$value = $this->type;
-		$type  = affiliate_wp()->referrals->types_registry->get_type( $this->type );
+		$value = empty( $this->type ) ? 'sale' : $this->type;
+		$type  = affiliate_wp()->referrals->types_registry->get_type( $value );
 
 		if( $type ) {
 			$value = $type['label'];

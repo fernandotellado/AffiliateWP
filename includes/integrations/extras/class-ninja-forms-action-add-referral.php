@@ -174,13 +174,12 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
 
         }
 
-        $referral_total = $this->get_total( $action_settings );
+        $total          = $this->get_total( $action_settings );
         $reference      = $data[ 'actions' ][ 'save' ][ 'sub_id' ];
         $description    = $this->get_description( $action_settings, $data );
         $customer_email = $this->get_customer_email( $action_settings );
         $type           = $this->get_type( $action_settings );
-
-        $args = $data[ 'extra' ][ 'affiliatewp' ] = compact( 'referral_total', 'reference', 'description', 'customer_email', 'type' );
+        $args           = $data[ 'extra' ][ 'affiliatewp' ] = compact( 'total', 'reference', 'description', 'customer_email', 'type' );
 
         /**
          * Fires when adding a referral via Ninja Forms.
@@ -194,19 +193,18 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
 
 
     /**
-     * Get the total of the referral.
+     * Get the total of the form.
      *
      * @since  1.8.6
      *
      * @param  array  $action_settings  The form action settings.
      *
-     * @return int                      The total amount of the referral.
+     * @return int                      The total amount of the form.
      */
     private function get_total( $action_settings ) {
         $total = 0;
         if( isset( $action_settings[ 'affiliatewp_total' ] ) ) {
             $total = $action_settings[ 'affiliatewp_total' ];
-            $total = affwp_calc_referral_amount( $total );
         }
         return $total;
     }
@@ -242,12 +240,19 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
      *                                   title if no custom description is defined.
      */
     private function get_description( $action_settings, $data ) {
+
         $description = '';
-        if( isset( $action_settings[ 'affiliatewp_description' ] ) ) {
+
+        $products    = $this->get_products( $data );
+
+        if( ! empty( $products ) ) {
+            $description = $products;
+        }elseif( ! empty( $action_settings[ 'affiliatewp_description' ] ) ) {
             $description = $action_settings[ 'affiliatewp_description' ];
-        } elseif( isset( $data[ 'settings' ][ 'title' ] ) ) {
+        } elseif( ! empty( $data[ 'settings' ][ 'title' ] ) ) {
             $description = $data[ 'settings' ][ 'title' ];
         }
+
         return $description;
     }
 
@@ -269,6 +274,7 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
     }
 
     /**
+<<<<<<< HEAD
      * Get the referral type.
      *
      * @since  2.2
@@ -285,4 +291,37 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
         return $type;
     }
 
+=======
+     * Get the referral products.
+     *
+     * @since  2.1.16
+     *
+     * @param  mixed   $data             Form data.
+     *
+     * @return string  $products         The form products if the form has one or more product
+     *                                   fields.
+     */
+    private function get_products( $data ) {
+        $products = '';
+
+        if( ! empty( $data['extra']['product_fields'] ) ) {
+
+            $product_labels = array();
+
+            foreach( $data['fields'] as $field ) {
+
+                if( 'product' == $field[ 'type' ] ) {
+                    $product_labels[] = $field['label'];
+                    continue;
+                }
+
+            }
+
+            $products = implode( ', ', $product_labels );
+
+        }
+
+        return $products;
+    }
+>>>>>>> release/2.2
 }
