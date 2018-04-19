@@ -72,7 +72,7 @@ class Opt_In {
 	}
 
 	/**
-	 * Process the loginform submission
+	 * Process the opt-in form submission
 	 *
 	 * @since 2.2
 	 */
