@@ -658,7 +658,7 @@ class Affiliate_WP_Settings {
 					),
 					'opt_in_platform' => array(
 						'name' => __( 'Platform', 'affiliate-wp' ),
-						'desc' => __( 'Select the opt-in platform provider you wish to use then click Save Changes to configure the settings. The opt-in form can be displayed on any page using the [opt_in] shortcode. <a href="http://docs.affiliatewp.com">Learn more</a>.', 'affiliate-wp' ),
+						'desc' => __( 'Select the opt-in platform provider you wish to use then click Save Changes to configure the settings. The opt-in form can be displayed on any page using the [opt_in] shortcode. <a href="https://docs.affiliatewp.com/article/2034-optin-opt-in-form">Learn more</a>.', 'affiliate-wp' ),
 						'type' => 'select',
 						'options' => array_merge( array( '' => __( '(select one)', 'affiliate-wp' ) ), affiliate_wp()->integrations->opt_in->platforms )
 					)
