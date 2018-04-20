@@ -620,7 +620,49 @@ class Affiliate_WP_Settings {
 						'desc' => sprintf( __( 'Choose the integrations to enable. If you are not using any of these, you may use the <strong>[affiliate_conversion_script]</strong> shortcode to track and create referrals. Refer to the <a href="%s" target="_blank">documentation</a> for help using this.', 'affiliate-wp' ), 'http://docs.affiliatewp.com/article/66-generic-referral-tracking-script' ),
 						'type' => 'multicheck',
 						'options' => affiliate_wp()->integrations->get_integrations()
+					),
+				)
+			),
+			/** Opt-In Settings */
+
+			/**
+			 * Filters the default opt-in settings.
+			 *
+			 * @param array $opt_in_forms The opt in form settings.
+			 */
+			'opt_in_forms' => apply_filters( 'affwp_settings_opt_in_forms',
+				array(
+					'opt_in_referral_amount' => array(
+						'name' => __( 'Opt-In Referral Amount', 'affiliate-wp' ),
+						'type' => 'number',
+						'size' => 'small',
+						'step' => '0.01',
+						'std'  => '0.00',
+						'desc' => __( 'Enter the amount affiliates should receive for each opt-in referral. Default is 0.00.', 'affiliate-wp' ),
+					),
+					'opt_in_referral_status' => array(
+						'name' => __( 'Opt-In Referral Status', 'affiliate-wp' ),
+						'type' => 'radio',
+						'options'  => array(
+							'pending' => __( 'Pending', 'affiliate-wp' ),
+							'unpaid'  => __( 'Unpaid', 'affiliate-wp' ),
+						),
+						'std' => 'pending',
+						'desc' => __( 'Select the status that should be assigned to opt-in referrals by default.', 'affiliate-wp' ),
+					),
+					'opt_in_success_message' => array(
+						'name' => __( 'Message shown upon opt-in success', 'affiliate-wp' ),
+						'type' => 'rich_editor',
+						'std'  => 'You have subscribed successfully.',
+						'desc' => __( 'Enter the message you would like to show subscribers after they have opted-in successfully.', 'affiliate-wp' ),
+					),
+					'opt_in_platform' => array(
+						'name' => __( 'Platform', 'affiliate-wp' ),
+						'desc' => __( 'Select the opt-in platform provider you wish to use then click Save Changes to configure the settings. The opt-in form can be displayed on any page using the [opt_in] shortcode. <a href="https://docs.affiliatewp.com/article/2034-optin-opt-in-form">Learn more</a>.', 'affiliate-wp' ),
+						'type' => 'select',
+						'options' => array_merge( array( '' => __( '(select one)', 'affiliate-wp' ) ), affiliate_wp()->integrations->opt_in->platforms )
 					)
+					// Individual platform settings are registered through their platform classes in includes/integrations/opt-in-platforms/
 				)
 			),
 			/** Email Settings */
@@ -869,7 +911,7 @@ class Affiliate_WP_Settings {
 	 *
 	 * @since 2.2
 	 * @param boolean $install Whether or not the install script has been run.
-	 * 
+	 *
 	 * @return array $emails
 	 */
 	public function email_notifications( $install = false ) {

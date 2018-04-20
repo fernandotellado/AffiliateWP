@@ -1,6 +1,15 @@
 <?php
 
+use AFFWP\Integrations\Opt_In;
+
 class Affiliate_WP_Integrations {
+
+	/**
+	 * Holds the opt_in integration property.
+	 *
+	 * @since 2.2
+	 */
+	public $opt_in;
 
 	/**
 	 * Get things started.
@@ -11,6 +20,8 @@ class Affiliate_WP_Integrations {
 	public function __construct() {
 
 		$this->load();
+
+		$this->opt_in = new \AFFWP\Integrations\Opt_In;;
 
 	}
 
@@ -150,6 +161,8 @@ class Affiliate_WP_Integrations {
 			}
 
 		}
+
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/integrations/class-opt-in.php';
 
 		/**
 		 * Fires immediately after all AffiliateWP integrations are loaded.

@@ -909,11 +909,11 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 * }
 	 * @return int The ID of the customer record for the referral.
 	 */
-	private function setup_customer( $args = array() ) {	
+	private function setup_customer( $args = array() ) {
 
 		$existing      = false;
 		$customer_id   = 0;
-		
+
 		if( ! isset( $args['customer'] ) ) {
 			return $customer_id;
 		}
@@ -927,7 +927,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				$existing    = true;
 				$customer_id = $customer->customer_id;
 			}
-	
+
 		}
 
 		if( ! $existing && is_array( $args['customer'] ) && ! empty( $args['customer']['email'] ) ) {
@@ -940,7 +940,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			}
 
 		}
-	
+
 		if( $existing ) {
 
 			// Update the customer record

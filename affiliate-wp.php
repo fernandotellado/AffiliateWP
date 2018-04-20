@@ -163,6 +163,15 @@ final class Affiliate_WP {
 	public $login;
 
 	/**
+	 * The opt in form handler instance variable
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    Affiliate_WP_Opt_In
+	 */
+	public $opt_in;
+
+	/**
 	 * The affiliate registration handler instance variable
 	 *
 	 * @access public
@@ -418,6 +427,7 @@ final class Affiliate_WP {
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referrals-graph.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-visits-graph.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/class-payouts-graph.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/abstracts/class-affwp-opt-in-platform.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-integrations.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-login.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referrals-db.php';

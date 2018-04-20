@@ -43,7 +43,7 @@ abstract class Affiliate_WP_Base {
 	 */
 	public $referral_type = 'sale';
 
-	/*
+	/**
 	 * Customer email address.
 	 *
 	 * @access  public
@@ -404,11 +404,11 @@ abstract class Affiliate_WP_Base {
 			'reference'   => '',
 			'affiliate_id' => 0
 		) );
-		
+
 		$affiliate_id = isset( $args['affiliate_id'] ) ? $args['affiliate_id'] : $this->get_affiliate_id( $args['reference'] );
 
 		$rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true );
-		
+
 		/**
 		 * Filters the integration category rate.
 		 *
