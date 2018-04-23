@@ -274,7 +274,6 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
     }
 
     /**
-<<<<<<< HEAD
      * Get the referral type.
      *
      * @since  2.2
@@ -291,7 +290,7 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
         return $type;
     }
 
-=======
+    /**
      * Get the referral products.
      *
      * @since  2.1.16
@@ -323,5 +322,4 @@ final class Affiliate_WP_Ninja_Forms_Add_Referral extends NF_Abstracts_Action {
 
         return $products;
     }
->>>>>>> release/2.2
 }
