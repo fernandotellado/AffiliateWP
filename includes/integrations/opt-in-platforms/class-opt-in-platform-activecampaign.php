@@ -47,11 +47,11 @@ class ActiveCampaign extends Opt_In\Platform {
 
 		$body = array(
 			'email'                          => $this->contact['email'],
-		    'first_name'                     => $this->contact['first_name'],
-		    'last_name'                      => $this->contact['last_name'],
-		    'ip4'                            => affiliate_wp()->tracking->get_ip(),
-		    'p[' . $this->list_id . ']'      => $this->list_id,
-		    'status[' . $this->list_id . ']' => 1,
+			'first_name'                     => $this->contact['first_name'],
+			'last_name'                      => $this->contact['last_name'],
+			'ip4'                            => affiliate_wp()->tracking->get_ip(),
+			'p[' . $this->list_id . ']'      => $this->list_id,
+			'status[' . $this->list_id . ']' => 1,
 		);
 
 		$response = $this->call_api( $this->api_url, $body );
