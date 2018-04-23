@@ -25,11 +25,7 @@
  * @package AffiliateWP
  * @category Core
  * @author Pippin Williamson
-<<<<<<< HEAD
  * @version 2.2
-=======
- * @version 2.1.17
->>>>>>> master
  */
 
 // Exit if accessed directly
