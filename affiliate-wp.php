@@ -25,7 +25,7 @@
  * @package AffiliateWP
  * @category Core
  * @author Pippin Williamson
- * @version 2.2
+ * @version 2.2-beta1
  */
 
 // Exit if accessed directly
@@ -57,7 +57,7 @@ final class Affiliate_WP {
 	 * @since  1.0
 	 * @var    string
 	 */
-	private $version = '2.2';
+	private $version = '2.2-beta1';
 
 	/**
 	 * The affiliates DB instance variable.
