@@ -459,7 +459,7 @@ class Affiliate_WP_Admin_Notices {
 			</div>
 		<?php endif;
 
-		if ( true === version_compare( AFFILIATEWP_VERSION, '2.2', '<' ) || false === affwp_has_upgrade_completed( 'upgrade_v22_create_customer_records' ) ) :
+		if ( false === affwp_has_upgrade_completed( 'upgrade_v22_create_customer_records' ) ) :
 
 			// Enqueue admin JS for the batch processor.
 			affwp_enqueue_admin_js();

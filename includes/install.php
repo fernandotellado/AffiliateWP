@@ -32,7 +32,7 @@ function affiliate_wp_install() {
 
 	if ( ! get_option( 'affwp_is_installed' ) ) {
 
-		// Get the page ID of the Affiliate Area. 
+		// Get the page ID of the Affiliate Area.
 		$affiliates_page = affiliate_wp()->settings->get( 'affiliates_page' );
 
 		// Check that the page exists.
@@ -79,7 +79,8 @@ function affiliate_wp_install() {
 	$affiliate_wp_install->rewrites->flush_rewrites();
 
 	$completed_upgrades = array(
-		'upgrade_v20_recount_unpaid_earnings'
+		'upgrade_v20_recount_unpaid_earnings',
+		'upgrade_v22_create_customer_records'
 	);
 
 	// Set past upgrade routines complete for all sites.
