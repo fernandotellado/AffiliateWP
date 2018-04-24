@@ -33,7 +33,7 @@ function affiliate_wp_install() {
 	if ( ! get_option( 'affwp_is_installed' ) ) {
 
 		// Get the page ID of the Affiliate Area.
-		$affiliates_page = affiliate_wp()->settings->get( 'affiliates_page' );
+		$affiliates_page = $affiliate_wp_install->settings->get( 'affiliates_page' );
 
 		// Check that the page exists.
 		$affiliates_page = ! empty( $affiliates_page ) ? get_post( $affiliates_page ) : false;
@@ -65,7 +65,7 @@ function affiliate_wp_install() {
 				'your_name'   => __( 'Your Name', 'affiliate-wp' ),
 				'website_url' => __( 'Website URL', 'affiliate-wp' )
 			),
-			'email_notifications' => affiliate_wp()->settings->email_notifications( true )
+			'email_notifications' => $affiliate_wp_install->settings->email_notifications( true )
 		), $save = true );
 
 	}
