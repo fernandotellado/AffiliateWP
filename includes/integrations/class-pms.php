@@ -329,6 +329,6 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
 
 }
 
-if ( function_exists( 'pms_get_discount_by_code' ) ) {
+if ( class_exists( 'Paid_Member_Subscriptions' ) ) {
 	new Affiliate_WP_PMS;
 }
