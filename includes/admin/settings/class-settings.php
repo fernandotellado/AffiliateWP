@@ -923,7 +923,7 @@ class Affiliate_WP_Settings {
 			'affiliate_application_accepted_email' => __( 'Notify affiliate when their affiliate application is accepted', 'affiliate-wp' ),
 		);
 
-		if ( affiliate_wp()->settings->get( 'require_approval' ) || true === $install ) {
+		if ( $this->get( 'require_approval' ) || true === $install ) {
 			$emails['affiliate_application_pending_email']  = __( 'Notify affiliate when their affiliate application is pending', 'affiliate-wp' );
 			$emails['affiliate_application_rejected_email'] = __( 'Notify affiliate when their affiliate application is rejected', 'affiliate-wp' );
 		}
