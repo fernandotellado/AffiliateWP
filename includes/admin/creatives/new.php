@@ -35,7 +35,13 @@
 				</th>
 
 				<td>
-					<textarea name="description" id="description" class="large-text" rows="8"></textarea>
+					<?php
+					wp_editor( '', 'description', array(
+						'textarea_name' => 'description',
+						'textarea_rows' => 8,
+						'media_buttons' => false,
+					) );
+					?>
 					<p class="description"><?php _e( 'An optional description for this creative. This is visible to affiliates and is displayed below the creative.', 'affiliate-wp' ); ?></p>
 				</td>
 
