@@ -42,7 +42,7 @@
 						'media_buttons' => false,
 					) );
 					?>
-					<p class="description"><?php _e( 'An optional description for this creative. This is visible to affiliates and is displayed below the creative.', 'affiliate-wp' ); ?></p>
+					<p class="description"><?php _e( 'An optional description for this creative. This is visible to affiliates and is displayed above the creative.', 'affiliate-wp' ); ?></p>
 				</td>
 
 			</tr>
