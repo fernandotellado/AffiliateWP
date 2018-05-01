@@ -192,12 +192,20 @@ class AffWP_Referrals_Table extends List_Table {
 	 * @return array Array of all the sortable columns
 	 */
 	public function get_sortable_columns() {
-		return array(
+		$columns = array(
 			'amount'    => array( 'amount', false ),
 			'affiliate' => array( 'affiliate_id', false ),
 			'date'      => array( 'date', false ),
 			'status'    => array( 'status', false ),
 		);
+
+		/**
+		 * Filters the referrals list table sortable columns.
+		 *
+		 * @param array                  $columns          The sortable columns for this list table.
+		 * @param \AffWP_Referrals_Table $this             List table instance.
+		 */
+		return apply_filters( 'affwp_referral_table_sortable_columns', $columns, $this );
 	}
 
 	/**
