@@ -257,11 +257,11 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
             return;
         }
 
-        if ( empty( $data['status'] ) ) {
+        if ( empty( $updated['status'] ) ) {
             return;
         }
 
-        if ( $data['status'] == 'completed' ) {
+        if ( $updated['status'] == 'completed' ) {
             $this->log( 'PMS: Referral for payment ID ' . $payment_id . ' about to be marked as complete' );
             $this->complete_referral( $payment_id );
         } else {
@@ -289,11 +289,11 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
             return;
         }
 
-        if ( empty( $data['status'] ) ) {
+        if ( empty( $updated['status'] ) ) {
             return;
         }
 
-        if ( $data['status'] == 'refunded' ) {
+        if ( $updated['status'] == 'refunded' ) {
             $this->log( 'PMS: Referral for payment ID ' . $payment_id . ' about to be marked as rejected during refund' );
             $this->reject_referral( $payment_id );
         }
