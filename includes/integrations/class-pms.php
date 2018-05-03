@@ -154,6 +154,9 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
         $allowed_form_locations = array( 'register', 'register_email_confirmation' );
 
         if ( ! in_array( $payment_data['form_location'], $allowed_form_locations ) ) {
+
+            $this->log( 'PMS: Referral not created because the used form, ' . $payment_data['form_location'] . ', is not one of the allowed form locations' );
+
             return;
         }
 
@@ -164,17 +167,20 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
          */
         if ( ! empty( $payment_data['discount_code'] ) ) {
 
+            $this->log( 'PMS: Discount code used, determining if it is an affiliate discount code' );
+
             $discount = pms_get_discount_by_code( $payment_data['discount_code'] );
 
             if ( $discount ) {
 
                 $affiliate_id = get_post_meta( $discount->id, '_affwp_pms_affiliate_id', true );
+                $this->log( 'PMS: Discount code used that belongs to affiliate ID ' . $affiliate_id );
 
                 if ( ! empty( $affiliate_id ) ) {
 
                     if ( ! affiliate_wp()->tracking->is_valid_affiliate( $affiliate_id ) ) {
 
-						$this->log( 'Referral not created because affiliate is invalid.' );
+                        $this->log( 'PMS: Referral not created because affiliate is invalid.' );
 
                     } else {
 
@@ -183,6 +189,7 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
 
                         // Set base amount as the discounted value
                         $base_amount = $payment_data['amount'];
+                        $this->log( 'PMS: Discount code used that belongs to affiliate ID ' . $affiliate_id . ' will be used to generate referral based on amount ' . $base_amount );
 
                     }
 
@@ -194,6 +201,7 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
 
         // Do nothing if we have no referral and no affiliate on discount
         if ( ! $this->was_referred() && ! $affiliate_discount ) {
+            $this->log( 'PMS: Referral creation stopped because customer was not referred and no affiliate discount was detected' );
             return;
         }
 
@@ -204,7 +212,7 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
              */
             if ( $this->is_affiliate_email( $payment_data['user_data']['user_id'] ) ) {
 
-				$this->log( 'Referral not created because affiliate\'s own account was used.' );
+				$this->log( 'PMS: Referral not created because affiliate\'s own account was used.' );
 
                 return;
             }
@@ -219,13 +227,15 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
         // If the base amount is zero and it's set to ignore zero amounts, exit
         if ( 0 == $base_amount && affiliate_wp()->settings->get( 'ignore_zero_referrals' ) ) {
 
-			$this->log( 'Referral not created due to 0.00 amount.' );
+            $this->log( 'PMS: Referral not created due to 0.00 amount.' );
 
             return;
         }
 
         // Calculate the referral amount
         $referral_amount = $this->calculate_referral_amount( $base_amount, $payment_data['payment_id'], $payment_data['user_data']['subscription']->id, $this->affiliate_id );
+
+		$this->log( 'PMS: Referral calculated for affiliate ID ' . $this->affiliate_id . ' in the amount of ' . $referral_amount );
 
         // Insert the pending referral
         $this->insert_pending_referral( $referral_amount, $payment_data['payment_id'], $payment_data['user_data']['subscription']->name );
@@ -252,7 +262,10 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
         }
 
         if ( $data['status'] == 'completed' ) {
+            $this->log( 'PMS: Referral for payment ID ' . $payment_id . ' about to be marked as complete' );
             $this->complete_referral( $payment_id );
+        } else {
+            $this->log( 'PMS: Referral for payment ID ' . $payment_id . ' not marked as complete because payment status is not completed' );
         }
 
     }
@@ -281,6 +294,7 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
         }
 
         if ( $data['status'] == 'refunded' ) {
+            $this->log( 'PMS: Referral for payment ID ' . $payment_id . ' about to be marked as rejected during refund' );
             $this->reject_referral( $payment_id );
         }
 
