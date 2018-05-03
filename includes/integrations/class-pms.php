@@ -151,7 +151,7 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
     public function add_pending_referral_on_register( $payment_data ) {
 
         // Allow referrals only on register subscription
-        $allowed_form_locations = array( 'register', 'register_email_confirmation' );
+        $allowed_form_locations = array( 'register', 'register_email_confirmation', 'new_subscription', 'renew_subscription', 'upgrade_subscription' );
 
         if ( ! in_array( $payment_data['form_location'], $allowed_form_locations ) ) {
 
