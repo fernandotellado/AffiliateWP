@@ -63,7 +63,6 @@ class Affiliate_WP_Give extends Affiliate_WP_Base {
 
 		// Get referral total
 		$referral_total = $this->get_referral_total( $payment_id, $affiliate_id );
-		$referral_total = affwp_calc_referral_amount( $referral_total, $affiliate_id, $payment_id, $rate, 0 );
 
 		// Get referral description
 		$desc = $this->get_referral_description( $payment_id );
