@@ -160,6 +160,11 @@ class Affiliate_WP_ZippyCourses extends Affiliate_WP_Base {
 
 				$order       = $event->order;
 				$customer    = $order->getCustomer();
+
+				if( ! $order || ! $customer ) {
+					return;
+				}
+
 				$this->email = $customer->getEmail();
 
 				if ( $customer === null || $this->is_affiliate_email( $this->email ) ) {
