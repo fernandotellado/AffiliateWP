@@ -1,25 +1,32 @@
 <?php
+namespace AffWP\Utils;
 
-class Affiliate_WP_Privacy_Tools {
+/**
+ * Core class that implements privacy tools and controls for GDPR compliance.
+ *
+ * @since 2.2
+ */
+class Privacy_Tools {
 
 	/**
-	 * Get things started
+	 * Set up hook callbacks for connecting to WordPress' privacy API.
 	 *
-	 * @since 1.0
+	 * @since 2.2
 	 */
 	public function __construct() {
-		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_privacy_exporters' ) );	
-		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_data_erasers' ) );	
+		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporters' ) );
+		add_filter( 'wp_privacy_personal_data_erasers',   array( $this, 'register_data_erasers'      ) );
 	}
 
 	/**
-	 * Registers our privacy exporters
+	 * Registers the privacy exporters.
 	 *
 	 * @since 2.2
-	 * @param array $exporters Existing exporters
-	 * @return array $exporters
+	 *
+	 * @param array $exporters Existing exporters.
+	 * @return array Modified exporters.
 	 */
-	public function register_privacy_exporters( $exporters ) {
+	public function register_exporters( $exporters ) {
 	
 		$exporters[] = array(
 			'exporter_friendly_name' => __( 'Affiliate Record', 'affiliate-wp' ),
@@ -35,11 +42,12 @@ class Affiliate_WP_Privacy_Tools {
 
 	}
 	/**
-	 * Registers our data erasers
+	 * Registers the data erasers.
 	 *
 	 * @since 2.2
-	 * @param array $erasers Existing erasers
-	 * @return array $erasers
+	 *
+	 * @param array $erasers Existing erasers.
+	 * @return array Modified erasers.
 	 */
 	public function register_data_erasers( $erasers ) {
 	
@@ -61,12 +69,12 @@ class Affiliate_WP_Privacy_Tools {
 	 * Retrieves the affiliate record for the Privacy Data Exporter
 	 *
 	 * @since 2.2
-	 * @param string $email_address
-	 * @param int    $page
 	 *
-	 * @return array
+	 * @param string $email_address Affiliate email address.
+	 * @param int    $page          Page number.
+	 * @return array Affiliate data to export.
 	 */
-	public  function affiliate_record_exporter( $email_address = '', $page = 1 ) {
+	public function affiliate_record_exporter( $email_address, $page ) {
 
 		$export_data = array();
 		$user        = get_user_by( 'email', $email_address );
@@ -125,12 +133,12 @@ class Affiliate_WP_Privacy_Tools {
 	 * Retrieves the affiliate record for the Privacy Data Exporter
 	 *
 	 * @since 2.2
-	 * @param string $email_address
-	 * @param int    $page
 	 *
-	 * @return array
+	 * @param string $email_address Affiliate customer email address.
+	 * @param int    $page          Page number.
+	 * @return array Affiliate customer data to export.
 	 */
-	public  function affiliate_customer_record_exporter( $email_address = '', $page = 1 ) {
+	public  function affiliate_customer_record_exporter( $email_address, $page ) {
 
 		$export_data = array();
 		$customer    = affwp_get_customer( $email_address );
@@ -184,15 +192,15 @@ class Affiliate_WP_Privacy_Tools {
 	}
 
 	/**
-	 * Erases the affiliate record
+	 * Erases an affiliate record.
 	 *
 	 * @since 2.2
-	 * @param string $email_address
-	 * @param int    $page
 	 *
-	 * @return array
+	 * @param string $email_address Affiliate email address.
+	 * @param int    $page          Page number.
+	 * @return array Affiliate data to erase.
 	 */
-	public  function affiliate_record_eraser( $email_address = '', $page = 1 ) {
+	public function affiliate_record_eraser( $email_address, $page ) {
 
 		$user = get_user_by( 'email', $email_address );
 
@@ -222,15 +230,16 @@ class Affiliate_WP_Privacy_Tools {
 	}
 
 	/**
-	 * Erases the affiliate customer record
+	 * Erases an affiliate customer record.
 	 *
 	 * @since 2.2
-	 * @param string $email_address
-	 * @param int    $page
+	 *
+	 * @param string $email_address Affiliate customer email address.
+	 * @param int    $page          Page number.
 	 *
 	 * @return array
 	 */
-	public  function affiliate_customer_record_eraser( $email_address = '', $page = 1 ) {
+	public  function affiliate_customer_record_eraser( $email_address, $page ) {
 
 		$customer = affwp_get_customer( $email_address );
 
