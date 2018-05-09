@@ -9,6 +9,7 @@ class Affiliate_WP_Privacy_Tools {
 	 */
 	public function __construct() {
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_privacy_exporters' ) );	
+		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_data_erasers' ) );	
 	}
 
 	/**
@@ -31,6 +32,28 @@ class Affiliate_WP_Privacy_Tools {
 		);
 
 		return $exporters;
+
+	}
+	/**
+	 * Registers our data erasers
+	 *
+	 * @since 2.2
+	 * @param array $erasers Existing erasers
+	 * @return array $erasers
+	 */
+	public function register_data_erasers( $erasers ) {
+	
+		$erasers[] = array(
+			'eraser_friendly_name' => __( 'Affiliate Record', 'affiliate-wp' ),
+			'callback'               => array( $this, 'affiliate_record_eraser' ),
+		);
+
+		$erasers[] = array(
+			'eraser_friendly_name' => __( 'Affiliate Customer Record', 'affiliate-wp' ),
+			'callback'               => array( $this, 'affiliate_customer_record_eraser' ),
+		);
+
+		return $erasers;
 
 	}
 
@@ -158,6 +181,76 @@ class Affiliate_WP_Privacy_Tools {
 		}
 
 		return array( 'data' => array( $export_data ), 'done' => true );
+	}
+
+	/**
+	 * Erases the affiliate record
+	 *
+	 * @since 2.2
+	 * @param string $email_address
+	 * @param int    $page
+	 *
+	 * @return array
+	 */
+	public  function affiliate_record_eraser( $email_address = '', $page = 1 ) {
+
+		$user = get_user_by( 'email', $email_address );
+
+		if( $user ) {
+
+			$affiliate = affwp_get_affiliate( $user->user_login );
+
+		}
+
+		if ( empty( $email_address ) || empty( $affiliate->affiliate_id ) ) {
+			return array(
+				'items_removed'  => false,
+				'items_retained' => false,
+				'messages'       => array(),
+				'done'           => true,
+			);
+		}
+
+		$items_removed = affwp_delete_affiliate( $affiliate );
+
+		return array(
+			'items_removed'  => $items_removed,
+			'items_retained' => false,
+			'messages'       => array( __( 'Affiliate record has been deleted.', 'affiliate-wp' ) ),
+			'done'           => true,
+		);
+	}
+
+	/**
+	 * Erases the affiliate customer record
+	 *
+	 * @since 2.2
+	 * @param string $email_address
+	 * @param int    $page
+	 *
+	 * @return array
+	 */
+	public  function affiliate_customer_record_eraser( $email_address = '', $page = 1 ) {
+
+		$customer = affwp_get_customer( $email_address );
+
+		if ( empty( $email_address ) || empty( $customer->customer_id ) ) {
+			return array(
+				'items_removed'  => false,
+				'items_retained' => false,
+				'messages'       => array(),
+				'done'           => true,
+			);
+		}
+
+		$items_removed = affwp_delete_customer( $customer );
+
+		return array(
+			'items_removed'  => $items_removed,
+			'items_retained' => false,
+			'messages'       => array( __( 'Affiliate customer record has been deleted.', 'affiliate-wp' ) ),
+			'done'           => true,
+		);
 	}
 
 }
