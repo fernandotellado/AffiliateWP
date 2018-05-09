@@ -832,7 +832,7 @@ class Affiliate_WP_Settings {
 		$new_general_settings = array(
 			'required_registration_fields' => array(
 				'name' => __( 'Required Registration Fields', 'affiliate-wp' ),
-				'desc' => __( 'Select which fields should be required for affiliate registration. The <strong>Username</strong> and <strong>Account Email</strong> form fields are always required.', 'affiliate-wp' ),
+				'desc' => __( 'Select which fields should be required for affiliate registration. The <strong>Username</strong> and <strong>Account Email</strong> form fields are always required. The <strong>Password</strong> form field will be removed if not required.', 'affiliate-wp' ),
 				'type' => 'multicheck',
 				'options' => array(
 					'password'         => __( 'Password', 'affiliate-wp' ),
