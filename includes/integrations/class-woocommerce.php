@@ -193,7 +193,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			} else {
 
 				// Insert a pending referral
-				$referral_id = $this->insert_pending_referral( $amount, $order_id, $description, $this->get_products() );
+				$referral_id = $this->insert_pending_referral( $amount, $order_id, $description, $this->get_products(), array( 'affiliate_id' => $affiliate_id ) );
 
 				if ( $referral_id ) {
 
