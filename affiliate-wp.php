@@ -177,6 +177,16 @@ final class Affiliate_WP {
 	public $register;
 
 	/**
+	 * The privacy tools instance variable
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    Affiliate_WP_Privacy_Tools
+	 */
+	public $privacy_tools;
+
+
+	/**
 	 * The integrations handler instance variable
 	 *
 	 * @access public
@@ -426,6 +436,7 @@ final class Affiliate_WP {
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/abstracts/class-affwp-opt-in-platform.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-integrations.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-login.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-privacy-tools.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referrals-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referral-type-registry.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-register.php';
@@ -508,6 +519,7 @@ final class Affiliate_WP {
 		self::$instance->tracking       = new Affiliate_WP_Tracking;
 		self::$instance->templates      = new Affiliate_WP_Templates;
 		self::$instance->login          = new Affiliate_WP_Login;
+		self::$instance->privacy_tools  = new Affiliate_WP_Privacy_Tools;
 		self::$instance->register       = new Affiliate_WP_Register;
 		self::$instance->integrations   = new Affiliate_WP_Integrations;
 		self::$instance->emails         = new Affiliate_WP_Emails;
