@@ -235,13 +235,13 @@ class Generate_Payouts extends Batch\Export\CSV implements Batch\With_PreFetch {
 		if ( isset( $affiliate_ids[ $offset ] ) ) {
 			$affiliate_id = $affiliate_ids[ $offset ];
 		} else {
-			$affiliate_id = 0;
+			$affiliate_id = null;
 		}
 
 		// Grab the next affiliate in the list.
 		$data = array();
 
-		if ( array_key_exists( $affiliate_id, $payouts ) ) {
+		if ( null !== $affiliate_id && array_key_exists( $affiliate_id, $payouts ) ) {
 			$current_payout = $payouts[ $affiliate_id ];
 
 			/**
