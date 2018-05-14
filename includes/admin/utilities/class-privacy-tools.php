@@ -15,7 +15,7 @@ class Privacy_Tools {
 	 */
 	public function __construct() {
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporters' ) );
-		add_filter( 'wp_privacy_personal_data_erasers',   array( $this, 'register_data_erasers'      ) );
+		add_filter( 'wp_privacy_personal_data_erasers',   array( $this, 'register_data_erasers' ) );
 	}
 
 	/**
@@ -27,7 +27,7 @@ class Privacy_Tools {
 	 * @return array Modified exporters.
 	 */
 	public function register_exporters( $exporters ) {
-	
+
 		$exporters[] = array(
 			'exporter_friendly_name' => __( 'Affiliate Record', 'affiliate-wp' ),
 			'callback'               => array( $this, 'affiliate_record_exporter' ),
@@ -50,15 +50,15 @@ class Privacy_Tools {
 	 * @return array Modified erasers.
 	 */
 	public function register_data_erasers( $erasers ) {
-	
+
 		$erasers[] = array(
 			'eraser_friendly_name' => __( 'Affiliate Record', 'affiliate-wp' ),
-			'callback'               => array( $this, 'affiliate_record_eraser' ),
+			'callback'             => array( $this, 'affiliate_record_eraser' ),
 		);
 
 		$erasers[] = array(
 			'eraser_friendly_name' => __( 'Affiliate Customer Record', 'affiliate-wp' ),
-			'callback'               => array( $this, 'affiliate_customer_record_eraser' ),
+			'callback'             => array( $this, 'affiliate_customer_record_eraser' ),
 		);
 
 		return $erasers;
