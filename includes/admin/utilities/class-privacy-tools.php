@@ -167,10 +167,6 @@ class Privacy_Tools {
 						'value' => $customer->last_name
 					),
 					array(
-						'name'  => __( 'Last Name', 'affiliate-wp' ),
-						'value' => $customer->last_name
-					),
-					array(
 						'name'  => __( 'Date Created', 'affiliate-wp' ),
 						'value' => $customer->date
 					),
