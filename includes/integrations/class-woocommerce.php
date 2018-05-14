@@ -34,6 +34,8 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		add_action( 'woocommerce_order_status_processing_to_cancelled', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'woocommerce_order_status_completed_to_cancelled', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'woocommerce_order_status_pending_to_cancelled', array( $this, 'revoke_referral' ), 10 );
+		add_action( 'woocommerce_order_status_processing_to_failed', array( $this, 'revoke_referral' ), 10 );
+		add_action( 'woocommerce_order_status_completed_to_failed', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'woocommerce_order_status_pending_to_failed', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'wc-on-hold_to_trash', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'wc-processing_to_trash', array( $this, 'revoke_referral' ), 10 );
