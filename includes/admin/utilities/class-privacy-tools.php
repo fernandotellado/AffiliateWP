@@ -100,7 +100,7 @@ class Privacy_Tools {
 						),
 						array(
 							'name'  => __( 'Payment Email', 'affiliate-wp' ),
-							'value' => $affiliate->payment_email
+							'value' => empty( $affiliate->payment_email ) ? $user->user_email : $affiliate->payment_email
 						),
 						array(
 							'name'  => __( 'Name', 'affiliate-wp' ),
@@ -121,7 +121,12 @@ class Privacy_Tools {
 				'group_id'    => 'affwp-affiliate-record',
 				'group_label' => __( 'Affiliate Record', 'affiliate-wp' ),
 				'item_id'     => "affwp-affiliate-record-$email_address",
-				'data'        => array()
+				'data'        => array(
+					array(
+						'name'  => __( 'Customer ID', 'affiliate-wp' ),
+						'value' => __( 'No records found', 'affiliate-wp' )
+					)
+				)
 			);
 
 		}
@@ -179,7 +184,12 @@ class Privacy_Tools {
 				'group_id'    => 'affwp-affiliate-customer-record',
 				'group_label' => __( 'Affiliate Customer Record', 'affiliate-wp' ),
 				'item_id'     => "affwp-affiliate-customer-record-$email_address",
-				'data'        => array()
+				'data'        => array(
+					array(
+						'name'  => __( 'Customer ID', 'affiliate-wp' ),
+						'value' => __( 'No records found', 'affiliate-wp' )
+					)
+				)
 			);
 
 		}
