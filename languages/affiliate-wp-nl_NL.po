@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: AffiliateWP\n"
 "Report-Msgid-Bugs-To: https://affiliatewp.com/support/\n"
 "POT-Creation-Date: 2017-11-01 22:56:22+00:00\n"
-"PO-Revision-Date: 2018-03-08 11:29+0100\n"
-"Last-Translator: Jurgen Hollebecq <jurgen@makemywebsite.be>\n"
+"PO-Revision-Date: 2018-05-15 12:05+0100\n"
+"Last-Translator: Leo Oosterloo <leo@pronamic.nl>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.5\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
@@ -48,7 +48,8 @@ msgstr "Nonce-verificatie mislukt"
 #: includes/admin/affiliates/actions.php:155
 #: includes/admin/affiliates/actions.php:159
 #: includes/admin/class-addon-updater.php:283
-#: includes/admin/class-notices.php:564 includes/admin/creatives/actions.php:16
+#: includes/admin/class-notices.php:564
+#: includes/admin/creatives/actions.php:16
 #: includes/admin/creatives/actions.php:44
 #: includes/admin/creatives/actions.php:48
 #: includes/admin/creatives/actions.php:52
@@ -60,8 +61,9 @@ msgstr "Nonce-verificatie mislukt"
 #: includes/admin/tools/import/class-batch-import-affiliates.php:111
 #: includes/admin/tools/import/class-batch-import-referrals.php:103
 #: includes/admin/tools/import/import.php:24
-#: includes/admin/tools/import/import.php:30 includes/admin/tools/tools.php:668
-#: includes/admin/tools/tools.php:676 includes/admin/tools/tools.php:686
+#: includes/admin/tools/import/import.php:30
+#: includes/admin/tools/tools.php:668 includes/admin/tools/tools.php:676
+#: includes/admin/tools/tools.php:686
 msgid "Error"
 msgstr "Fout"
 
@@ -589,9 +591,10 @@ msgstr "%1$s tot %2$s"
 
 #: includes/abstracts/class-affwp-reports-tab.php:499
 #: includes/admin/referrals/class-list-table.php:568
-#: includes/admin/referrals/referrals.php:64 includes/admin/tools/tools.php:152
-#: includes/admin/tools/tools.php:308 includes/admin/tools/tools.php:335
-#: includes/admin/tools/tools.php:359 includes/admin/visits/visits.php:55
+#: includes/admin/referrals/referrals.php:64
+#: includes/admin/tools/tools.php:152 includes/admin/tools/tools.php:308
+#: includes/admin/tools/tools.php:335 includes/admin/tools/tools.php:359
+#: includes/admin/visits/visits.php:55
 msgid "Affiliate name"
 msgstr "Partnernaam"
 
@@ -672,7 +675,8 @@ msgstr "U heeft geen rechten om partner accounts te verwijderen"
 
 #: includes/admin/affiliates/actions.php:73
 #: includes/admin/affiliates/actions.php:159
-#: includes/admin/class-notices.php:564 includes/admin/creatives/actions.php:48
+#: includes/admin/class-notices.php:564
+#: includes/admin/creatives/actions.php:48
 #: includes/admin/referrals/actions.php:20
 #: includes/admin/referrals/actions.php:51
 #: includes/admin/referrals/actions.php:82
@@ -683,8 +687,8 @@ msgstr "Veiligheidscontrole mislukt"
 msgid "No affiliate IDs specified for deletion"
 msgstr "Geen partner ID aangeduid om te verwijderen"
 
-#: includes/admin/affiliates/affiliates.php:59 includes/admin/class-menu.php:11
-#: includes/admin/class-menu.php:14
+#: includes/admin/affiliates/affiliates.php:59
+#: includes/admin/class-menu.php:11 includes/admin/class-menu.php:14
 #: includes/admin/reports/tabs/class-affiliates-reports-tab.php:23
 msgid "Affiliates"
 msgstr "Partners"
@@ -957,7 +961,8 @@ msgstr ""
 "naam is ingevuld. Dit kan wel nog aangepast worden <a href=\"%1$s\" alt="
 "\"%2$s\">in het gebruikersscherm</a>."
 
-#: includes/admin/affiliates/edit.php:42 includes/admin/affiliates/edit.php:147
+#: includes/admin/affiliates/edit.php:42
+#: includes/admin/affiliates/edit.php:147
 msgid "A link to the user edit screen for this user."
 msgstr "Link naar gebruikersscherm voor deze gebruiker."
 
@@ -1034,7 +1039,8 @@ msgstr "Website standaard"
 msgid "The affiliate&#8217;s referral rate type."
 msgstr "Referral tarieftype van de partner."
 
-#: includes/admin/affiliates/edit.php:174 includes/admin/affiliates/new.php:100
+#: includes/admin/affiliates/edit.php:174
+#: includes/admin/affiliates/new.php:100
 #: includes/admin/settings/class-settings.php:523
 #: includes/integrations/class-edd.php:624
 #: includes/integrations/class-memberpress.php:177
@@ -1046,7 +1052,8 @@ msgstr "Referral tarieftype van de partner."
 msgid "Referral Rate"
 msgstr "Referral tarief"
 
-#: includes/admin/affiliates/edit.php:179 includes/admin/affiliates/new.php:105
+#: includes/admin/affiliates/edit.php:179
+#: includes/admin/affiliates/new.php:105
 msgid ""
 "The affiliate&#8217;s referral rate, such as 20 for 20%. If left blank, the "
 "site default will be used."
@@ -1066,7 +1073,8 @@ msgstr ""
 "Account email van de partner. Hierdoor wordt ook het email adres dat getoond "
 "wordt op de profiel pagina aangepast."
 
-#: includes/admin/affiliates/edit.php:200 includes/admin/affiliates/new.php:113
+#: includes/admin/affiliates/edit.php:200
+#: includes/admin/affiliates/new.php:113
 #: includes/admin/settings/class-settings.php:830
 #: includes/admin/tools/export/class-batch-export-affiliates.php:96
 #: includes/admin/tools/export/class-batch-export-referrals.php:146
@@ -1078,7 +1086,8 @@ msgstr ""
 msgid "Payment Email"
 msgstr "Betalingsemail"
 
-#: includes/admin/affiliates/edit.php:205 includes/admin/affiliates/new.php:118
+#: includes/admin/affiliates/edit.php:205
+#: includes/admin/affiliates/new.php:118
 msgid ""
 "Affiliate&#8217;s payment email for systems such as PayPal, Moneybookers, or "
 "others. Leave blank to use the affiliate&#8217;s user email."
@@ -1095,11 +1104,13 @@ msgstr "Promotie methodes"
 msgid "Promotion methods entered by the affiliate during registration."
 msgstr "Vermelde promotie-methodes door de partner bij de registratie."
 
-#: includes/admin/affiliates/edit.php:226 includes/admin/affiliates/new.php:126
+#: includes/admin/affiliates/edit.php:226
+#: includes/admin/affiliates/new.php:126
 msgid "Affiliate Notes"
 msgstr "Partner notities"
 
-#: includes/admin/affiliates/edit.php:231 includes/admin/affiliates/new.php:131
+#: includes/admin/affiliates/edit.php:231
+#: includes/admin/affiliates/new.php:131
 msgid ""
 "Enter any notes for this affiliate. Notes are only visible to the admin."
 msgstr "Opmerking over deze partner (enkel zichtbaar voor de administrators)."
@@ -1922,16 +1933,18 @@ msgid "Apply"
 msgstr "Toepassen"
 
 #: includes/admin/referrals/class-list-table.php:574
-#: includes/admin/referrals/referrals.php:67 includes/admin/tools/tools.php:310
-#: includes/admin/tools/tools.php:337 includes/admin/tools/tools.php:361
-#: includes/admin/visits/visits.php:58 includes/class-graph.php:419
+#: includes/admin/referrals/referrals.php:67
+#: includes/admin/tools/tools.php:310 includes/admin/tools/tools.php:337
+#: includes/admin/tools/tools.php:361 includes/admin/visits/visits.php:58
+#: includes/class-graph.php:419
 msgid "From - mm/dd/yyyy"
 msgstr "Van - mm/dd/yyyy"
 
 #: includes/admin/referrals/class-list-table.php:575
-#: includes/admin/referrals/referrals.php:68 includes/admin/tools/tools.php:311
-#: includes/admin/tools/tools.php:338 includes/admin/tools/tools.php:362
-#: includes/admin/visits/visits.php:59 includes/class-graph.php:421
+#: includes/admin/referrals/referrals.php:68
+#: includes/admin/tools/tools.php:311 includes/admin/tools/tools.php:338
+#: includes/admin/tools/tools.php:362 includes/admin/visits/visits.php:59
+#: includes/class-graph.php:421
 msgid "To - mm/dd/yyyy"
 msgstr "Tot - mm/dd/yyyy"
 
@@ -2627,11 +2640,11 @@ msgstr "Sluit verzendingskosten uit bij referral berekeningen."
 
 #: includes/admin/settings/class-settings.php:536
 msgid "Exclude Tax"
-msgstr "Uitgezonderd taxen"
+msgstr "Uitgezonderd belastingen"
 
 #: includes/admin/settings/class-settings.php:537
 msgid "Exclude taxes from referral calculations."
-msgstr "Sluit taxen uit bij referral berekeningen."
+msgstr "Sluit belastingen uit bij referral berekeningen."
 
 #: includes/admin/settings/class-settings.php:541
 msgid "Cookie Expiration"
@@ -2791,11 +2804,11 @@ msgstr ""
 
 #: includes/admin/settings/class-settings.php:654
 msgid "Notify Admin"
-msgstr "Verwittig administrator"
+msgstr "Informeer administrator"
 
 #: includes/admin/settings/class-settings.php:655
 msgid "Notify site admin of new affiliate registrations."
-msgstr "Verwittig site administrator bij nieuwe partner registraties."
+msgstr "Informeer site administrator bij nieuwe partner registraties."
 
 #: includes/admin/settings/class-settings.php:659
 msgid "Registration Email Subject"
@@ -2924,11 +2937,11 @@ msgstr ""
 
 #: includes/admin/settings/class-settings.php:695
 msgid "Notify Admin of Referrals"
-msgstr "Verwittig administrator van Referrals"
+msgstr "Informeer administrator van Referrals"
 
 #: includes/admin/settings/class-settings.php:696
 msgid "Notify site admin when new referrals are earned."
-msgstr "Verwittig site administrator wanneer nieuwe referrals zijn verdiend."
+msgstr "Informeer site administrator wanneer nieuwe referrals zijn verdiend."
 
 #: includes/admin/settings/class-settings.php:700
 msgid "New Referral Admin Email Subject"
@@ -4126,7 +4139,7 @@ msgstr "Statistieken"
 #: includes/affiliate-functions.php:1539
 #: tests/affiliates/test-affiliate-functions.php:2174
 msgid "Graphs"
-msgstr "Statistieken"
+msgstr "Grafieken"
 
 #: includes/class-login.php:59 includes/class-register.php:90
 msgid "Invalid username"
