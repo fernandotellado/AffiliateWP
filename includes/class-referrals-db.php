@@ -161,6 +161,10 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			$args['products'] = maybe_serialize( $args['products'] );
 		}
 
+		if( empty( $args['description'] ) ) {
+			$args['description'] = ''; // Force description to empty string. NULL values won't work. See https://github.com/AffiliateWP/AffiliateWP/issues/2672
+		}
+
 		if ( ! empty( $args['custom'] ) ) {
 			$args['custom']	 = maybe_serialize( $args['custom'] );
 		}

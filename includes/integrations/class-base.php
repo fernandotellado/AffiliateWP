@@ -127,10 +127,10 @@ abstract class Affiliate_WP_Base {
 
 		$visit_id = affiliate_wp()->tracking->get_visit_id();
 
-		$args = apply_filters( 'affwp_insert_pending_referral', array(
+		$args = array(
 			'amount'       => $amount,
 			'reference'    => $reference,
-			'description'  => $description,
+			'description'  => ! empty( $description ) ? $description : '',
 			'campaign'     => affiliate_wp()->tracking->get_campaign(),
 			'affiliate_id' => $this->affiliate_id,
 			'visit_id'     => $visit_id,
@@ -139,7 +139,11 @@ abstract class Affiliate_WP_Base {
 			'type'         => $this->referral_type,
 			'context'      => $this->context,
 			'customer'     => $this->get_customer( $reference )
-		), $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
+		);
+
+		affiliate_wp()->utils->log( sprintf( 'Arguments being sent to DB: ' . var_export( $args, true ) ) );
+
+		$args = apply_filters( 'affwp_insert_pending_referral', $args, $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
 
 		if( ! empty( $args['customer'] ) && empty( $args['customer']['affiliate_id'] ) ) {
 			$args['customer']['affiliate_id'] = $this->affiliate_id;
