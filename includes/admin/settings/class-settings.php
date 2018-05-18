@@ -551,7 +551,7 @@ class Affiliate_WP_Settings {
 					),
 					'cookie_sharing' => array(
 						'name' => __( 'Cookie Sharing', 'affiliate-wp' ),
-						'desc' => __( 'Share tracking cookies with sub-domains. When enabled, tracking cookies created on domain.com will also be available on sub.domain.com.', 'affiliate-wp' ),
+						'desc' => __( 'Share tracking cookies with sub-domains in a multisite install. When enabled, tracking cookies created on domain.com will also be available on sub.domain.com. Note: this only applies to WordPress Multisite installs.', 'affiliate-wp' ),
 						'type' => 'checkbox',
 					),
 					'currency_settings' => array(
