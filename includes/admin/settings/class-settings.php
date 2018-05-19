@@ -475,16 +475,16 @@ class Affiliate_WP_Settings {
 					),
 					'terms_of_use' => array(
 						'name' => __( 'Terms of Use', 'affiliate-wp' ),
-						'desc' => __( 'Select the page that shows the terms of use for Affiliate Registration', 'affiliate-wp' ),
+						'desc' => __( 'Select the page that shows the terms of use for Affiliate Registration.', 'affiliate-wp' ),
 						'type' => 'select',
 						'options' => affwp_get_pages(),
 						'sanitize_callback' => 'absint'
 					),
 					'terms_of_use_label' => array(
 						'name' => __( 'Terms of Use Label', 'affiliate-wp' ),
-						'desc' => __( 'Enter the text you would like shown for the terms of use checkbox.', 'affiliate-wp' ),
+						'desc' => __( 'Enter the text you would like shown for the Terms of Use checkbox.', 'affiliate-wp' ),
 						'type' => 'text',
-						'std' => __( 'Agree to our terms of use and privacy policy', 'affiliate-wp' )
+						'std' => __( 'Agree to our Terms of Use and Privacy Policy', 'affiliate-wp' )
 					),
 					'referrals' => array(
 						'name' => '<strong>' . __( 'Referral Settings', 'affiliate-wp' ) . '</strong>',
