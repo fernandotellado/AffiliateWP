@@ -116,7 +116,7 @@ if ( is_user_logged_in() ) {
 			<p>
 				<label class="affwp-tos" for="affwp-tos">
 					<input id="affwp-tos" required="required" type="checkbox" name="affwp_tos" />
-					<a href="<?php echo esc_url( get_permalink( affiliate_wp()->settings->get( 'terms_of_use' ) ) ); ?>" target="_blank"><?php echo affiliate_wp()->settings->get( 'terms_of_use_label', __( 'Agree to our terms of use and privacy policy', 'affiliate-wp' ) ); ?></a>
+					<a href="<?php echo esc_url( get_permalink( affiliate_wp()->settings->get( 'terms_of_use' ) ) ); ?>" target="_blank"><?php echo affiliate_wp()->settings->get( 'terms_of_use_label', __( 'Agree to our Terms of Use and Privacy Policy', 'affiliate-wp' ) ); ?></a>
 				</label>
 			</p>
 		<?php endif; ?>
