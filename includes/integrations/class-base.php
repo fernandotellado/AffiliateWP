@@ -36,6 +36,23 @@ abstract class Affiliate_WP_Base {
 	public $logs;
 
 	/**
+	 * Referral type
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public $referral_type = 'sale';
+
+	/**
+	 * Customer email address.
+	 *
+	 * @access  public
+	 * @since   1.8
+	 * @deprecated 2.2
+	 */
+	public $email;
+
+	/**
 	 * Constructor
 	 *
 	 * @access  public
@@ -110,17 +127,27 @@ abstract class Affiliate_WP_Base {
 
 		$visit_id = affiliate_wp()->tracking->get_visit_id();
 
-		$args = apply_filters( 'affwp_insert_pending_referral', array(
+		$args = array(
 			'amount'       => $amount,
 			'reference'    => $reference,
-			'description'  => $description,
+			'description'  => ! empty( $description ) ? $description : '',
 			'campaign'     => affiliate_wp()->tracking->get_campaign(),
 			'affiliate_id' => $this->affiliate_id,
 			'visit_id'     => $visit_id,
 			'products'     => ! empty( $products ) ? maybe_serialize( $products ) : '',
 			'custom'       => ! empty( $data ) ? maybe_serialize( $data ) : '',
-			'context'      => $this->context
-		), $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
+			'type'         => $this->referral_type,
+			'context'      => $this->context,
+			'customer'     => $this->get_customer( $reference )
+		);
+
+		affiliate_wp()->utils->log( sprintf( 'Arguments being sent to DB: ' . var_export( $args, true ) ) );
+
+		$args = apply_filters( 'affwp_insert_pending_referral', $args, $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
+
+		if( ! empty( $args['customer'] ) && empty( $args['customer']['affiliate_id'] ) ) {
+			$args['customer']['affiliate_id'] = $this->affiliate_id;
+		}
 
 		$referral_id = affiliate_wp()->referrals->add( $args );
 
@@ -347,21 +374,57 @@ abstract class Affiliate_WP_Base {
 	 * @param int        $affiliate_id Optional. Affiliate ID.
 	 * @return string Referral amount.
 	 */
-	public function calculate_referral_amount( $base_amount = '', $reference = '', $product_id = 0, $affiliate_id = 0 ) {
+	public function calculate_referral_amount( $base_amount = '', $reference = '', $product_id = 0, $affiliate_id = 0, $category_id = 0 ) {
 
 		// the affiliate ID can be optionally passed in to override the referral amount
 		$affiliate_id = ! empty( $affiliate_id ) ? $affiliate_id : $this->get_affiliate_id( $reference );
 
 		$rate = '';
 
-		if ( ! empty( $product_id ) ) {
-			$rate = $this->get_product_rate( $product_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) );
+		if ( ! empty( $category_id ) && $get_rate = $this->get_category_rate( $category_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) ) ) {
+			$rate = $get_rate;
+		}
+
+		if ( ! empty( $product_id ) && $get_rate = $this->get_product_rate( $product_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) ) ) {
+			$rate = $get_rate;
 		}
 
 		$amount = affwp_calc_referral_amount( $base_amount, $affiliate_id, $reference, $rate, $product_id );
 
 		return $amount;
 
+	}
+
+	/**
+	 * Retrieves the rate and type for a specific category.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 * @return  float
+	*/
+	public function get_category_rate( $category_id = 0, $args = array() ) {
+
+		$args = wp_parse_args( $args, array(
+			'reference'   => '',
+			'affiliate_id' => 0
+		) );
+
+		$affiliate_id = isset( $args['affiliate_id'] ) ? $args['affiliate_id'] : $this->get_affiliate_id( $args['reference'] );
+
+		$rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true );
+
+		/**
+		 * Filters the integration category rate.
+		 *
+		 * @since 2.2
+		 *
+		 * @param float   $rate         Category-level referral rate.
+		 * @param int    $category_id  Category ID.
+		 * @param array  $args         Arguments for retrieving the product rate.
+		 * @param int    $affiliate_id  Affiliate ID.
+		 * @param string $context      Order context.
+		 */
+		return apply_filters( 'affwp_get_product_rate', $rate, $category_id, $args, $affiliate_id, $this->context );
 	}
 
 	/**
@@ -408,7 +471,29 @@ abstract class Affiliate_WP_Base {
 	}
 
 	/**
-	 * Write log message
+	 * Retrieves the customer details for an order
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $order_id The ID of the order to retrieve customer details for.
+	 * @return array An array of the customer details
+	 */
+	public function get_customer( $order_id = 0 ) {
+
+		$customer = array(
+			'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',
+			'last_name'    => is_user_logged_in() ? wp_get_current_user()->first_name : '',
+			'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : $this->email,
+			'user_id'      => get_current_user_id(),
+			'ip'           => affiliate_wp()->tracking->get_ip(),
+			'affiliate_id' => $this->affiliate_id
+		);
+
+		return $customer;
+	}
+
+	/**
+	 * Writes a log message.
 	 *
 	 * @since 1.8
 	 */
