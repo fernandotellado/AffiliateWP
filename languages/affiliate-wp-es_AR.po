@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: AffiliateWP\n"
 "Report-Msgid-Bugs-To: https://affiliatewp.com/support/\n"
 "POT-Creation-Date: 2018-05-21 13:44:31+00:00\n"
-"PO-Revision-Date: 2018-01-25 13:31+1300\n"
+"PO-Revision-Date: 2018-05-22 18:30+0200\n"
 "Last-Translator: Chris Christoff <chriscct7@gmail.com>\n"
 "Language-Team: AffiliateWP <support@affiliatewp.com>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
@@ -46,8 +46,7 @@ msgstr ""
 #: includes/admin/affiliates/actions.php:189
 #: includes/admin/affiliates/actions.php:193
 #: includes/admin/class-addon-updater.php:283
-#: includes/admin/class-notices.php:605
-#: includes/admin/creatives/actions.php:16
+#: includes/admin/class-notices.php:605 includes/admin/creatives/actions.php:16
 #: includes/admin/creatives/actions.php:44
 #: includes/admin/creatives/actions.php:48
 #: includes/admin/creatives/actions.php:52
@@ -59,9 +58,8 @@ msgstr ""
 #: includes/admin/tools/import/class-batch-import-affiliates.php:111
 #: includes/admin/tools/import/class-batch-import-referrals.php:103
 #: includes/admin/tools/import/import.php:24
-#: includes/admin/tools/import/import.php:30
-#: includes/admin/tools/tools.php:668 includes/admin/tools/tools.php:676
-#: includes/admin/tools/tools.php:686
+#: includes/admin/tools/import/import.php:30 includes/admin/tools/tools.php:668
+#: includes/admin/tools/tools.php:676 includes/admin/tools/tools.php:686
 msgid "Error"
 msgstr "Error"
 
@@ -582,10 +580,9 @@ msgstr ""
 
 #: includes/abstracts/class-affwp-reports-tab.php:499
 #: includes/admin/referrals/class-list-table.php:589
-#: includes/admin/referrals/referrals.php:64
-#: includes/admin/tools/tools.php:152 includes/admin/tools/tools.php:308
-#: includes/admin/tools/tools.php:335 includes/admin/tools/tools.php:359
-#: includes/admin/visits/visits.php:55
+#: includes/admin/referrals/referrals.php:64 includes/admin/tools/tools.php:152
+#: includes/admin/tools/tools.php:308 includes/admin/tools/tools.php:335
+#: includes/admin/tools/tools.php:359 includes/admin/visits/visits.php:55
 msgid "Affiliate name"
 msgstr "Nombre de Afiliado "
 
@@ -677,8 +674,7 @@ msgstr "No poseés permiso para borrar cuentas de afiliados"
 
 #: includes/admin/affiliates/actions.php:107
 #: includes/admin/affiliates/actions.php:193
-#: includes/admin/class-notices.php:605
-#: includes/admin/creatives/actions.php:48
+#: includes/admin/class-notices.php:605 includes/admin/creatives/actions.php:48
 #: includes/admin/referrals/actions.php:22
 #: includes/admin/referrals/actions.php:73
 #: includes/admin/referrals/actions.php:104
@@ -690,8 +686,8 @@ msgstr "Falló el chequeo de seguridad"
 msgid "No affiliate IDs specified for deletion"
 msgstr "No hay un ID de afiliado especificado para ser borrado"
 
-#: includes/admin/affiliates/affiliates.php:59
-#: includes/admin/class-menu.php:11 includes/admin/class-menu.php:14
+#: includes/admin/affiliates/affiliates.php:59 includes/admin/class-menu.php:11
+#: includes/admin/class-menu.php:14
 #: includes/admin/reports/tabs/class-affiliates-reports-tab.php:23
 msgid "Affiliates"
 msgstr "Afiliados"
@@ -964,8 +960,7 @@ msgid ""
 "edit screen</a>."
 msgstr ""
 
-#: includes/admin/affiliates/edit.php:42
-#: includes/admin/affiliates/edit.php:147
+#: includes/admin/affiliates/edit.php:42 includes/admin/affiliates/edit.php:147
 msgid "A link to the user edit screen for this user."
 msgstr ""
 
@@ -1040,8 +1035,7 @@ msgstr "Predeterminado por el sitio"
 msgid "The affiliate&#8217;s referral rate type."
 msgstr "Tipo de tasa de referencia del afiliado."
 
-#: includes/admin/affiliates/edit.php:174
-#: includes/admin/affiliates/new.php:100
+#: includes/admin/affiliates/edit.php:174 includes/admin/affiliates/new.php:100
 #: includes/admin/settings/class-settings.php:534
 #: includes/integrations/class-edd.php:717
 #: includes/integrations/class-edd.php:754
@@ -1057,8 +1051,7 @@ msgstr "Tipo de tasa de referencia del afiliado."
 msgid "Referral Rate"
 msgstr "Tasa de Referencia"
 
-#: includes/admin/affiliates/edit.php:179
-#: includes/admin/affiliates/new.php:105
+#: includes/admin/affiliates/edit.php:179 includes/admin/affiliates/new.php:105
 msgid ""
 "The affiliate&#8217;s referral rate, such as 20 for 20%. If left blank, the "
 "site default will be used."
@@ -1078,8 +1071,7 @@ msgstr ""
 "El email de la cuenta del afiliado. Actualizar esto modificará la dirección "
 "del email que se muestra en la página de perfil del usuario."
 
-#: includes/admin/affiliates/edit.php:200
-#: includes/admin/affiliates/new.php:113
+#: includes/admin/affiliates/edit.php:200 includes/admin/affiliates/new.php:113
 #: includes/admin/settings/class-settings.php:905
 #: includes/admin/tools/export/class-batch-export-affiliates.php:96
 #: includes/admin/tools/export/class-batch-export-referrals.php:146
@@ -1092,8 +1084,7 @@ msgstr ""
 msgid "Payment Email"
 msgstr "Email de pago"
 
-#: includes/admin/affiliates/edit.php:205
-#: includes/admin/affiliates/new.php:118
+#: includes/admin/affiliates/edit.php:205 includes/admin/affiliates/new.php:118
 msgid ""
 "Affiliate&#8217;s payment email for systems such as PayPal, Moneybookers, or "
 "others. Leave blank to use the affiliate&#8217;s user email."
@@ -1110,13 +1101,11 @@ msgid "Promotion methods entered by the affiliate during registration."
 msgstr ""
 "¿Notificar a los administradores del sitio nuevos registros de afiliados?"
 
-#: includes/admin/affiliates/edit.php:226
-#: includes/admin/affiliates/new.php:126
+#: includes/admin/affiliates/edit.php:226 includes/admin/affiliates/new.php:126
 msgid "Affiliate Notes"
 msgstr "Tasas de Afiliado:"
 
-#: includes/admin/affiliates/edit.php:231
-#: includes/admin/affiliates/new.php:131
+#: includes/admin/affiliates/edit.php:231 includes/admin/affiliates/new.php:131
 msgid ""
 "Enter any notes for this affiliate. Notes are only visible to the admin."
 msgstr ""
@@ -1992,18 +1981,16 @@ msgid "Apply"
 msgstr "Aplicar"
 
 #: includes/admin/referrals/class-list-table.php:596
-#: includes/admin/referrals/referrals.php:67
-#: includes/admin/tools/tools.php:310 includes/admin/tools/tools.php:337
-#: includes/admin/tools/tools.php:361 includes/admin/visits/visits.php:58
-#: includes/class-graph.php:419
+#: includes/admin/referrals/referrals.php:67 includes/admin/tools/tools.php:310
+#: includes/admin/tools/tools.php:337 includes/admin/tools/tools.php:361
+#: includes/admin/visits/visits.php:58 includes/class-graph.php:419
 msgid "From - mm/dd/yyyy"
 msgstr "Desde - mm/dd/yyyy"
 
 #: includes/admin/referrals/class-list-table.php:597
-#: includes/admin/referrals/referrals.php:68
-#: includes/admin/tools/tools.php:311 includes/admin/tools/tools.php:338
-#: includes/admin/tools/tools.php:362 includes/admin/visits/visits.php:59
-#: includes/class-graph.php:421
+#: includes/admin/referrals/referrals.php:68 includes/admin/tools/tools.php:311
+#: includes/admin/tools/tools.php:338 includes/admin/tools/tools.php:362
+#: includes/admin/visits/visits.php:59 includes/class-graph.php:421
 msgid "To - mm/dd/yyyy"
 msgstr "Hasta - mm/dd/yyyy"
 
@@ -3591,8 +3578,8 @@ msgid "Email"
 msgstr "Email"
 
 #: includes/admin/tools/export/class-batch-export-affiliates.php:94
-#: includes/admin/utilities/class-privacy-tools.php:167
-#: templates/opt-in.php:21 templates/opt-in.php:22
+#: includes/admin/utilities/class-privacy-tools.php:167 templates/opt-in.php:21
+#: templates/opt-in.php:22
 #, fuzzy
 msgid "First Name"
 msgstr "Semana Pasada"
@@ -5702,7 +5689,7 @@ msgstr ""
 
 #: includes/misc-functions.php:28
 msgid "Argentine Peso"
-msgstr "Peso Mexicano (&#36;)"
+msgstr "Peso Argentino "
 
 #: includes/misc-functions.php:29
 msgid "Australian Dollars"
@@ -5810,7 +5797,7 @@ msgstr "Ringgits de Malasia"
 
 #: includes/misc-functions.php:55
 msgid "Mexican Peso"
-msgstr "Peso Mexicano (&#36;)"
+msgstr "Peso Mexicano"
 
 #: includes/misc-functions.php:56
 msgid "Nepali Rupee"
