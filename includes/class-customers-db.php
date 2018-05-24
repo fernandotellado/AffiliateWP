@@ -343,6 +343,11 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
 		$args = wp_parse_args( $args, $defaults );
 
+		if( empty( $args['email'] ) ) {
+			affiliate_wp()->utils->log( 'Customer not created due to empty email' );
+			return false;
+		}
+
 		if ( isset( $args['date_created'] ) ) {
 
 			if ( empty( $args['date_created'] ) ) {
