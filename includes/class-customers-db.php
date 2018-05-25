@@ -429,9 +429,9 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	public function update( $row_id, $data = array(), $where = '', $type = 'customer' ) {
 
 		if( isset( $data['affiliate_id'] ) ) {
-			$affiliate_id = absint( $args['affiliate_id'] );
+			$affiliate_id = absint( $data['affiliate_id'] );
 			affwp_add_customer_meta( $row_id, 'affiliate_id', $affiliate_id, false );
-			unset( $args['affiliate_id'] );
+			unset( $data['affiliate_id'] );
 		}
 
 		return parent::update( $row_id, $data, $where, $type );
