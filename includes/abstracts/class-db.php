@@ -341,10 +341,10 @@ abstract class Affiliate_WP_DB {
 		// Reorder $column_formats to match the order of columns given in $data
 		$data_keys = array_keys( $data );
 		$column_formats = array_merge( array_flip( $data_keys ), $column_formats );
-		
-        if( empty( $data ) ) {
-            return false;
-        }
+
+		if ( empty( $data ) ) {
+			return false;
+		}
 
 		if ( false === $wpdb->update( $this->table_name, $data, array( $where => $object->{$this->primary_key} ), $column_formats ) ) {
 			return false;
