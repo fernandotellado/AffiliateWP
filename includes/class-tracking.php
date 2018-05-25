@@ -860,15 +860,23 @@ class Affiliate_WP_Tracking {
 	 * @since 1.0
 	 */
 	public function get_ip() {
-		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			//check ip from share internet
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
-		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			//to check ip is pass from proxy
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} else {
-			$ip = $_SERVER['REMOTE_ADDR'];
+
+		$ip = '';
+
+		if ( ! affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+
+			if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+				//check ip from share internet
+				$ip = $_SERVER['HTTP_CLIENT_IP'];
+			} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+				//to check ip is pass from proxy
+				$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			} else {
+				$ip = $_SERVER['REMOTE_ADDR'];
+			}
+
 		}
+
 		return apply_filters( 'affwp_get_ip', $ip );
 	}
 

@@ -381,6 +381,10 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
 		}
 
+		if( affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+			unset( $args['ip'] );
+		}
+
 		if( ! empty( $existing ) ) {
 
 			unset( $args['customer_id'] );

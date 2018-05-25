@@ -141,6 +141,10 @@ abstract class Affiliate_WP_Base {
 			'customer'     => $this->get_customer( $reference )
 		);
 
+		if ( affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+			$args['customer']['ip'] = '';
+		}
+
 		affiliate_wp()->utils->log( sprintf( 'Arguments being sent to DB: ' . var_export( $args, true ) ) );
 
 		$args = apply_filters( 'affwp_insert_pending_referral', $args, $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );

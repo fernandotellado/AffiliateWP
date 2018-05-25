@@ -848,6 +848,11 @@ class Affiliate_WP_Settings {
 						'desc' => __( 'Ignore referrals with a zero amount. This can be useful for multi-price products that start at zero, or if a discount was used which resulted in a zero amount. NOTE: If this setting is enabled and a visit results in a zero referral, the visit will be considered not converted.', 'affiliate-wp' ),
 						'type' => 'checkbox'
 					),
+					'disable_ip_logging' => array(
+						'name' => __( 'Disable IP Address Logging', 'affiliate-wp' ),
+						'desc' => __( 'Disable logging of the customer IP address.', 'affiliate-wp' ),
+						'type' => 'checkbox'
+					),
 					'debug_mode' => array(
 						'name' => __( 'Enable Debug Mode', 'affiliate-wp' ),
 						'desc' => __( 'Enable debug mode. This will turn on error logging for the referral process to help identify issues.', 'affiliate-wp' ),
