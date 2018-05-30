@@ -532,13 +532,23 @@ class Affiliate_WP_Emails {
 	 * Check if all emails should be disabled
 	 *
 	 * @since  1.7
+	 * @since  2.2 Modified to use affwp_get_enabled_email_notifications()
+	 * 
 	 * @return bool
 	 */
 	public function is_email_disabled() {
-		$disabled = affiliate_wp()->settings->get( 'disable_all_emails', false );
-		$disabled = (bool) apply_filters( 'affwp_disable_all_emails', $disabled );
 
-		return $disabled;
+		$disabled = false;
+
+		$enabled_email_notifications = affwp_get_enabled_email_notifications();
+
+		// Emails are deemed disabled if no notifications are enabled.
+		if ( empty( $enabled_email_notifications ) ) {
+			$disabled = true;
+		}
+
+		return (bool) apply_filters( 'affwp_disable_all_emails', $disabled );
+
 	}
 
 }

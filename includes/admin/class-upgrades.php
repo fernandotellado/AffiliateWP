@@ -147,6 +147,10 @@ class Affiliate_WP_Upgrades {
 			$this->v2131_upgrade();
 		}
 
+		if ( version_compare( $this->version, '2.2', '<' ) ) {
+			$this->v22_upgrade();
+		}
+
 		// Inconsistency between current and saved version.
 		if ( version_compare( $this->version, AFFILIATEWP_VERSION, '<>' ) ) {
 			$this->upgraded = true;
@@ -179,6 +183,15 @@ class Affiliate_WP_Upgrades {
 			)
 		) );
 
+		$this->add_routine( 'upgrade_v22_create_customer_records', array(
+			'version' => '2.2',
+			'compare' => '<',
+			'batch_process' => array(
+				'id'    => 'create-customers-upgrade',
+				'class' => 'AffWP\Utils\Batch_Process\Upgrade_Create_Customers',
+				'file'  => AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/upgrades/class-batch-upgrade-create-customers.php'
+			)
+		) );
 	}
 
 	/**
@@ -680,4 +693,94 @@ class Affiliate_WP_Upgrades {
 
 		$this->upgraded = true;
 	}
+
+	/**
+	 * Performs database upgrades for version 2.2.
+	 *
+	 * @access private
+	 * @since  2.2
+	 */
+	private function v22_upgrade() {
+		
+		global $wpdb;
+
+		// Add type column to referrals database.
+		@affiliate_wp()->referrals->create_table();
+		$table = affiliate_wp()->referrals->table_name;
+		$wpdb->query( "UPDATE $table SET type = 'sale' where type IS NULL;" );
+		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
+
+		// New 'customer_id' column for referrals.
+		@affiliate_wp()->referrals->create_table();
+		@affiliate_wp()->capabilities->add_caps();
+		@affiliate_wp()->customers->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customers table has been created.' );
+		@affiliate_wp()->customer_meta->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customer meta table has been created.' );
+
+		// Update email settings
+		$registration_notifications   = 'registration_notifications';
+		$admin_referral_notifications = 'admin_referral_notifications';
+		$disable_all_emails           = 'disable_all_emails';
+
+		/**
+		 * Enable all email notifications by default.
+		 * Fresh installations of AffiliateWP and upgrades should enable all notifications.
+		 */
+		$email_notifications = affiliate_wp()->settings->email_notifications( true );
+
+		/**
+		 * If "Disable All Emails" checkbox option was previously enabled,
+		 * clear out the email notification array, essentially disabling all notifications.
+		 */
+		if ( affiliate_wp()->settings->get( $disable_all_emails ) ) {
+			$email_notifications = array();
+		}
+
+		// Enable the new admin affiliate registration email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $registration_notifications ) ) {
+			$email_notifications['admin_affiliate_registration_email'] = __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin affiliate registration email if it was previously unchecked.
+			unset( $email_notifications['admin_affiliate_registration_email'] );
+		}
+
+		// Enable the new admin referral notification email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $admin_referral_notifications ) ) {
+			$email_notifications['admin_new_referral_email'] = __( 'Notify site admin when new referrals are earned', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin referral notification email if it was previously unchecked.
+			unset( $email_notifications['admin_new_referral_email'] );
+		}
+
+		// Make the required changes to the Email Notifications.
+		@affiliate_wp()->settings->set( array(
+			'email_notifications' => $email_notifications
+		), $save = true );
+
+		// Get all settings.
+		$settings = affiliate_wp()->settings->get_all();
+
+		// Remove old "Disable All Emails" setting.
+		if ( isset( $settings[$disable_all_emails] ) ) {
+			unset( $settings[$disable_all_emails] );
+		}
+
+		// Remove old "Notify Admin" setting.
+		if ( isset( $settings[$registration_notifications] ) ) {
+			unset( $settings[$registration_notifications] );
+		}
+
+		// Remove old "Notify Admin of Referrals" setting.
+		if ( isset( $settings[$admin_referral_notifications] ) ) {
+			unset( $settings[$admin_referral_notifications] );
+		}
+
+		// Update affwp_settings option.
+		update_option( 'affwp_settings', $settings );
+
+		$this->upgraded = true;
+
+	}
+
 }

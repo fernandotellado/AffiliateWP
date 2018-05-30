@@ -1197,6 +1197,9 @@ function affwp_add_affiliate( $data = array() ) {
 		$user_id = absint( $data['user_id'] );
 	}
 
+	// Enable referral notifications by default for new users.
+	update_user_meta( $user_id, 'affwp_referral_notifications', true );
+
 	$args = array(
 		'user_id'         => $user_id,
 		'status'          => $status,

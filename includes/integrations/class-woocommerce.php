@@ -25,7 +25,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		// Add an order note if a contained referral is updated.
 		add_action( 'affwp_updated_referral', array( $this, 'updated_referral_note' ), 10, 3 );
 
-		// There should be an option to choose which of these is used
+		// There should be an option to choose which of these is used.
 		add_action( 'woocommerce_order_status_completed', array( $this, 'mark_referral_complete' ), 10 );
 		add_action( 'woocommerce_order_status_processing', array( $this, 'mark_referral_complete' ), 10 );
 		add_action( 'woocommerce_order_status_completed_to_refunded', array( $this, 'revoke_referral_on_refund' ), 10 );
@@ -34,6 +34,8 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		add_action( 'woocommerce_order_status_processing_to_cancelled', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'woocommerce_order_status_completed_to_cancelled', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'woocommerce_order_status_pending_to_cancelled', array( $this, 'revoke_referral' ), 10 );
+		add_action( 'woocommerce_order_status_processing_to_failed', array( $this, 'revoke_referral' ), 10 );
+		add_action( 'woocommerce_order_status_completed_to_failed', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'woocommerce_order_status_pending_to_failed', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'wc-on-hold_to_trash', array( $this, 'revoke_referral' ), 10 );
 		add_action( 'wc-processing_to_trash', array( $this, 'revoke_referral' ), 10 );
@@ -44,7 +46,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		add_action( 'woocommerce_coupon_options', array( $this, 'coupon_option' ) );
 		add_action( 'woocommerce_coupon_options_save', array( $this, 'store_discount_affiliate' ) );
 
-		// Per product referral rates
+		// Per product referral rates.
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'product_tab' ) );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'product_settings' ) );
 		add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'variation_settings' ), 100, 3 );
@@ -62,7 +64,13 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		add_filter( 'woocommerce_get_endpoint_url',   array( $this, 'my_account_endpoint_url' ), 100, 2 );
 		add_filter( 'woocommerce_get_settings_account', array( $this, 'account_settings' ) );
 
-		// Filter Orders list table to add a referral column
+		// Per-category referral rates.
+		add_action( 'product_cat_add_form_fields', array( $this, 'add_product_category_rate' ), 10, 2 );
+		add_action( 'product_cat_edit_form_fields', array( $this, 'edit_product_category_rate' ), 10 );
+		add_action( 'edited_product_cat', array( $this, 'save_product_category_rate' ) );
+		add_action( 'create_product_cat', array( $this, 'save_product_category_rate' ) );
+
+		// Filter Orders list table to add a referral column.
 		add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_orders_column' ) );
 		add_action( 'manage_posts_custom_column', array( $this, 'render_orders_referral_column' ), 10, 2 );
 
@@ -72,6 +80,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		// Filter Order preview to display referral
 		add_filter( 'woocommerce_admin_order_preview_get_order_details', array( $this, 'order_preview_get_referral' ), 10, 2 );
 		add_action( 'woocommerce_admin_order_preview_end', array( $this, 'render_order_preview_referral' ) );
+
 	}
 
 	/**
@@ -97,13 +106,13 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 			if ( true === version_compare( WC()->version, '3.0.0', '>=' ) ) {
-				$billing_email = $this->order->get_billing_email();
+				$this->email = $this->order->get_billing_email();
 			} else {
-				$billing_email = $this->order->billing_email;
+				$this->email = $this->order->billing_email;
 			}
 
 			// Customers cannot refer themselves
-			if ( $this->is_affiliate_email( $billing_email, $affiliate_id ) ) {
+			if ( $this->is_affiliate_email( $this->email, $affiliate_id ) ) {
 
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
@@ -139,6 +148,12 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					continue; // Referrals are disabled on this variation
 				}
 
+				// Get the categories associated with the download.
+				$categories = get_the_terms( $product['product_id'], 'product_cat' );
+
+				// Get the first category ID for the product.
+				$category_id = $categories && ! is_wp_error( $categories ) ? $categories[0]->term_id : 0;
+
 				// The order discount has to be divided across the items
 				$product_total = $product['line_total'];
 				$shipping      = 0;
@@ -160,7 +175,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 				if( ! empty( $product['variation_id'] ) && $this->get_product_rate( $product['variation_id'] ) ) {
 					$product_id_for_rate = $product['variation_id'];
 				}
-				$amount += $this->calculate_referral_amount( $product_total, $order_id, $product_id_for_rate, $affiliate_id );
+				$amount += $this->calculate_referral_amount( $product_total, $order_id, $product_id_for_rate, $affiliate_id, $category_id );
 
 			}
 
@@ -185,6 +200,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					'affiliate_id' => $affiliate_id,
 					'visit_id'     => $visit_id,
 					'products'     => $this->get_products(),
+					'customer'     => $this->get_customer( $order_id ),
 					'context'      => $this->context
 				) );
 
@@ -314,6 +330,36 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 		return $products;
 
+	}
+
+	/**
+	 * Retrieves the customer details for an order.
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $order_id The ID of the order to retrieve customer details for.
+	 * @return array An array of the customer details
+	 */
+	public function get_customer( $order_id = 0 ) {
+
+		$customer = array();
+
+		if ( function_exists( 'wc_get_order' ) ) {
+
+			$order = wc_get_order( $order_id );
+
+			if( $order ) {
+
+				$customer['user_id']    = $order->get_user_id();
+				$customer['email']      = $order->get_billing_email();
+				$customer['first_name'] = $order->get_billing_first_name();
+				$customer['last_name']  = $order->get_billing_last_name();
+				$customer['ip']         = $order->get_customer_ip_address();
+
+			}
+		}
+
+		return $customer;
 	}
 
 	/**
@@ -1005,6 +1051,64 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Add product category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function add_product_category_rate( $category ) {
+		?>
+		<div class="form-field">
+			<label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate">
+			<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Edit product category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function edit_product_category_rate( $category ) {
+		$category_id   = $category->term_id;
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true );
+		?>
+		<tr class="form-field">
+			<th><label for="product-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+
+			<td>
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="product-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<p class="description"><?php _e( 'The referral rate for this category.', 'affiliate-wp' ); ?></p>
+			</td>
+		</tr>
+	<?php
+	}
+
+	/**
+	 * Save product category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function save_product_category_rate( $category_id ) {
+
+		if ( isset( $_POST['_affwp_'. $this->context . '_category_rate'] ) ) {
+
+			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
+			if ( $rate ) {
+				update_term_meta( $category_id, $meta_key, $rate );
+			} else {
+				delete_term_meta( $category_id, $meta_key );
+			}
+		}
+	}
+
+	/**
 	 * Register "Affiliate Referral" column in the Orders list table.
 	 *
 	 * @access public
@@ -1033,10 +1137,11 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 
 			$referral = affiliate_wp()->referrals->get_by( 'reference', $order_id, $this->context );
 
-			if( $referral ) {
+			if ( $referral ) {
 				echo '<a href="' . affwp_admin_url( 'referrals', array( 'referral_id' => $referral->referral_id, 'action' => 'edit_referral' ) ) . '">#' . $referral->referral_id . '</a>';
 			} else {
 				echo '<span aria-hidden="true">&mdash;</span>';
+
 			}
 
 		}

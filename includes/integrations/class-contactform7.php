@@ -145,8 +145,30 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 				'name' => '<strong>' . __( 'Enable referrals for specific Contact Form 7 forms', 'affiliate-wp' ) . '</strong>',
 				'type' => 'multicheck',
 				'options' => $this->all_forms_multicheck_render()
-			)
+			),
 		);
+
+		$types = array();
+		foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) {
+			$types[ $type_id ] =  $type['label'];
+		}
+
+		$forms = $this->get_all_forms();
+		if( $forms ) {
+
+			foreach( $forms as $form_id => $title ) {
+
+				$settings[ 'contactform7' ][ 'cf7_referral_type_' . $form_id ] = array(
+					'name'     => sprintf( __( 'Referral type for %s (Form ID: %d)', 'affiliate-wp' ), $title, $form_id ),
+					'type'     => 'select',
+					'options'  => $types,
+					'selected' => affiliate_wp()->settings->get( 'cf7_referral_type_' . $form_id ) 
+				);
+
+			}
+			
+		}
+
 
 		return $settings;
 	}
@@ -410,6 +432,8 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 				$base_amount = 0;
 
 			}
+
+			$this->referral_type = affiliate_wp()->settings->get( 'cf7_referral_type_' . $form_id );
 
 			/**
 			 * Filters the referral description for the AffiliateWP Contact Form 7 integration.
