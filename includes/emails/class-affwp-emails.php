@@ -242,8 +242,6 @@ class Affiliate_WP_Emails {
 			return apply_filters( 'affwp_email_message', wp_strip_all_tags( $message ), $this );
 		}
 
-		$message = $this->text_to_html( $message );
-
 		ob_start();
 
 		affiliate_wp()->templates->get_template_part( 'emails/header', $this->get_template(), true );
@@ -314,6 +312,8 @@ class Affiliate_WP_Emails {
 
 		$message = $this->parse_tags( $message );
 
+		$message = $this->text_to_html( $message );
+
 		$attachments = apply_filters( 'affwp_email_attachments', $attachments, $this );
 
 		$sent = wp_mail( $to, $subject, $message, $this->get_headers(), $attachments );
@@ -363,7 +363,8 @@ class Affiliate_WP_Emails {
 	 */
 	public function text_to_html( $message ) {
 		if ( 'text/html' === $this->content_type || true === $this->html ) {
-			$message = wpautop( $message );
+			$message = wpautop( make_clickable( $message ) );
+			$message = str_replace( '&#038;', '&amp;', $message );
 		}
 
 		return $message;
