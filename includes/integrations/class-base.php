@@ -199,15 +199,9 @@ abstract class Affiliate_WP_Base {
 
 			if ( empty( $referral ) ) {
 				// Bail: This is a non-referral sale.
+				affiliate_wp()->utils->log( 'Referral could not be retrieved by reference during complete_referral(). Reference value given: ' . print_r( $reference_or_referral, true ) );
 				return false;
 			}
-		}
-
-		if ( empty( $referral ) ) {
-
-			affiliate_wp()->utils->log( 'Referral could not be retrieved during complete_referral(). Value given: ' . print_r( $reference_or_referral, true ) );
-
-			return false;
 		}
 
 		affiliate_wp()->utils->log( 'Referral retrieved successfully during complete_referral()' );
