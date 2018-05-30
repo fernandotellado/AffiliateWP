@@ -12,7 +12,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
 
 
 /**
- * Send email on affiliate registration
+ * Sends an admin email on affiliate registration
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -22,7 +22,7 @@ if( ! defined( 'ABSPATH' ) ) exit;
  */
 function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = array() ) {
 
-	if( ! affiliate_wp()->settings->get( 'registration_notifications' ) ) {
+	if ( ! affwp_email_notification_enabled( 'admin_affiliate_registration_email' ) ) {
 		return;
 	}
 
@@ -55,7 +55,7 @@ function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = 
 		}
 
 		if( affiliate_wp()->settings->get( 'require_approval' ) ) {
-			$message .= sprintf( __( 'Review pending applications: %s', 'affiliate-wp' ), admin_url( 'admin.php?page=affiliate-wp-affiliates&status=pending' ) ) . "\n\n";
+			$message .= sprintf( __( 'Review pending applications: %s', 'affiliate-wp' ), affwp_admin_url( 'affiliates', array( 'status' => 'pending' ) ) ) . "\n\n";
 		}
 
 	}
@@ -65,6 +65,17 @@ function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = 
 	$subject = apply_filters( 'affwp_registration_subject', $subject, $args );
 	$message = apply_filters( 'affwp_registration_email', $message, $args );
 
+	$required_registration_fields = affiliate_wp()->settings->get( 'required_registration_fields' );
+
+	$user_id     = affwp_get_affiliate_user_id( $affiliate_id );
+	$key         = get_password_reset_key( get_user_by( 'id', $user_id ) );
+	$user_login  = affwp_get_affiliate_username( $affiliate_id );
+
+	if ( ! is_wp_error( $key ) && ! isset( $required_registration_fields['password'] ) ) {
+		$message .= "\r\n\r\n" . __( 'To set your password, visit the following address:', 'affiliate-wp' ) . "\r\n\r\n";
+		$message .= network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n";
+	}
+
 	$emails->send( $email, $subject, $message );
 
 }
@@ -73,7 +84,7 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
 
 
 /**
- * Send email on affiliate approval
+ * Sends affiliate an email on affiliate approval
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
@@ -81,6 +92,10 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_registration', 10, 3 );
  * @param string $old_status
  */
 function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status = '' ) {
+
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_accepted_email' ) ) {
+		return;
+	}
 
 	if( empty( $affiliate_id ) || 'active' !== $status ) {
 		return;
@@ -121,11 +136,28 @@ function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status 
 	}
 
 	// $args is setup for backwards compatibility with < 1.6
-	$args         = array( 'affiliate_id' => $affiliate_id );
-	$subject      = apply_filters( 'affwp_application_accepted_subject', $subject, $args );
-	$message      = apply_filters( 'affwp_application_accepted_email', $message, $args );
+	$args        = array( 'affiliate_id' => $affiliate_id );
+	$subject     = apply_filters( 'affwp_application_accepted_subject', $subject, $args );
+	$message     = apply_filters( 'affwp_application_accepted_email', $message, $args );
+	$user_id     = affwp_get_affiliate_user_id( $affiliate_id );
+	$key         = get_password_reset_key( get_user_by( 'id', $user_id ) );
+	$user_login  = affwp_get_affiliate_username( $affiliate_id );
 
-	if ( apply_filters( 'affwp_notify_on_approval', true ) ) {
+	$required_registration_fields = affiliate_wp()->settings->get( 'required_registration_fields' );
+
+	if ( ! is_wp_error( $key ) && ! isset( $required_registration_fields['password'] ) ) {
+		$message .= "\r\n\r\n" . __( 'To set your password, visit the following address:', 'affiliate-wp' ) . "\r\n\r\n";
+		$message .= network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n";
+	}
+
+	/**
+	 * Filters whether to notify an affiliate upon approval of their application.
+	 *
+	 * @since 1.6
+	 *
+	 * @param bool $notify Whether to notify the affiliate upon approval. Default true.
+	 */
+	if ( apply_filters( 'affwp_notify_on_approval', true ) && ! get_user_meta( $user_id, 'affwp_disable_affiliate_email', true ) ) {
 		$emails->send( $email, $subject, $message );
 	}
 
@@ -133,7 +165,7 @@ function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status 
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
 
 /**
- * Send email on pending affiliate registration
+ * Sends affiliate an email on pending affiliate registration
  *
  * @since 1.6.1
  * @param int $affiliate_id The ID of the registered affiliate
@@ -141,6 +173,10 @@ add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_approval', 10, 3 );
  * @param array $args
  */
 function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $status = '', $args ) {
+
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_pending_email' ) ) {
+		return;
+	}
 
 	if ( empty( $affiliate_id ) ) {
 		return;
@@ -163,6 +199,17 @@ function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $sta
 		$message .= __( 'We&#8217;re currently reviewing your affiliate application and will be in touch soon!', 'affiliate-wp' ) . "\n\n";
 	}
 
+	$required_registration_fields = affiliate_wp()->settings->get( 'required_registration_fields' );
+
+	$user_id     = affwp_get_affiliate_user_id( $affiliate_id );
+	$key         = get_password_reset_key( get_user_by( 'id', $user_id ) );
+	$user_login  = affwp_get_affiliate_username( $affiliate_id );
+
+	if ( ! is_wp_error( $key ) && ! isset( $required_registration_fields['password'] ) ) {
+		$message .= "\r\n\r\n" . __( 'To set your password, visit the following address:', 'affiliate-wp' ) . "\r\n\r\n";
+		$message .= network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n";
+	}
+
 	if ( apply_filters( 'affwp_notify_on_pending_affiliate_registration', true ) ) {
 		$emails->send( $email, $subject, $message );
 	}
@@ -172,7 +219,7 @@ add_action( 'affwp_register_user', 'affwp_notify_on_pending_affiliate_registrati
 add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_registration', 10, 3 );
 
 /**
- * Send email on rejected affiliate registration
+ * Sends affiliate an email on rejected affiliate registration
  *
  * @since 1.6.1
  * @param int $affiliate_id The ID of the registered affiliate
@@ -180,6 +227,10 @@ add_action( 'affwp_auto_register_user', 'affwp_notify_on_pending_affiliate_regis
  * @param string $old_status
  */
 function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $status = '', $old_status = '' ) {
+
+	if ( ! affwp_email_notification_enabled( 'affiliate_application_rejected_email' ) ) {
+		return;
+	}
 
 	if ( empty( $affiliate_id ) ) {
 		return;
@@ -209,13 +260,17 @@ function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $st
 add_action( 'affwp_set_affiliate_status', 'affwp_notify_on_rejected_affiliate_registration', 10, 3 );
 
 /**
- * Send email on new referrals
+ * Sends affiliate an email on new referrals
  *
  * @since 1.6
  * @param int $affiliate_id The ID of the registered affiliate
  * @param array $referral
  */
 function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
+
+	if ( ! affwp_email_notification_enabled( 'affiliate_new_referral_email', $affiliate_id ) ) {
+		return;
+	}
 
 	$user_id = affwp_get_affiliate_user_id( $affiliate_id );
 
@@ -258,3 +313,84 @@ function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
 }
 add_action( 'affwp_referral_accepted', 'affwp_notify_on_new_referral', 10, 2 );
+
+/**
+ * Sends an email to admins on when a new referral is generated.
+ *
+ * @since 2.1.7
+ *
+ * @param int             $affiliate_id The ID of the registered affiliate
+ * @param \AffWP\Referral $referral     Referral object.
+ */
+function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
+
+	if( empty( $affiliate_id ) ) {
+		return;
+	}
+
+	if( empty( $referral ) ) {
+		return;
+	}
+
+	$send = affwp_email_notification_enabled( 'admin_new_referral_email', $affiliate_id );
+
+	/**
+	 * Filters whether to notify admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param bool            $send     Whether to send the email. Default false.
+	 * @param \AffWP\Referral $referral Referral object.
+	 */
+	if( true !== apply_filters( 'affwp_notify_admin_on_new_referral', $send, $referral ) ) {
+		return;
+	}
+
+	$emails  = new Affiliate_WP_Emails;
+	$emails->__set( 'affiliate_id', $affiliate_id );
+	$emails->__set( 'referral', $referral );
+
+	$subject = affiliate_wp()->settings->get( 'new_admin_referral_subject', __( 'Referral Earned!', 'affiliate-wp' ) );
+	$message = affiliate_wp()->settings->get( 'new_admin_referral_email', false );
+
+	if( ! $message ) {
+		$message = '{name} has been awarded a new referral of {amount} on {site_name}.';
+	}
+
+	/**
+	 * Filters the subject field for the email sent to admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string          $subject      Email subject.
+	 * @param int             $affiliate_id Affiliate ID.
+	 * @param \AffWP\Referral $referral     Referral object.
+	 */
+	$subject = apply_filters( 'affwp_new_admin_referral_subject', $subject, $affiliate_id, $referral );
+
+	/**
+	 * Filters the message body for the email sent to admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string          $message      Email message body.
+	 * @param int             $affiliate_id Affiliate ID.
+	 * @param \AffWP\Referral $referral     Referral object.
+	 */
+	$message = apply_filters( 'affwp_new_admin_referral_email', $message, $affiliate_id, $referral );
+
+	/**
+	 * Filters the recipient email address for the email sent to admins when a new referral is generated.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string          $email        Recipient email. Default is the value of the 'admin_email' option.
+	 * @param int             $affiliate_id Affiliate ID.
+	 * @param \AffWP\Referral $referral     Referral object.
+	 */
+	$to_email = apply_filters( 'affwp_new_admin_referral_email_to', get_option( 'admin_email' ), $affiliate_id, $referral );
+
+	$emails->send( $to_email, $subject, $message );
+
+}
+add_action( 'affwp_referral_accepted', 'affwp_notify_admin_on_new_referral', 10, 2 );

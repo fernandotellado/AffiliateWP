@@ -11,6 +11,8 @@
  * @since       1.3
  */
 
+use AffWP\Utils\Exporter;
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -19,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since 1.3
  */
-class Affiliate_WP_Affiliate_Export extends Affiliate_WP_Export {
+class Affiliate_WP_Affiliate_Export extends Affiliate_WP_Export implements Exporter\CSV {
 
 	/**
 	 * Our export type. Used for export-type specific filters/actions
@@ -54,6 +56,7 @@ class Affiliate_WP_Affiliate_Export extends Affiliate_WP_Export {
 			'earnings'        => __( 'Earnings', 'affiliate-wp' ),
 			'referrals'       => __( 'Referrals', 'affiliate-wp' ),
 			'visits'          => __( 'Visits', 'affiliate-wp' ),
+			'conversion_rate' => __( 'Conversion Rate', 'affiliate-wp' ),
 			'status'          => __( 'Status', 'affiliate-wp' ),
 			'date_registered' => __( 'Date Registered', 'affiliate-wp' )
 		);
@@ -61,10 +64,11 @@ class Affiliate_WP_Affiliate_Export extends Affiliate_WP_Export {
 	}
 
 	/**
-	 * Get the data being exported
+	 * Retrieves the data being exported.
 	 *
 	 * @access public
-	 * @since 1.3
+	 * @since  1.3
+	 *
 	 * @return array $data Data for Export
 	 */
 	public function get_data() {
@@ -81,7 +85,31 @@ class Affiliate_WP_Affiliate_Export extends Affiliate_WP_Export {
 
 			foreach( $affiliates as $affiliate ) {
 
-				$data[] = array(
+				/**
+				 * Filters an individual line of affiliate data to be exported.
+				 *
+				 * @since 2.1.17
+				 *
+				 * @param array           $affiliate_data {
+				 *     Single line of exported affiliate data
+				 *
+				 *     @type int    $affiliate_id      Affiliate ID.
+				 *     @type string $email             Affiliate email.
+				 *     @type string $name              Affiliate name.
+				 *     @type string $payment_email     Affiliate payment email.
+				 *     @type string $username          Affiliate username.
+				 *     @type string $rate              Affiliate referral rate.
+				 *     @type string $rate_type         Affiliate rate type.
+				 *     @type string $earnings          Affiliate earnings.
+				 *     @type string $referrals         Number of referrals.
+				 *     @type string $visits            Number of visits.
+				 *     @type string $conversion_rate   Affiliate conversion rate.
+				 *     @type string $status            Affiliate status.
+				 *     @type float  $date_registered   Date the affiliate was registered.
+				 * }
+				 * @param \AffWP\Affiliate $affiliate Affiliate object.
+				 */
+				$affiliate_data = apply_filters( 'affwp_affiliate_export_get_data_line', array(
 					'affiliate_id'    => $affiliate->affiliate_id,
 					'email'           => affwp_get_affiliate_email( $affiliate->affiliate_id ),
 					'name'            => affwp_get_affiliate_name( $affiliate->affiliate_id ),
@@ -92,15 +120,25 @@ class Affiliate_WP_Affiliate_Export extends Affiliate_WP_Export {
 					'earnings'        => $affiliate->earnings,
 					'referrals'       => $affiliate->referrals,
 					'visits'          => $affiliate->visits,
+					'conversion_rate' => affwp_get_affiliate_conversion_rate( $affiliate->affiliate_id ),
 					'status'          => $affiliate->status,
-					'date_registered' => $affiliate->date_registered,
-				);
+					'date_registered' => $affiliate->date_i18n( 'datetime' ),
+				), $affiliate );
 
+				// Add slashing.
+				$data[] = array_map( function( $column ) {
+					return addslashes( preg_replace( "/\"/","'", $column ) );
+				}, $affiliate_data );
+
+				unset( $affiliate_data );
 			}
 
 		}
 
+		/** This filter is documented in includes/admin/tools/export/class-export.php */
 		$data = apply_filters( 'affwp_export_get_data', $data );
+
+		/** This filter is documented in includes/admin/tools/export/class-export.php */
 		$data = apply_filters( 'affwp_export_get_data_' . $this->export_type, $data );
 
 		return $data;

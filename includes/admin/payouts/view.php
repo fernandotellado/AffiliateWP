@@ -36,11 +36,10 @@ $payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
 
 			<td>
 				<?php
-				$url = add_query_arg( array(
-					'page'         => 'affiliate-wp-affiliates',
+				$url = affwp_admin_url( 'affiliates', array(
 					'action'       => 'view_affiliate',
 					'affiliate_id' => $payout->affiliate_id
-				), admin_url( 'admin.php' ) );
+				) );
 
 				$name      = affiliate_wp()->affiliates->get_affiliate_name( $payout->affiliate_id );
 				$affiliate = affwp_get_affiliate( $payout->affiliate_id );
@@ -134,7 +133,7 @@ $payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
 			</th>
 
 			<td>
-				<?php echo date_i18n( get_option( 'date_format' ) . ' (' . get_option( 'time_format' ) . ')', strtotime( $payout->date ) ); ?>
+				<?php echo $payout->date_i18n( 'datetime' ); ?>
 			</td>
 
 		</tr>
@@ -158,8 +157,10 @@ $payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
 			'payout_id' => $payout->ID
 		),
 		'display_args' => array(
-			'hide_table_nav'       => true,
-			'columns_to_hide'      => array( 'status' ),
+			'hide_table_nav'       => false,
+			'hide_bulk_options'    => true,
+			'hide_pagination'      => false,
+			'columns_to_hide'      => array( 'cb', 'status' ),
 			'hide_column_controls' => true,
 		),
 	) );

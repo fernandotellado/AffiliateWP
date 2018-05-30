@@ -21,25 +21,27 @@ function affwp_get_creative( $creative = null ) {
 }
 
 /**
- * Adds a new creative to the database
+ * Adds a new creative to the database.
  *
  * @since 1.1.4
- * @return bool
+ * @since 1.9.6 Modified to return the creative ID on success vs true.
+ *
+ * @return int|false ID of the newly-created creative, otherwise false.
  */
 function affwp_add_creative( $data = array() ) {
 
 	$args = array(
 		'name'        => ! empty( $data['name'] ) ? sanitize_text_field( $data['name'] ) : __( 'Creative', 'affiliate-wp' ),
-		'description' => ! empty( $data['description'] ) ? sanitize_text_field( $data['description'] ) : '',
+		'description' => ! empty( $data['description'] ) ? wp_kses_post( $data['description'] ) : '',
 		'url'         => ! empty( $data['url'] ) ? esc_url_raw( $data['url'] ) : get_site_url(),
 		'text'        => ! empty( $data['text'] ) ? sanitize_text_field( $data['text'] ) : get_bloginfo( 'name' ),
 		'image'       => ! empty( $data['image'] ) ? esc_url( $data['image'] ) : '',
-		'status'      => ! empty( $data['status'] ) ? sanitize_text_field( $data['status'] ) : '',	
+		'status'      => ! empty( $data['status'] ) ? sanitize_text_field( $data['status'] ) : '',
+		'date'        => ! empty( $data['date'] ) ? $data['date'] : '',
 	);
 
-	if ( affiliate_wp()->creatives->add( $args ) ) {
-
-		return true;
+	if ( $creative_id = affiliate_wp()->creatives->add( $args ) ) {
+		return $creative_id;
 	}
 
 	return false;
@@ -62,7 +64,7 @@ function affwp_update_creative( $data = array() ) {
 
 	$args = array(
 		'name'        => ! empty( $data['name'] ) ? sanitize_text_field( $data['name'] ) : __( 'Creative', 'affiliate-wp' ),
-		'description' => ! empty( $data['description'] ) ? sanitize_text_field( $data['description'] ) : '',
+		'description' => ! empty( $data['description'] ) ? wp_kses_post( $data['description'] ) : '',
 		'url'         => ! empty( $data['url'] ) ? esc_url_raw( $data['url'] ) : get_site_url(),
 		'text'        => ! empty( $data['text'] ) ? sanitize_text_field( $data['text'] ) : get_bloginfo( 'name' ),
 		'image'       => ! empty( $data['image'] ) ? sanitize_text_field( $data['image'] ) : '',

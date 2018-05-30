@@ -18,8 +18,10 @@ namespace AffWP;
  * @see AffWP\Base_Object
  * @see affwp_get_affiliate()
  *
- * @property-read int     $ID   Alias for `$affiliate_id`.
- * @property      WP_User $user User object.
+ * @property-read int      $ID   Alias for `$affiliate_id`.
+ * @property      stdClass $user User object.
+ * @property      array    $meta Meta array.
+ * @property-read string   $date Alias for `$date_registered`.
  */
 final class Affiliate extends Base_Object {
 
@@ -89,6 +91,15 @@ final class Affiliate extends Base_Object {
 	 * @var float
 	 */
 	public $earnings;
+
+	/**
+	 * Affiliate unpaid earnings.
+	 *
+	 * @access public
+	 * @since  2.0
+	 * @var    float
+	 */
+	public $unpaid_earnings;
 
 	/**
 	 * Affiliate referrals
@@ -166,6 +177,10 @@ final class Affiliate extends Base_Object {
 			return $this->get_user();
 		}
 
+		if ( 'date' === $key ) {
+			return $this->date_registered;
+		}
+
 		return parent::__get( $key );
 	}
 
@@ -192,6 +207,20 @@ final class Affiliate extends Base_Object {
 	}
 
 	/**
+	 * Retrieves the affiliate meta.
+	 *
+	 * @access public
+	 * @since  1.9.5
+	 *
+	 * @param string $meta_key Optional. The meta key to retrieve a value for. Default empty.
+	 * @param bool   $single   Optional. Whether to return a single value. Default false.
+	 * @return mixed Meta value or false if `$meta_key` specified, array of meta otherwise.
+	 */
+	public function get_meta( $meta_key = '', $single = false ) {
+		return affiliate_wp()->affiliate_meta->get_meta( $this->ID, $meta_key, $single );
+	}
+
+	/**
 	 * Sanitizes an affiliate object field.
 	 *
 	 * @since 1.9
@@ -207,7 +236,7 @@ final class Affiliate extends Base_Object {
 			$value = (int) $value;
 		}
 
-		if ( 'earnings' === $field ) {
+		if ( in_array( $field, array( 'earnings', 'unpaid_earnings' ) ) ) {
 			$value = floatval( $value );
 		}
 

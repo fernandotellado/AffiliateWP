@@ -187,21 +187,37 @@ class Tests extends UnitTestCase {
 		}
 	}
 
-	public function test_sanitize_visit_url() {
+	/**
+	 * Data provider for test_sanitize_visit_url()
+	 */
+	public function _sanitize_visit_url_dp() {
 		$referral_var = affiliate_wp()->tracking->get_referral_var();
 
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://affiliatewp.com/' . $referral_var . '/pippin/query_var' ), 'https://affiliatewp.com/query_var' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1' ), 'https://affiliatewp.com/sample-page/query_var/1' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1/query_var2/2' ), 'https://affiliatewp.com/sample-page/query_var/1/query_var2/2' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://affiliatewp.com/' . $referral_var . '/pippin?query_var=1' ), 'https://affiliatewp.com?query_var=1' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1' ), 'https://affiliatewp.com/sample-page?query_var=1' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1&query_var2=2' ), 'https://affiliatewp.com/sample-page?query_var=1&query_var2=2' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://www.affiliatewp.com/' . $referral_var . '/pippin/query_var' ), 'https://www.affiliatewp.com/query_var' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1' ), 'https://www.affiliatewp.com/sample-page/query_var/1' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1/query_var2/2' ), 'https://www.affiliatewp.com/sample-page/query_var/1/query_var2/2' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://www.affiliatewp.com/' . $referral_var . '/pippin?query_var=1' ), 'https://www.affiliatewp.com?query_var=1' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1' ), 'https://www.affiliatewp.com/sample-page?query_var=1' );
-		$this->assertEquals( affwp_sanitize_visit_url( 'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1&query_var2=2' ), 'https://www.affiliatewp.com/sample-page?query_var=1&query_var2=2' );
+		return array(
+			array( 'https://affiliatewp.com/query_var',                                'https://affiliatewp.com/' . $referral_var . '/pippin/query_var' ),
+			array( 'https://affiliatewp.com/sample-page/query_var/1',                  'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1' ),
+			array( 'https://affiliatewp.com/sample-page/query_var/1/query_var2/2',     'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1/query_var2/2' ),
+			array( 'https://affiliatewp.com?query_var=1',                              'https://affiliatewp.com/' . $referral_var . '/pippin?query_var=1' ),
+			array( 'https://affiliatewp.com/sample-page?query_var=1',                  'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1' ),
+			array( 'https://affiliatewp.com/sample-page?query_var=1&query_var2=2',     'https://affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1&query_var2=2' ),
+			array( 'https://www.affiliatewp.com/query_var',                            'https://www.affiliatewp.com/' . $referral_var . '/pippin/query_var' ),
+			array( 'https://www.affiliatewp.com/sample-page/query_var/1',              'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1' ),
+			array( 'https://www.affiliatewp.com/sample-page/query_var/1/query_var2/2', 'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin/query_var/1/query_var2/2' ),
+			array( 'https://www.affiliatewp.com?query_var=1',                          'https://www.affiliatewp.com/' . $referral_var . '/pippin?query_var=1' ),
+			array( 'https://www.affiliatewp.com/sample-page?query_var=1',              'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1' ),
+			array( 'https://www.affiliatewp.com/sample-page?query_var=1&query_var2=2', 'https://www.affiliatewp.com/sample-page/' . $referral_var . '/pippin?query_var=1&query_var2=2' ),
+			array( 'https://www.affiliatewp.com/sample-page/',                         'https://www.affiliatewp.com/sample-page/' . $referral_var . '/user-name/' ),
+			array( 'https://www.affiliatewp.com/sample-page/',                         'https://www.affiliatewp.com/sample-page/?' . $referral_var . '=user-name/' ),
+		);
+	}
+
+	/**
+	 * @dataProvider _sanitize_visit_url_dp
+	 * @covers ::affwp_sanitize_visit_url()
+	 */
+	public function test_sanitize_visit_url( $expected, $actual ) {
+		$this->assertEquals( $expected, affwp_sanitize_visit_url( $actual ) );
+
 	}
 
 

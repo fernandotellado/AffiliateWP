@@ -38,13 +38,20 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		add_action( 'edd_meta_box_settings_fields', array( $this, 'download_settings' ), 100 );
 		add_filter( 'edd_metabox_fields_save', array( $this, 'download_save_fields' ) );
 
+		// Per category referral rates
+		add_action( 'download_category_add_form_fields', array( $this, 'add_download_category_rate' ), 10, 2 );
+		add_action( 'download_category_edit_form_fields', array( $this, 'edit_download_category_rate' ), 10 );
+		add_action( 'edited_download_category', array( $this, 'save_download_category_rate' ) );  
+		add_action( 'create_download_category', array( $this, 'save_download_category_rate' ) );
 	}
 
 	/**
 	 * Records a pending referral when a pending payment is created
 	 *
-	 * @access  public
-	 * @since   1.0
+	 * @since 1.0
+	 *
+	 * @param int   $payment_id   Optional. Payment ID. Defualt 0.
+	 * @param array $payment_data Optional. Payment data. Default empty array.
 	*/
 	public function add_pending_referral( $payment_id = 0, $payment_data = array() ) {
 
@@ -59,11 +66,17 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			// Customers cannot refer themselves
 			if ( $this->is_affiliate_email( $customer_email, $affiliate_id ) ) {
 
-				if( $this->debug ) {
-					$this->log( 'Referral not created because affiliate\'s own account was used.' );
-				}
+				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
 				return false;
+			}
+
+			// Check for an existing referral
+			$existing = affiliate_wp()->referrals->get_by( 'reference', $payment_id, $this->context );
+
+			// If an existing referral exists and it is paid or unpaid exit.
+			if ( $existing && ( 'paid' == $existing->status || 'unpaid' == $existing->status ) ) {
+				return false; // Completed Referral already created for this reference
 			}
 
 			if ( affiliate_wp()->settings->get( 'edd_disable_on_renewals' ) ) {
@@ -72,9 +85,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				if ( $was_renewal ) {
 
-					if( $this->debug ) {
-						$this->log( 'Referral not created because order was a renewal.' );
-					}
+					$this->log( 'Referral not created because order was a renewal.' );
 
 					return;
 				}
@@ -91,11 +102,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 						if ( ! empty( $item['options']['is_upgrade'] ) ) {
 
-							if( $this->debug ) {
-
-								$this->log( 'Referral not created because order was an upgrade.' );
-
-							}
+							$this->log( 'Referral not created because order was an upgrade.' );
 
 							return;
 						}
@@ -114,15 +121,32 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 			if ( empty( $desc ) ) {
 
-				if( $this->debug ) {
-					$this->log( 'Referral not created due to empty description.' );
-				}
+				$this->log( 'Referral not created due to empty description.' );
 
 				return;
 			}
 
-			// insert a pending referral
-			$referral_id = $this->insert_pending_referral( $referral_total, $payment_id, $desc, $this->get_products( $payment_id ) );
+			if ( $existing ) {
+
+				// Update the previously created referral
+				affiliate_wp()->referrals->update_referral( $existing->referral_id, array(
+					'amount'       => $referral_total,
+					'reference'    => $payment_id,
+					'description'  => $desc,
+					'currency'     => $existing->currency,
+					'campaign'     => affiliate_wp()->tracking->get_campaign(),
+					'products'     => $this->get_products( $payment_id ),
+					'context'      => $this->context
+				) );
+
+				$this->log( sprintf( 'EDD Referral #%d updated successfully.', $existing->referral_id ) );
+
+			} else {
+
+				// insert a pending referral
+				$referral_id = $this->insert_pending_referral( $referral_total, $payment_id, $desc, $this->get_products( $payment_id ) );
+
+			}
 
 		}
 
@@ -146,9 +170,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				if ( $was_renewal ) {
 
-					if( $this->debug ) {
-						$this->log( 'Referral not created because order was a renewal.' );
-					}
+					$this->log( 'Referral not created because order was a renewal.' );
 
 					return;
 				}
@@ -161,9 +183,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				if ( $was_upgrade ) {
 
-					if( $this->debug ) {
-						$this->log( 'Referral not created because order was an upgrade.' );
-					}
+					$this->log( 'Referral not created because order was an upgrade.' );
 
 					return;
 				}
@@ -189,9 +209,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				if ( ! affiliate_wp()->tracking->is_valid_affiliate( $this->affiliate_id ) ) {
 
-					if( $this->debug ) {
-						$this->log( 'Referral not created because affiliate is invalid.' );
-					}
+					$this->log( 'Referral not created because affiliate is invalid.' );
 
 					continue;
 				}
@@ -207,18 +225,14 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 					// If a referral was already recorded, overwrite it with the linked discount affiliate
 					affiliate_wp()->referrals->update( $existing->referral_id, array( 'affiliate_id' => $this->affiliate_id, 'status' => 'unpaid', 'amount' => $referral_total ), '', 'referral' );
 
-					if( $this->debug ) {
-						$this->log( sprintf( 'Referral #%d updated successfully.', $existing->referral_id ) );
-					}
+					$this->log( sprintf( 'Referral #%d updated successfully.', $existing->referral_id ) );
 
 				} else {
 					// new referral
 
 					if ( 0 == $referral_total && affiliate_wp()->settings->get( 'ignore_zero_referrals' ) ) {
 
-						if( $this->debug ) {
-							$this->log( 'Referral not created due to 0.00 amount.' );
-						}
+						$this->log( 'Referral not created due to 0.00 amount.' );
 
 						return false; // Ignore a zero amount referral
 					}
@@ -227,9 +241,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 					if ( empty( $desc ) ) {
 
-						if( $this->debug ) {
-							$this->log( 'Referral not created due to empty description.' );
-						}
+						$this->log( 'Referral not created due to empty description.' );
 
 						return false;
 					}
@@ -246,9 +258,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 						)
 					);
 
-					if( $this->debug ) {
-						$this->log( sprintf( 'Referral #%d created successfully.', $referral_id ) );
-					}
+					$this->log( sprintf( 'Referral #%d created successfully.', $referral_id ) );
 				}
 			}
 		}
@@ -271,6 +281,12 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			$referral_total = 0.00;
 
 			foreach ( $downloads as $key => $download ) {
+
+				// Get the categories associated with the download.
+				$categories = get_the_terms( $download['id'], 'download_category' );
+				
+				// Get the first category ID for the download.
+				$category_id = $categories && ! is_wp_error( $categories ) ? $categories[0]->term_id : 0;
 
 				if ( get_post_meta( $download['id'], '_affwp_' . $this->context . '_referrals_disabled', true ) ) {
 					continue; // Referrals are disabled on this product
@@ -302,12 +318,20 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				}
 
+				if ( class_exists( 'edd_dp' ) ) {
+
+					if( isset( $download['fees']['dp_'.$download['id']] ) ) {
+						$amount += $download['fees']['dp_'.$download['id']]['amount'];
+					}
+
+				}
+
 				// Check for Recurring Payments signup fee
 				if( ! empty( $download['item_number']['options']['recurring']['signup_fee'] ) ) {
 					$amount += $download['item_number']['options']['recurring']['signup_fee'];
 				}
 
-				$referral_total += $this->calculate_referral_amount( $amount, $payment_id, $download['id'], $affiliate_id );
+				$referral_total += $this->calculate_referral_amount( $amount, $payment_id, $download['id'], $affiliate_id, $category_id );
 			}
 
 		} else {
@@ -318,7 +342,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 				$amount = edd_get_payment_amount( $payment_id );
 			}
 
-			$referral_total = $this->calculate_referral_amount( $amount, $payment_id, '', $affiliate_id );
+			$referral_total = $this->calculate_referral_amount( $amount, $payment_id, '', $affiliate_id, $category_id );
 		}
 
 		return $referral_total;
@@ -362,6 +386,40 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Retrieves the customer details for an order.
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $payment_id Optional. Payment ID. Default 0.
+	 * @return array Customer details.
+	*/
+	public function get_customer( $payment_id = 0 ) {
+
+		$customer = array();
+
+		if ( class_exists( 'EDD_Customer' ) ) {
+
+			$edd_customer = new EDD_Customer( edd_get_payment_customer_id( $payment_id ) );
+			$names        = explode( ' ', $edd_customer->name );
+			$first_name   = $names[0];
+			$last_name    = '';
+			if( ! empty( $names[1] ) ) {
+				unset( $names[0] );
+				$last_name = implode( ' ', $names );
+			}
+
+			$customer['user_id']    = $edd_customer->user_id;
+			$customer['email']      = $edd_customer->email;
+			$customer['first_name'] = $first_name;
+			$customer['last_name']  = $last_name;
+			$customer['ip']         = edd_get_payment_user_ip( $payment_id );
+
+		}
+
+		return $customer;
+	}
+
+	/**
 	 * Insert payment note
 	 *
 	 * @access  public
@@ -375,15 +433,17 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			return;
 		}
 
-		$amount       = affwp_currency_filter( affwp_format_amount( $referral->amount ) );
-		$affiliate_id = $referral->affiliate_id;
-		$name         = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
+		$amount         = affwp_currency_filter( affwp_format_amount( $referral->amount ) );
+		$affiliate_id   = $referral->affiliate_id;
+		$name           = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
+		$referral_link  = affwp_admin_link( 'referrals', esc_html( '#' . $referral->referral_id ), array( 'action' => 'edit_referral', 'referral_id' => $referral->referral_id ) );
 
-		edd_insert_payment_note( $payment_id, sprintf( __( 'Referral #%1$d for %2$s recorded for %3$s (ID: %4$d).', 'affiliate-wp' ),
-			$referral->referral_id,
+		/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name, 4: Affiliate ID */
+		edd_insert_payment_note( $payment_id, sprintf( __( 'Referral %1$s for %2$s recorded for %3$s (ID: %4$d).', 'affiliate-wp' ),
+			$referral_link,
 			$amount,
 			$name,
-			$referral->affiliate_id
+			$affiliate_id
 		) );
 
 	}
@@ -471,11 +531,20 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 		foreach ( $downloads as $key => $item ) {
 
-			if ( get_post_meta( $item['id'], '_affwp_' . $this->context . '_referrals_disabled', true ) ) {
+			$download_id = $item['id'];
+			$download    = new EDD_Download( $download_id );
+
+			if ( get_post_meta( $download_id, '_affwp_' . $this->context . '_referrals_disabled', true ) ) {
 				continue; // Referrals are disabled on this product
 			}
 
-			$description[] = get_the_title( $item['id'] );
+			$desc = get_the_title( $download_id );
+
+			if ( $download->has_variable_prices() ) {
+				$desc .= ' - ' . edd_get_price_option_name( $download_id, $item['options']['price_id'] );
+			}
+
+			$description[] = $desc;
 		}
 
 		return implode( ', ', $description );
@@ -493,6 +562,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		affwp_admin_scripts();
 
 		$user_name    = '';
+		$user_id      = 0;
 		$affiliate_id = get_post_meta( $discount_id, 'affwp_discount_affiliate', true );
 		if( $affiliate_id ) {
 			$user_id      = affwp_get_affiliate_user_id( $affiliate_id );
@@ -508,7 +578,6 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 					</th>
 					<td>
 						<span class="affwp-ajax-search-wrap">
-							<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user_id ); ?>" />
 							<input type="text" name="user_name" id="user_name" value="<?php echo esc_attr( $user_name ); ?>" class="affwp-user-search" data-affwp-status="active" autocomplete="off" style="width: 300px;" />
 						</span>
 						<p class="description"><?php _e( 'If you would like to connect this discount to an affiliate, enter the name of the affiliate it belongs to.', 'affiliate-wp' ); ?></p>
@@ -536,16 +605,9 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 			return;
 		}
 
-		if( empty( $_POST['user_id'] ) ) {
-			$user = get_user_by( 'login', $_POST['user_name'] );
-			if( $user ) {
-				$user_id = $user->ID;
-			}
-		} else {
-			$user_id = absint( $_POST['user_id'] );
-		}
+		$data = affiliate_wp()->utils->process_request_data( $_POST, 'user_name' );
 
-		$affiliate_id = affwp_get_affiliate_id( $user_id );
+		$affiliate_id = affwp_get_affiliate_id( $data['user_id'] );
 
 		update_post_meta( $discount_id, 'affwp_discount_affiliate', $affiliate_id );
 	}
@@ -685,5 +747,67 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		return $fields;
 	}
 
+	/**
+	 * Add download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function add_download_category_rate( $category ) {
+		?>
+		<div class="form-field">
+			<label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label>
+			<input type="text" class="small-text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate">
+			<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Edit download_category referral rate field.
+	 * 
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function edit_download_category_rate( $category ) {
+		$category_id   = $category->term_id;
+		$category_rate = get_term_meta( $category_id, '_affwp_' . $this->context . '_category_rate', true ); 
+		?>
+		<tr class="form-field">
+			<th><label for="download-category-rate"><?php _e( 'Referral Rate', 'affiliate-wp' ); ?></label></th>
+			<td>
+				<input type="text" name="_affwp_<?php echo $this->context; ?>_category_rate" id="download-category-rate" value="<?php echo $category_rate ? esc_attr( $category_rate ) : ''; ?>">
+				<p class="description"><?php printf( __( 'The referral rate for this %s category.', 'affiliate-wp' ), strtolower( edd_get_label_singular() ) ); ?></p>
+			</td>
+		</tr>
+	<?php
+	}
+	
+	/**
+	 * Save download_category referral rate field.
+	 *
+	 * @access  public
+	 * @since   2.2
+	 */
+	public function save_download_category_rate( $category_id ) {
+
+		if ( isset( $_POST['_affwp_' . $this->context . '_category_rate'] ) ) {
+
+			$rate     = $_POST['_affwp_' . $this->context . '_category_rate'];
+			$meta_key = '_affwp_' . $this->context . '_category_rate';
+
+			if ( $rate ) {
+				update_term_meta( $category_id, $meta_key, $rate );
+			} else {
+				delete_term_meta( $category_id, $meta_key );
+			}
+
+		}
+
+	}
+
 }
-new Affiliate_WP_EDD;
+
+if ( class_exists( 'Easy_Digital_Downloads' ) ) {
+	new Affiliate_WP_EDD;
+}

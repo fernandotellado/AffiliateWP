@@ -33,14 +33,14 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 	 *
 	 * @access  public
 	 * @since   1.8.6
-	 * @param   $referral_total
+	 * @param   $total
 	 * @param   $reference
 	 * @param   $description
 	 */
 	public function add_referral( $args ) {
 
 		$customer_email = ( $args[ 'customer_email' ]) ? $args[ 'customer_email' ] : '';
-		$referral_total = ( $args[ 'referral_total' ]) ? $args[ 'referral_total' ] : '';
+		$total          = ( $args[ 'total' ]) ? $args[ 'total' ] : '';
 		$reference      = ( $args[ 'reference' ] )     ? $args[ 'reference' ]      : '';
 		$description    = ( $args[ 'description' ])    ? $args[ 'description' ]    : '';
 
@@ -51,12 +51,13 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 		// Customers cannot refer themselves
 		if ( $this->is_affiliate_email( $customer_email ) ) {
 
-			if( $this->debug ) {
-				$this->log( 'Referral not created because affiliate\'s own account was used.' );
-			}
+			$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
 			return;
 		}
+
+		$this->referral_type = isset( $args['type'] ) ? $args['type'] : 'sale';
+		$referral_total = $this->calculate_referral_amount( $total, $reference );
 
 		$this->insert_pending_referral( $referral_total, $reference, $description );
 		$this->complete_referral( $reference );
@@ -127,6 +128,47 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 
+	}
+
+	/**
+	 * Retrieves the customer details for a form submission
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $entry_id The ID of the entry to retrieve customer details for.
+	 * @return array An array of the customer details
+	 */
+	public function get_customer( $entry_id = 0 ) {
+
+		$customer = array();
+
+		if ( class_exists( 'Ninja_Forms' ) ) {
+
+			$fields = Ninja_Forms()->form()->get_sub( $entry_id )->get_field_values();
+
+			if( ! is_array( $fields ) ) {
+				return array();
+			}
+
+			foreach( $fields as $key => $value ) {
+
+				if( false !== strpos( $key, 'email' ) ) {
+					$customer['email'] = $value;
+				}
+
+				if( false !== strpos( $key, 'firstname' ) ) {
+					$customer['first_name'] = $value;
+				}
+
+				if( false !== strpos( $key, 'lastname' ) ) {
+					$customer['last_name'] = $value;
+				}
+
+			}
+
+		}
+
+		return $customer;
 	}
 
 	/**
@@ -263,4 +305,6 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 	}
 }
 
-new Affiliate_WP_Ninja_Forms;
+if ( class_exists( 'Ninja_Forms' ) ) {
+	new Affiliate_WP_Ninja_Forms;
+}

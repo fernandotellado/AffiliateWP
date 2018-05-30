@@ -13,9 +13,12 @@ namespace AffWP\Admin;
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/class-reports-tab-registry.php';
+
 include AFFILIATEWP_PLUGIN_DIR . 'includes/abstracts/class-affwp-reports-tab.php';
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-affiliates-reports-tab.php';
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-referrals-reports-tab.php';
+include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-payouts-reports-tab.php';
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-visits-reports-tab.php';
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-campaigns-reports-tab.php';
 
@@ -54,34 +57,28 @@ class Reports {
 		switch( $active_tab ) {
 			case 'referrals':
 				$manage_button = sprintf( $manage_button_template,
-					esc_url( add_query_arg( array(
-						'page' => 'affiliate-wp-referrals'
-					), admin_url( 'admin.php' ) ) ),
+					esc_url( affwp_admin_url( 'referrals' ) ),
 					__( 'Manage Referrals', 'affiliate-wp' )
 				);
 				break;
 
 			case 'affiliates':
 				$manage_button = sprintf( $manage_button_template,
-					esc_url( add_query_arg( array(
-						'page' => 'affiliate-wp-affiliates'
-					), admin_url( 'admin.php' ) ) ),
+					esc_url( affwp_admin_url( 'affiliates' ) ),
 					__( 'Manage Affiliates', 'affiliate-wp' )
 				);
+				break;
 
-				$manage_button .= sprintf( $manage_button_template,
-					esc_url( add_query_arg( array(
-						'page' => 'affiliate-wp-payouts',
-					), admin_url( 'admin.php' ) ) ),
+			case 'payouts':
+				$manage_button = sprintf( $manage_button_template,
+					esc_url( affwp_admin_url( 'payouts' ) ),
 					__( 'View Payouts', 'affiliate-wp' )
 				);
 				break;
 
 			case 'visits':
 				$manage_button = sprintf( $manage_button_template,
-					esc_url( add_query_arg( array(
-						'page' => 'affiliate-wp-visits'
-					), admin_url( 'admin.php' ) ) ),
+					esc_url( affwp_admin_url( 'visits' ) ),
 					__( 'Manage Visits', 'affiliate-wp' )
 				);
 				break;
@@ -98,36 +95,48 @@ class Reports {
 				<?php echo $manage_button; ?>
 			</h1>
 
-			<?php do_action( 'affwp_reports_page_top' ); ?>
+			<?php
+			/**
+			 * Fires at the top of the admin reports page screen.
+			 */
+			do_action( 'affwp_reports_page_top' );
+			?>
 
 			<h2 class="nav-tab-wrapper">
 				<?php
-				$tabs = $this->get_reports_tabs();
-				foreach ( $tabs as $tab_id => $tab_name ) {
-
-					$tab_url = add_query_arg( array(
-						'settings-updated' => false,
-						'tab'              => $tab_id,
-						'affwp_notice'     => false
-					) );
-
-					$active = $active_tab == $tab_id ? ' nav-tab-active' : '';
-
-					echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">';
-					echo esc_html( $tab_name );
-					echo '</a>';
-				}
+				affwp_navigation_tabs( $this->get_reports_tabs(), $active_tab, array(
+					'settings-updated' => false,
+					'affwp_notice'     => false
+				) );
 				?>
 			</h2>
 
-
-			<?php do_action( 'affwp_reports_page_middle' ); ?>
+			<?php
+			/**
+			 * Fires in the middle of the admin reports page screen.
+			 */
+			do_action( 'affwp_reports_page_middle' );
+			?>
 
 			<div id="tab_container">
-				<?php do_action( 'affwp_reports_tab_' . $active_tab ); ?>
+
+				<?php
+				/**
+				 * Fires inside the tab container element of the currently-active admin reports screen tab.
+				 *
+				 * The dynamic portion of the hook name, `$active_tab`, refers to the active reports tab.
+				 */
+				do_action( 'affwp_reports_tab_' . $active_tab );
+				?>
+
 			</div><!-- #tab_container-->
 
-			<?php do_action( 'affwp_reports_page_bottom' ); ?>
+			<?php
+			/**
+			 * Fires at the bottom of the admin reports page screen.
+			 */
+			do_action( 'affwp_reports_page_bottom' );
+			?>
 
 		</div>
 		<?php
@@ -167,6 +176,7 @@ class Reports {
 	public function register_core_tabs() {
 		new \AffWP\Referral\Admin\Reports\Tab;
 		new \AffWP\Affiliate\Admin\Reports\Tab;
+		new \AffWP\Affiliate\Payout\Admin\Reports\Tab;
 		new \AffWP\Visit\Admin\Reports\Tab;
 		new \AffWP\Campaign\Admin\Reports\Tab;
 	}

@@ -74,7 +74,7 @@ class AffWP_Payouts_Table extends List_Table {
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args( $args, array(
 			'singular' => 'payout',
-			'plurla'   => 'payouts',
+			'plural'   => 'payouts',
 		) );
 
 		parent::__construct( $args );
@@ -119,7 +119,7 @@ class AffWP_Payouts_Table extends List_Table {
 	 * @return array $views All the views available.
 	 */
 	public function get_views() {
-		$base         = admin_url( 'admin.php?page=affiliate-wp-payouts' );
+		$base         = affwp_admin_url( 'payouts' );
 		$current      = isset( $_GET['status'] ) ? $_GET['status'] : '';
 		$total_count  = '&nbsp;<span class="count">(' . $this->total_count    . ')</span>';
 		$paid_count   = '&nbsp;<span class="count">(' . $this->paid_count . ')</span>';
@@ -175,7 +175,7 @@ class AffWP_Payouts_Table extends List_Table {
 	 * @return array Array of all the sortable columns
 	 */
 	public function get_sortable_columns() {
-		return array(
+		$columns = array(
 			'payout_id'     => array( 'payout_id', false ),
 			'amount'        => array( 'amount', false ),
 			'affiliate'     => array( 'affiliate', false ),
@@ -183,6 +183,14 @@ class AffWP_Payouts_Table extends List_Table {
 			'status'        => array( 'status', false ),
 			'date'          => array( 'date', false ),
 		);
+
+		/**
+		 * Filters the payouts list table sortable columns.
+		 *
+		 * @param array                $columns          The sortable columns for this list table.
+		 * @param \AffWP_Payouts_Table $this             List table instance.
+		 */
+		return apply_filters( 'affwp_payout_table_sortable_columns', $columns, $this );
 	}
 
 	/**
@@ -254,11 +262,10 @@ class AffWP_Payouts_Table extends List_Table {
 	 * @return string Linked affiliate name and ID.
 	 */
 	function column_affiliate( $payout ) {
-		$url = add_query_arg( array(
-			'page'         => 'affiliate-wp-affiliates',
+		$url = affwp_admin_url( 'affiliates', array(
 			'action'       => 'view_affiliate',
 			'affiliate_id' => $payout->affiliate_id
-		), admin_url( 'admin.php' ) );
+		) );
 
 		$name      = affiliate_wp()->affiliates->get_affiliate_name( $payout->affiliate_id );
 		$affiliate = affwp_get_affiliate( $payout->affiliate_id );
@@ -296,13 +303,9 @@ class AffWP_Payouts_Table extends List_Table {
 	public function column_referrals( $payout ) {
 		$referrals = affiliate_wp()->affiliates->payouts->get_referral_ids( $payout );
 		$links     = array();
-		$base      = admin_url( 'admin.php?page=affiliate-wp-referrals&action=edit_referral&referral_id=' );
 
 		foreach ( $referrals as $referral_id ) {
-			$links[] = sprintf( '<a href="%1$s">%2$s</a>',
-				esc_url( $base . $referral_id ),
-				esc_html( $referral_id )
-			);
+			$links[] = affwp_admin_link( 'referrals', esc_html( $referral_id ), array( 'action' => 'edit_referral', 'referral_id' => $referral_id ) );
 		}
 
 		$value = implode( ', ', $links );
@@ -335,9 +338,8 @@ class AffWP_Payouts_Table extends List_Table {
 			$user = get_user_by( 'id', $payout->owner );
 			// If the owner exists, use it.
 			if ( $user ) {
-				$value = sprintf( '<a href="%1$s">%2$s</a> %3$s',
-					esc_url( add_query_arg( array( 'owner' => $payout->owner ), admin_url( 'admin.php?page=affiliate-wp-payouts' ) ) ),
-					esc_html( $user->data->display_name ),
+				$value = sprintf( '%1$s %2$s',
+					affwp_admin_link( 'payouts', esc_html( $user->data->display_name ), array( 'owner' => $payout->owner ) ),
 					sprintf( _x( '(User ID: %d)', 'payout owner ID', 'affiliate-wp' ),
 						esc_html( $payout->owner )
 					)
@@ -392,7 +394,7 @@ class AffWP_Payouts_Table extends List_Table {
 	 * @return string Localized payout date.
 	 */
 	public function column_date( $payout ) {
-		$value = date_i18n( get_option( 'date_format' ), strtotime( $payout->date ) );
+		$value = $payout->date_i18n();
 
 		/**
 		 * Filters the value of the 'Date' column in the payouts list table.
@@ -443,6 +445,19 @@ class AffWP_Payouts_Table extends List_Table {
 				'payout-nonce'
 			);
 		}
+
+		// Delete.
+		$row_actions['delete'] = $this->get_row_action_link(
+			__( 'Delete', 'affiliate-wp' ),
+			array_merge( $base_query_args, array(
+				'affwp_action' => 'process_delete_payout'
+			) ),
+			array(
+				'nonce' => 'affwp_delete_payout_nonce',
+				'class' => 'delete'
+			)
+		);
+		$row_actions['delete'] = '<span class="trash">' . $row_actions['delete'] . '</span>';
 
 		/**
 		 * Filters the row actions for the payouts list table row.
@@ -530,6 +545,7 @@ class AffWP_Payouts_Table extends List_Table {
 	public function get_bulk_actions() {
 		$actions = array(
 			'retry_payment' => __( 'Retry Payment', 'affiliate-wp' ),
+			'delete'        => __( 'Delete', 'affiliate-wp' ),
 		);
 
 		/**
@@ -549,7 +565,45 @@ class AffWP_Payouts_Table extends List_Table {
 	 * @since  1.9
 	 */
 	public function process_bulk_action() {
-		// @todo Hook up bulk actions.
+
+		if( empty( $_REQUEST['_wpnonce'] ) ) {
+			return;
+		}
+
+		if( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-payouts' ) && ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'payout-nonce' ) ) {
+			return;
+		}
+
+		$ids = isset( $_GET['payout_id'] ) ? $_GET['payout_id'] : array();
+
+		if ( ! is_array( $ids ) ) {
+			$ids = array( $ids );
+		}
+
+		$ids    = array_map( 'absint', $ids );
+		$action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : false;
+
+		if( empty( $ids ) || empty( $action ) ) {
+			return;
+		}
+
+		foreach ( $ids as $id ) {
+
+			if ( 'delete' === $this->current_action() ) {
+				affwp_delete_payout( $id );
+			}
+
+			/**
+			 * Fires after a payout bulk action is performed.
+			 *
+			 * The dynamic portion of the hook name, `$this->current_action()` refers
+			 * to the current bulk action being performed.
+			 *
+			 * @param int $id The ID of the object.
+			 */
+			do_action( 'affwp_payouts_do_bulk_action_' . $this->current_action(), $id );
+		}
+
 	}
 
 	/**
@@ -656,6 +710,11 @@ class AffWP_Payouts_Table extends List_Table {
 		) );
 
 		$payouts = affiliate_wp()->affiliates->payouts->get_payouts( $args );
+
+		// Retrieve the "current" total count for pagination purposes.
+		$args['number']      = -1;
+		$this->current_count = affiliate_wp()->affiliates->payouts->count( $args );
+
 		return $payouts;
 	}
 
@@ -672,6 +731,8 @@ class AffWP_Payouts_Table extends List_Table {
 
 		$this->process_bulk_action();
 
+		$data = $this->payouts_data();
+
 		$current_page = $this->get_pagenum();
 
 		$status = isset( $_GET['status'] ) ? $_GET['status'] : 'any';
@@ -684,17 +745,16 @@ class AffWP_Payouts_Table extends List_Table {
 				$total_items = $this->failed_count;
 				break;
 			case 'any':
-				$total_items = $this->total_count;
+				$total_items = $this->current_count;
 				break;
 		}
 
-		$this->items = $this->payouts_data();
+		$this->items = $data;
 
 		$this->set_pagination_args( array(
-				'total_items' => $total_items,
-				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page )
-			)
-		);
+			'total_items' => $total_items,
+			'per_page'    => $per_page,
+			'total_pages' => ceil( $total_items / $per_page )
+		) );
 	}
 }

@@ -28,6 +28,7 @@ function affwp_get_currencies() {
 		'ARS' => __( 'Argentine Peso', 'affiliate-wp' ),
 		'AUD' => __( 'Australian Dollars', 'affiliate-wp' ),
 		'BDT' => __( 'Bangladeshi Taka', 'affiliate-wp' ),
+		'BTC' => __( 'Bitcoin', 'affiliate-wp' ),
 		'BRL' => __( 'Brazilian Real', 'affiliate-wp' ),
 		'BGN' => __( 'Bulgarian Lev', 'affiliate-wp' ),
 		'CAD' => __( 'Canadian Dollars', 'affiliate-wp' ),
@@ -47,6 +48,8 @@ function affwp_get_currencies() {
 		'ILS' => __( 'Israeli Shekel', 'affiliate-wp' ),
 		'IRR' => __( 'Iranian Rial', 'affiliate-wp' ),
 		'JPY' => __( 'Japanese Yen', 'affiliate-wp' ),
+		'KES' => __( 'Kenyan Shilling', 'affiliate-wp' ),
+		'KZT' => __( 'Kazakhstani Tenge', 'affiliate-wp' ),
 		'KIP' => __( 'Lao Kip', 'affiliate-wp' ),
 		'MYR' => __( 'Malaysian Ringgits', 'affiliate-wp' ),
 		'MXN' => __( 'Mexican Peso', 'affiliate-wp' ),
@@ -54,6 +57,7 @@ function affwp_get_currencies() {
 		'NGN' => __( 'Nigerian Naira', 'affiliate-wp' ),
 		'NOK' => __( 'Norwegian Krone', 'affiliate-wp' ),
 		'NZD' => __( 'New Zealand Dollar', 'affiliate-wp' ),
+		'PKR' => __( 'Pakistani Rupee', 'affiliate-wp' ),
 		'PYG' => __( 'Paraguayan Guaraní', 'affiliate-wp' ),
 		'PHP' => __( 'Philippine Pesos', 'affiliate-wp' ),
 		'PLN' => __( 'Polish Zloty', 'affiliate-wp' ),
@@ -279,6 +283,9 @@ function affwp_currency_filter( $amount ) {
 			case "KRW" :
 				$formatted = '&#8361;' . $amount;
 				break;
+			case "PKR" :
+				$formatted = '&#8360;' . $amount;
+				break;
 			default :
 			    $formatted = $currency . ' ' . $amount;
 				break;
@@ -317,6 +324,8 @@ function affwp_currency_filter( $amount ) {
 				break;
 			case "IRR" :
 				$formatted = $amount . '&#65020;';
+			case "RUB" :
+				$formatted = $amount . '&#8381;';
 				break;
 			default :
 			    $formatted = $amount . ' ' . $currency;
@@ -531,11 +540,38 @@ function affwp_abs_number_round( $val, $precision = 2 ) {
 	if ( is_null( $val ) || '' === $val || false === $val ) {
 
 		return;
+	}
 
+	$period_decimal_sep   = preg_match( '/\.\d{1,2}$/', $val );
+	$comma_decimal_sep    = preg_match( '/\,\d{1,2}$/', $val );
+	$period_space_thousands_sep = preg_match( '/\d{1,3}(?:[.|\s]\d{3})+/', $val );
+	$comma_thousands_sep        = preg_match( '/\d{1,3}(?:,\d{3})+/', $val );
+
+	// Convert period and space thousand separators.
+	if ( $period_space_thousands_sep  && 0 === preg_match( '/\d{4,}$/', $val ) ) {
+		$val = str_replace( ' ', '', $val );
+
+		if ( ! $comma_decimal_sep ) {
+			if ( ! $period_decimal_sep ) {
+				$val = str_replace( '.', '', $val );
+			}
+		} else {
+			$val = str_replace( '.', ':', $val );
+		}
+	}
+
+	// Convert comma decimal separators.
+	if ( $comma_decimal_sep ) {
+		$val = str_replace( ',', '.', $val );
+	}
+
+	// Clean up temporary replacements.
+	if ( $period_space_thousands_sep && $comma_decimal_sep || $comma_thousands_sep ) {
+		$val = str_replace( array( ':', ',' ), '', $val );
 	}
 
 	// Value cannot be negative
-	$val = abs( $val );
+	$val = abs( floatval( $val ) );
 
 	// Decimal precision must be a absolute integer
 	$precision = absint( $precision );
@@ -544,11 +580,7 @@ function affwp_abs_number_round( $val, $precision = 2 ) {
 	$val = sprintf( ( round( $val, $precision ) == intval( $val ) ) ? '%d' : "%.{$precision}f", $val );
 
 	// Convert number to the proper type (int, float, or string) depending on its value
-	if ( false !== strpos( $val, '.' ) ) {
-
-		$val = ( '0' !== substr( $val, -1 ) ) ? floatval( $val ) : (string) $val;
-
-	} else {
+	if ( false === strpos( $val, '.' ) ) {
 
 		$val = absint( $val );
 
@@ -613,16 +645,6 @@ function affwp_make_url_human_readable( $url ) {
 	}
 
 	return $human_readable;
-}
-
-/**
- * Show a tab in the Affiliate Area
- *
- * @since  1.8
- * @return boolean
- */
-function affwp_affiliate_area_show_tab( $tab = '' ) {
-	return apply_filters( 'affwp_affiliate_area_show_tab', true, $tab );
 }
 
 /**
@@ -752,4 +774,479 @@ function affwp_get_current_screen() {
 
 	return $page_now;
 
+}
+
+/**
+ * Outputs navigation tabs markup in core screens.
+ *
+ * @since 1.9.5
+ *
+ * @param array  $tabs       Navigation tabs.
+ * @param string $active_tab Active tab slug.
+ * @param array  $query_args Optional. Query arguments used to build the tab URLs. Default empty array.
+ */
+function affwp_navigation_tabs( $tabs, $active_tab, $query_args = array() ) {
+	$tabs = (array) $tabs;
+
+	if ( empty( $tabs ) ) {
+		return;
+	}
+
+	/**
+	 * Filters the navigation tabs immediately prior to output.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param array  $tabs Tabs array.
+	 * @param string $active_tab Active tab slug.
+	 * @param array  $query_args Query arguments used to build the tab URLs.
+	 */
+	$tabs = apply_filters( 'affwp_navigation_tabs', $tabs, $active_tab, $query_args );
+
+	foreach ( $tabs as $tab_id => $tab_name ) {
+		$query_args = array_merge( $query_args, array( 'tab' => $tab_id ) );
+		$tab_url    = add_query_arg( $query_args );
+
+		printf( '<a href="%1$s" alt="%2$s" class="%3$s">%4$s</a>',
+			esc_url( $tab_url ),
+			esc_attr( $tab_name ),
+			$active_tab == $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab',
+			esc_html( $tab_name )
+		);
+	}
+
+	/**
+	 * Fires immediately after the navigation tabs output.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param array  $tabs Tabs array.
+	 * @param string $active_tab Active tab slug.
+	 * @param array  $query_args Query arguments used to build the tab URLs.
+	 */
+	do_action( 'affwp_after_navigation_tabs', $tabs, $active_tab, $query_args );
+}
+
+/**
+ * Enables stylesheet queue manipulation by wrapping wp_enqueue_style() with added context.
+ *
+ * @since 1.9.5
+ *
+ * @param string $handle  Registered stylesheet handle.
+ * @param string $context Optional. Context under which to enqueue the stylesheet.
+ */
+function affwp_enqueue_style( $handle, $context = '' ) {
+	/**
+	 * Filters whether to enqueue the given stylesheet.
+	 *
+	 * The dynamic portion of the hook name, `$handle` refers to the stylesheet handle.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @see wp_enqueue_style()
+	 *
+	 * @param bool   $enqueue Whether to enqueue the stylesheet. Default true.
+	 * @param string $context Context under which to enqueue the stylesheet.
+	 */
+	if ( true === apply_filters( "affwp_enqueue_style_{$handle}", true, $context ) ) {
+		wp_enqueue_style( $handle );
+	}
+}
+
+/**
+ * Enables script queue manipulation by wrapping wp_enqueue_style() with added context.
+ *
+ * @since 1.9.5
+ *
+ * @param string $handle  Registered script handle.
+ * @param string $context Optional. Context under which to enqueue the script.
+ */
+function affwp_enqueue_script( $handle, $context = '' ) {
+	/**
+	 * Filters whether to enqueue the given script.
+	 *
+	 * The dynamic portion of the hook name, `$handle` refers to the script handle.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @see wp_enqueue_script()
+	 *
+	 * @param bool   $enqueue Whether to enqueue the script. Default true.
+	 * @param string $context Context under which to enqueue the script.
+	 */
+	if ( true === apply_filters( "affwp_enqueue_script_{$handle}", true, $context ) ) {
+		wp_enqueue_script( $handle );
+	}
+}
+
+/**
+ * Controls what forms are shown on the Affiliate Area page.
+ *
+ * @since  2.0
+ * @return void
+ */
+function affwp_filter_shown_affiliate_area_forms() {
+
+	$form = affiliate_wp()->settings->get( 'affiliate_area_forms' );
+
+	switch ( $form ) {
+
+		case 'registration':
+			add_filter( 'affwp_affiliate_area_show_login', '__return_false' );
+			break;
+
+		case 'login':
+			add_filter( 'affwp_affiliate_area_show_registration', '__return_false' );
+			break;
+
+		case 'none':
+			add_filter( 'affwp_affiliate_area_show_registration', '__return_false' );
+			add_filter( 'affwp_affiliate_area_show_login', '__return_false' );
+			break;
+
+		default:
+		case 'both':
+			break;
+	}
+
+}
+add_action( 'template_redirect', 'affwp_filter_shown_affiliate_area_forms' );
+
+/**
+ * Generates an AffiliateWP admin URL based on the given type.
+ *
+ * @since 2.0
+ *
+ * @param string $type       Optional. Type of admin URL. Accepts 'affiliates', 'creatives', 'payouts',
+ *                           'referrals', 'visits', 'settings', 'tools', or 'add-ons'. Default empty
+ *                           ('affiliate-wp').
+ * @param array  $query_args Optional. Query arguments to append to the admin URL. Default empty array.
+ * @return string Constructed admin URL.
+ */
+function affwp_admin_url( $type = '', $query_args = array() ) {
+	$page = 'affiliate-wp';
+
+	$whitelist = array(
+		'affiliates', 'creatives', 'payouts', 'referrals',
+		'visits', 'reports', 'settings', 'tools', 'add-ons'
+	);
+
+	if ( in_array( $type, $whitelist, true ) ) {
+		$page = "affiliate-wp-{$type}";
+	}
+
+	$admin_query_args = array_merge( array( 'page' => $page ), $query_args );
+
+	$url = add_query_arg( $admin_query_args, admin_url( 'admin.php' ) );
+
+	/**
+	 * Filters the AffiliateWP admin URL.
+	 *
+	 * @since 2.0
+	 *
+	 * @param string $url        Admin URL.
+	 * @param string $type       Admin URL type.
+	 * @param array  $query_args Query arguments originally passed to affwp_admin_url().
+	 */
+	return apply_filters( 'affwp_admin_url', $url, $type, $query_args );
+}
+
+/**
+ * Generates an AffiliateWP admin link based on the given type.
+ *
+ * @since 2.0
+ *
+ * @param string $type       Admin link type.
+ * @param string $label      Link label.
+ * @param array  $query_args Optional. Query arguments used to build the admin URL.
+ * @param array  $attributes Optional. Link attributes as key/value pairs.
+ * @return string HTML markup for the admin link.
+ */
+function affwp_admin_link( $type, $label, $query_args = array(), $attributes = array() ) {
+	$attributes = wp_parse_args( $attributes, array(
+		'href' => esc_url( affwp_admin_url( $type, $query_args ) )
+	) );
+
+	$output = '';
+	$i      = 0;
+	$count  = count( $attributes );
+
+	foreach ( $attributes as $attribute => $value ) {
+		$output .= sprintf( '%1$s="%2$s"', $attribute, esc_attr( $value ) );
+
+		if ( ++$i !== $count ) {
+			$output .= ' ';
+		}
+
+	}
+
+	$link = sprintf( '<a %1$s>%2$s</a>', $output, $label );
+
+	/**
+	 * Filters the AffiliateWP admin link output.
+	 *
+	 * @since 2.0
+	 *
+	 * @param string $link       HTML markup for the admin link.
+	 * @param string $type       Admin link type.
+	 * @param string $label      Link label.
+	 * @param array  $attributes Link attributes as key/value pairs.
+	 * @param array  $query_args Query arguments used to build the admin URL.
+	 */
+	return apply_filters( 'affwp_admin_link', $link, $type, $label, $attributes, $query_args );
+}
+
+/**
+ * Adds an upgrade action to the completed upgrades array.
+ *
+ * @since 2.0
+ *
+ * @param string $upgrade_action The action to add to the completed upgrades array.
+ * @return bool Whether the action was successfully added.
+ */
+function affwp_set_upgrade_complete( $upgrade_action ) {
+
+	// Check for a valid upgrade action.
+	if ( false === affiliate_wp()->utils->upgrades->get_routine( $upgrade_action ) ) {
+		return false;
+	}
+
+	$completed_upgrades = affwp_get_completed_upgrades();
+
+	$completed_upgrades[] = $upgrade_action;
+
+	// Remove any blanks, and only show uniques.
+	$completed_upgrades = array_unique( array_values( $completed_upgrades ) );
+
+	return update_option( 'affwp_completed_upgrades', $completed_upgrades );
+}
+
+/**
+ * Checks whether an upgrade routine has been run for a specific action.
+ *
+ * @since  2.0
+ *
+ * @param  string $upgrade_action The upgrade action to check completion for.
+ * @return bool Whether the upgrade action has been completed.
+ */
+function affwp_has_upgrade_completed( $upgrade_action ) {
+
+	$completed_upgrades = affwp_get_completed_upgrades();
+
+	return in_array( $upgrade_action, $completed_upgrades, true );
+}
+
+/**
+ * Retrieves the list of completed upgrade actions.
+ *
+ * @since 2.0
+ *
+ * @return array The array of completed upgrades.
+ */
+function affwp_get_completed_upgrades() {
+
+	$completed_upgrades = get_option( 'affwp_completed_upgrades', array() );
+
+	return $completed_upgrades;
+}
+
+/**
+ * Modifies the allowed mime types for uploads to include CSV.
+ *
+ * @since 2.1
+ *
+ * @param array $mime_types List of allowed mime types.
+ * @return array Filtered list of allowed mime types.
+ */
+function affwp_allowed_mime_types( $mime_types = array() ) {
+	$mime_types['csv']  = 'text/csv';
+
+	return $mime_types;
+}
+add_filter( 'upload_mimes', 'affwp_allowed_mime_types' );
+
+/**
+ * Retrieves the list of affiliate import fields.
+ *
+ * @since 2.1
+ *
+ * @return array Array of affiliate import fields and associated labels.
+ */
+function affwp_get_affiliate_import_fields() {
+
+	/**
+	 * Filters the list of core affiliate import fields.
+	 *
+	 * @since 2.1
+	 *
+	 * @param array $fields List of affiliate import fields and associated labels.
+	 */
+	$fields = apply_filters( 'affwp_affiliate_import_fields', array(
+		'email'           => __( 'Email (required)', 'affiliate-wp' ),
+		'username'        => __( 'Username', 'affiliate-wp' ),
+		'name'            => __( 'First/Full Name', 'affiliate-wp' ),
+		'last_name'       => __( 'Last Name', 'affiliate-wp' ),
+		'payment_email'   => __( 'Payment Email', 'affiliate-wp' ),
+		'rate'            => __( 'Rate', 'affiliate-wp' ),
+		'rate_type'       => __( 'Rate Type', 'affiliate-wp' ),
+		'earnings'        => __( 'Earnings', 'afiliate-wp' ),
+		'unpaid_earnings' => __( 'Unpaid Earnings', 'affiliate-wp' ),
+		'referrals'       => __( 'Referral Count', 'affiliate-wp' ),
+		'visits'          => __( 'Visit Count', 'affiliate-wp' ),
+		'status'          => __( 'Status', 'affiliate-wp' ),
+		'website_url'     => __( 'Website', 'affiliate-wp' ),
+		'date_registered' => __( 'Registration Date', 'affiliate-wp' ),
+	) );
+
+	// Ensure required fields are set.
+	if ( empty( $fields['email'] ) ) {
+		$fields['email'] = __( 'Email (required)', 'affiliate-wp' );
+	}
+
+	return $fields;
+}
+
+/**
+ * Retrieves the list of referral import fields.
+ *
+ * @since 2.1
+ *
+ * @return array Array of referral import fields and associated labels.
+ */
+function affwp_get_referral_import_fields() {
+
+	/**
+	 * Filters the list of core referral import fields.
+	 *
+	 * @since 2.1
+	 *
+	 * @param array $fields List of referral import fields and associated labels.
+	 */
+	$fields = apply_filters( 'affwp_referral_import_fields', array(
+		'affiliate'       => __( 'Affiliate ID or Username (required)', 'affiliate-wp' ),
+		'amount'          => __( 'Amount (required)', 'affiliate-wp' ),
+		'email'           => __( 'Affiliate Email', 'affiliate-wp' ),
+		'username'        => __( 'Affiliate Username', 'affiliate-wp' ),
+		'first_name'      => __( 'Affiliate First/Full Name', 'affiliate-wp' ),
+		'last_name'       => __( 'Affiliate Last Name', 'affiliate-wp' ),
+		'payment_email'   => __( 'Payment Email', 'affiliate-wp' ),
+		'currency'        => __( 'Currency', 'affiliate-wp' ),
+		'description'     => __( 'Description', 'affiliate-wp' ),
+		'campaign'        => __( 'Campaign', 'affiliate-wp' ),
+		'reference'       => __( 'Reference', 'affiliate-wp' ),
+		'context'         => __( 'Context', 'affiliate-wp' ),
+		'status'          => __( 'Status', 'affiliate-wp' ),
+		'date'            => __( 'Date', 'affiliate-wp' )
+	) );
+
+	// Ensure required fields are set.
+	if ( empty( $fields['affiliate'] ) ) {
+		$fields['affiliate'] = __( 'Affiliate ID or Username (required)', 'affiliate-wp' );
+	}
+
+	if ( empty( $fields['amount'] ) ) {
+		$fields['amount'] = __( 'Amount (required)', 'affiliate-wp' );
+	}
+
+	return $fields;
+}
+
+/**
+ * Outputs import fields markup for the given import type.
+ *
+ * @since 2.1
+ *
+ * @param string $type Import fields type. Accepts 'affiliates' or 'referrals'.
+ */
+function affwp_do_import_fields( $type ) {
+	$fields = array();
+
+	switch( $type ) {
+		case 'affiliates':
+			$fields = affwp_get_affiliate_import_fields();
+			break;
+
+		case 'referrals':
+			$fields = affwp_get_referral_import_fields();
+			break;
+
+		default: break;
+	}
+
+	if ( ! empty( $fields ) ) {
+
+		foreach ( $fields as $key => $label ) {
+			?>
+			<tr>
+				<td><?php echo esc_html( $label ); ?></td>
+				<td>
+					<select name="affwp-import-field[<?php echo esc_attr( $key ); ?>]" class="affwp-import-csv-column">
+						<option value=""><?php esc_html_e( '- Ignore this field -', 'affiliate-wp' ); ?></option>
+					</select>
+				</td>
+				<td class="affwp-import-preview-field"><?php esc_html_e( '- Select field to preview data -', 'affiliate-wp' ); ?></td>
+			</tr>
+			<?php
+		}
+
+	}
+
+}
+
+/**
+ * Retrieves an HTML5 required attribute if the given registration field is required.
+ *
+ * @since 2.1
+ *
+ * @param string $field Registration field to check.
+ * @return string An HTML5 required attribute if required, otherwise an empty string.
+ */
+function affwp_required_field_attr( $field ) {
+	$required_fields = affiliate_wp()->settings->get( 'required_registration_fields', array() );
+
+	$required = __checked_selected_helper( array_key_exists( $field, $required_fields ), true, false, 'required' );
+
+	return $required;
+}
+
+/**
+ * Helper to unserialize values based on an object whitelist.
+ *
+ * @since 2.1.4.2
+ *
+ * @param string $original  Maybe unserialized original, if is needed.
+ * @return mixed Unserialized data can be any type.
+ */
+function affwp_maybe_unserialize( $original ) {
+	$value = $original;
+
+	if ( is_serialized( $original ) ) {
+
+		preg_match( '/[oO]\s*:\s*\d+\s*:\s*"\s*(?!(?i)(stdClass))/', $original, $matches );
+
+		if ( ! empty( $matches ) ) {
+			$value = '';
+		} else {
+			$value = maybe_unserialize( $original );
+		}
+	}
+
+	return $value;
+}
+
+/**
+ * Retrieves the current page number.
+ *
+ * @since 2.1.12
+ *
+ * @return int The current page number.
+ */
+function affwp_get_current_page_number() {
+	if ( is_front_page() ) {
+		$page = get_query_var( 'page', 1 );
+	} else {
+		$page = get_query_var( 'paged', 1 );
+	}
+
+	return max( $page, 1 );
 }

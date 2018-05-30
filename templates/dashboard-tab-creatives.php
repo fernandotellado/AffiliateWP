@@ -4,7 +4,7 @@
 
 	<?php
 	$per_page  = 30;
-	$page      = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+	$page      = affwp_get_current_page_number();
 	$pages     = absint( ceil( affiliate_wp()->creatives->count( array( 'status' => 'active' ) ) / $per_page ) );
 	$args      = array(
 		'number' => $per_page,
@@ -15,9 +15,14 @@
 
 	<?php if ( $creatives ) : ?>
 
-		<?php do_action( 'affwp_before_creatives' ); ?>
+		<?php
+		/**
+		 * Fires immediately before creatives in the creatives tab of the affiliate area.
+		 */
+		do_action( 'affwp_before_creatives' );
+		?>
 
-		<?php echo affiliate_wp()->creative->affiliate_creatives( $args ); ?>
+		<?php echo $creatives; ?>
 
 		<?php if ( $pages > 1 ) : ?>
 
@@ -37,7 +42,12 @@
 
 		<?php endif; ?>
 
-		<?php do_action( 'affwp_after_creatives' ); ?>
+		<?php
+		/**
+		 * Fires immediately after creatives in the creatives tab of the affiliate area.
+		 */
+		do_action( 'affwp_after_creatives' );
+		?>
 
 	<?php else : ?>
 

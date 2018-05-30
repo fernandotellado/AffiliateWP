@@ -1,3 +1,4 @@
+/* global affwp_vars */
 jQuery(document).ready(function($) {
     // Settings uploader
 	var file_frame;
@@ -65,15 +66,9 @@ jQuery(document).ready(function($) {
 		$('#affwp-referrals-export-form').slideToggle();
 	});
 
-	$('#affwp-referrals-export-form').submit(function() {
-		if( ! confirm( affwp_vars.confirm ) ) {
-			return false;
-		}
-	});
-
 	// datepicker
 	if( $('.affwp-datepicker').length ) {
-		$('.affwp-datepicker').datepicker();
+		$('.affwp-datepicker').datepicker({dateFormat: 'mm/dd/yy'});
 	}
 
 	// Ajax user search.
@@ -82,28 +77,79 @@ jQuery(document).ready(function($) {
 			$action  = 'affwp_search_users',
 			$search  = $this.val(),
 			$status  = $this.data( 'affwp-status'),
-			$user_id = $( '#user_id' );
+			$form    = $this.closest( 'form' );
 
 		$this.autocomplete( {
 			source: ajaxurl + '?action=' + $action + '&term=' + $search + '&status=' + $status,
 			delay: 500,
 			minLength: 2,
 			position: { offset: '0, -1' },
-			select: function( event, data ) {
-				$user_id.val( data.item.user_id );
+			search: function() {
+				if ( $this.hasClass( 'affwp-enable-on-complete' ) ) {
+					$('div.notice').remove();
+					$('.affwp-user-email-wrap, .affwp-user-pass-wrap').hide();
+					$form.find('input, select').prop('disabled', true);
+				}
 			},
 			open: function() {
 				$this.addClass( 'open' );
 			},
 			close: function() {
 				$this.removeClass( 'open' );
-			}
-		} );
+			},
+			response: function( event, ui ) {
+				if( ui.content.length === 0 && $this.hasClass( 'affwp-enable-on-complete' ) ) {
+					// This triggers when no results are found
+					$( '<div class="notice notice-error affwp-new-affiliate-error"><p>' + affwp_vars.no_user_found + '</p></div>' ).insertAfter( $this );
 
-		// Unset the user_id input if the input is cleared.
-		$this.on( 'keyup', function() {
-			if ( ! this.value ) {
-				$user_id.val( '' );
+					$form.find( 'input, select' ).prop( 'disabled', false );
+
+					$( '.affwp-user-email-wrap, .affwp-user-pass-wrap' ).show();
+					$( '.affwp-user-email' ).prop( 'required' );
+					$( '.search-description' ).hide();
+				}
+			},
+			select: function() {
+
+				if( $this.hasClass( 'affwp-enable-on-complete' ) ) {
+
+					$.ajax({
+						type: 'POST',
+						url: ajaxurl,
+						data: {
+							action: 'affwp_check_user_login',
+							user: $this.val()
+						},
+						dataType: "json",
+						success: function( response ) {
+
+							console.log( response );
+
+							if( response.success ) {
+
+								if ( false === response.data.affiliate ) {
+
+									$form.find( 'input, select' ).prop( 'disabled', false );
+
+								} else {
+
+									var viewLink = '<a href="' + response.data.url + '">' + affwp_vars.view_affiliate + '</a>';
+
+									$( '<div class="notice notice-info affwp-new-affiliate-error"><p>' + affwp_vars.existing_affiliate + ' ' + viewLink + '</p></div>' ).insertAfter( $this );
+
+									$this.prop( 'disabled', false );
+
+								}
+							}
+
+						}
+
+					}).fail( function( response ) {
+						if ( window.console && window.console.log ) {
+							console.log( response );
+						}
+					});
+				}
 			}
 		} );
 	} );
@@ -219,7 +265,7 @@ jQuery(document).ready(function($) {
 	 *
 	 * @return {void}
 	 */
-	if ( typeof postboxes !== 'undefined' ) {
+	if ( typeof postboxes !== 'undefined' && /affiliate-wp/.test( pagenow ) ) {
 		postboxes.add_postbox_toggles( pagenow );
 	}
 

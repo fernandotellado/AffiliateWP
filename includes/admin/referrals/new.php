@@ -1,10 +1,15 @@
 <div class="wrap">
 
 	<h2><?php _e( 'New Referral', 'affiliate-wp' ); ?></h2>
-	
+
 	<form method="post" id="affwp_add_referral">
 
-		<?php do_action( 'affwp_new_referral_top' ); ?>
+		<?php
+		/**
+		 * Fires at the top of the new-referral admin screen.
+		 */
+		do_action( 'affwp_new_referral_top' );
+		?>
 
 		<p><?php _e( 'Use this screen to manually create a new referral record for an affiliate.', 'affiliate-wp' ); ?></p>
 
@@ -19,7 +24,6 @@
 				<td>
 					<span class="affwp-ajax-search-wrap">
 						<input type="text" name="user_name" id="user_name" class="affwp-user-search" data-affwp-status="active" autocomplete="off" />
-						<input type="hidden" name="user_id" id="user_id" value="" />
 					</span>
 					<p class="description"><?php _e( 'Enter the name of the affiliate or enter a partial name or email to perform a search.', 'affiliate-wp' ); ?></p>
 				</td>
@@ -42,11 +46,28 @@
 			<tr class="form-row form-required">
 
 				<th scope="row">
+					<label for="type"><?php _e( 'Referral Type', 'affiliate-wp' ); ?></label>
+				</th>
+
+				<td>
+					<select name="type" id="type">
+						<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+							<option value="<?php echo esc_attr( $type_id ); ?>"><?php echo esc_html( $type['label'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php _e( 'Select the type of the referral.', 'affiliate-wp' ); ?></p>
+				</td>
+
+			</tr>
+
+			<tr class="form-row form-required">
+
+				<th scope="row">
 					<label for="amount"><?php _e( 'Date', 'affiliate-wp' ); ?></label>
 				</th>
 
 				<td>
-					<input type="text" name="date" id="date" class="affwp-datepicker" autocomplete="off" placeholder="<?php echo esc_attr( date_i18n( 'm/d/y', strtotime( 'today' ) ) ); ?>"/>
+					<input type="text" name="date" id="date" class="affwp-datepicker" autocomplete="off" placeholder="<?php echo esc_attr( affwp_date_i18n( strtotime( 'today' ), 'm/d/y' ) ); ?>"/>
 				</td>
 
 			</tr>
@@ -93,6 +114,19 @@
 			<tr class="form-row form-required">
 
 				<th scope="row">
+					<label for="context"><?php _e( 'Custom', 'affiliate-wp' ); ?></label>
+				</th>
+
+				<td>
+					<input type="text" name="custom" id="custom" />
+					<p class="description"><?php _e( 'Any custom data that should be stored with the referral (optional).', 'affiliate-wp' ); ?></p>
+				</td>
+
+			</tr>
+
+			<tr class="form-row form-required">
+
+				<th scope="row">
 					<label for="status"><?php _e( 'Status', 'affiliate-wp' ); ?></label>
 				</th>
 
@@ -110,7 +144,12 @@
 
 		</table>
 
-		<?php do_action( 'affwp_new_referral_bottom' ); ?>
+		<?php
+		/**
+		 * Fires at the bottom of the new-referral admin screen.
+		 */
+		do_action( 'affwp_new_referral_bottom' );
+		?>
 
 		<?php echo wp_nonce_field( 'affwp_add_referral_nonce', 'affwp_add_referral_nonce' ); ?>
 		<input type="hidden" name="affwp_action" value="add_referral" />

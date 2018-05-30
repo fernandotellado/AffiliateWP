@@ -25,6 +25,8 @@ class Tab extends Reports\Tab {
 		$this->graph    = new \Affiliate_WP_Registrations_Graph;
 
 		parent::__construct();
+
+		$this->graph->set( 'form_wrapper', false );
 	}
 
 	/**
@@ -64,11 +66,10 @@ class Tab extends Reports\Tab {
 			$name = affwp_get_affiliate_name( $affiliate->ID );
 
 			$data_link = sprintf( '<a href="%1$s">%2$s</a>',
-				esc_url( add_query_arg( array(
-					'page'         => 'affiliate-wp-affiliates',
+				esc_url( affwp_admin_url( 'affiliates', array(
 					'affiliate_id' => $affiliate->ID,
 					'action'       => 'view_affiliate',
-				), admin_url( 'admin.php ') ) ),
+				) ) ),
 				empty( $name ) ? sprintf( __( 'Affiliate #%d', 'affiliate-wp' ), $affiliate->ID ) : $name
 			);
 
@@ -128,12 +129,11 @@ class Tab extends Reports\Tab {
 		if ( ! empty( $highest_converter ) && $affiliate = affwp_get_affiliate( $highest_converter ) ) {
 			$name       = affwp_get_affiliate_name( $affiliate->ID );
 			$data_link  = sprintf( '<a href="%1$s">%2$s</a>',
-				esc_url( add_query_arg( array(
-					'page'         => 'affiliate-wp-referrals',
+				esc_url( affwp_admin_url( 'referrals', array(
 					'affiliate_id' => $affiliate->ID,
 					'orderby'      => 'status',
 					'order'        => 'ASC',
-				), admin_url( 'admin.php ') ) ),
+				) ) ),
 				empty( $name ) ? sprintf( __( 'Affiliate #%d', 'affiliate-wp' ), $affiliate->ID ) : $name
 			);
 
@@ -160,32 +160,6 @@ class Tab extends Reports\Tab {
 	}
 
 	/**
-	 * Registers the 'Average Payout' date-based tile.
-	 *
-	 * @access public
-	 * @since  1.9
-	 */
-	public function average_payout_tile() {
-		$payouts = affiliate_wp()->affiliates->payouts->get_payouts( array(
-			'number' => -1,
-			'fields' => 'amount',
-			'date'   => $this->date_query,
-		) );
-
-		if ( ! $payouts ) {
-			$payouts = array( 0 );
-		}
-
-		$this->register_tile( 'average_payout_amount', array(
-			'label'           => __( 'Average Payout', 'affiliate-wp' ),
-			'type'            => 'amount',
-			'context'         => 'tertiary',
-			'data'            => array_sum( $payouts ) / count( $payouts ),
-			'comparison_data' => $this->get_date_comparison_label(),
-		) );
-	}
-
-	/**
 	 * Registers the Affiliates tab tiles.
 	 *
 	 * @access public
@@ -196,7 +170,6 @@ class Tab extends Reports\Tab {
 		$this->top_earning_affiliates_tile();
 		$this->new_affiliates_tile();
 		$this->highest_converting_affiliate_tile();
-		$this->average_payout_tile();
 	}
 
 	/**

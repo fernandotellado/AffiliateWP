@@ -29,6 +29,26 @@ class Tests extends UnitTestCase {
 	}
 
 	/**
+	 * @covers Affiliate_WP_Creatives_DB::__construct()
+	 */
+	public function test_creatives_network_wide_table_name_should_be_affiliate_wp_creatives() {
+		if ( defined( 'AFFILIATE_WP_NETWORK_WIDE' ) && AFFILIATE_WP_NETWORK_WIDE ) {
+			$this->assertEquals( 'affiliate_wp_creatives', affiliate_wp()->creatives->table_name );
+		}
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::__construct()
+	 */
+	public function test_creatives_not_network_wide_table_name_should_be_prefix_affiliate_wp_creatives() {
+		if ( ! defined( 'AFFILIATE_WP_NETWORK_WIDE' ) ) {
+			global $wpdb;
+
+			$this->assertEquals( $wpdb->prefix . 'affiliate_wp_creatives', affiliate_wp()->creatives->table_name );
+		}
+	}
+
+	/**
 	 * @covers \Affiliate_WP_Creatives_DB::$cache_group
 	 */
 	public function test_cache_group_should_be_creatives() {
@@ -115,7 +135,7 @@ class Tests extends UnitTestCase {
 		$results = affiliate_wp()->creatives->get_creatives();
 
 		// Check a random creative.
-		$this->assertInstanceOf( 'AffWP\Creative', $results[0] );
+		$this->assertContainsOnlyType( 'AffWP\Creative', $results );
 	}
 
 	/**
@@ -129,6 +149,7 @@ class Tests extends UnitTestCase {
 
 	/**
 	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
 	 */
 	public function test_get_creatives_fields_ids_should_return_an_array_of_ids_only() {
 		$results = affiliate_wp()->creatives->get_creatives( array(
@@ -140,6 +161,7 @@ class Tests extends UnitTestCase {
 
 	/**
 	 * @covers \Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
 	 */
 	public function test_get_creatives_fields_with_valid_field_should_return_array_of_that_field() {
 		$results = affiliate_wp()->creatives->get_creatives( array(
@@ -151,6 +173,7 @@ class Tests extends UnitTestCase {
 
 	/**
 	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
 	 */
 	public function test_get_creatives_invalid_fields_arg_should_return_regular_Creative_object_results() {
 		$creatives = array_map( 'affwp_get_creative', self::$creatives );
@@ -160,6 +183,57 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( $creatives, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
+	 */
+	public function test_get_creatives_fields_ids_should_return_an_array_of_integer_ids() {
+		$results = affiliate_wp()->creatives->get_creatives( array(
+			'fields' => 'ids'
+		) );
+
+		$this->assertContainsOnlyType( 'integer', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
+	 */
+	public function test_get_creatives_with_no_fields_should_return_an_array_of_affiliate_objects() {
+		$results = affiliate_wp()->creatives->get_creatives();
+
+		$this->assertContainsOnlyType( 'AffWP\Creative', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
+	 */
+	public function test_get_creatives_with_multiple_valid_fields_should_return_an_array_of_stdClass_objects() {
+		$results = affiliate_wp()->creatives->get_creatives( array(
+			'fields' => array( 'creative_id', 'name' )
+		) );
+
+		$this->assertContainsOnlyType( 'stdClass', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group database-fields
+	 */
+	public function test_get_creatives_fields_array_with_multiple_valid_fields_should_return_objects_with_those_fields_only() {
+		$fields = array( 'creative_id', 'name' );
+
+		$result = affiliate_wp()->creatives->get_creatives( array(
+			'fields' => $fields
+		) );
+
+		$object_vars = get_object_vars( $result[0] );
+
+		$this->assertEqualSets( $fields, array_keys( $object_vars ) );
+
 	}
 
 	/**
@@ -201,9 +275,6 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( array_merge( self::$creatives, array( $creative ) ), $results );
-
-		// Clean up.
-		affwp_delete_creative( $creative );
 	}
 
 	/**
@@ -253,4 +324,141 @@ class Tests extends UnitTestCase {
 
 		$this->assertEqualSets( self::$creatives, $results );
 	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group dates
+	 */
+	public function test_get_creatives_with_date_no_start_end_should_retrieve_creatives_for_today() {
+		$results = affiliate_wp()->creatives->get_creatives( array(
+			'date'   => 'today',
+			'fields' => 'ids',
+		) );
+
+		$this->assertEqualSets( self::$creatives, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group dates
+	 */
+	public function test_get_creatives_with_today_creatives_yesterday_date_no_start_end_should_return_empty() {
+		$results = affiliate_wp()->creatives->get_creatives( array(
+			'date'   => 'yesterday',
+			'fields' => 'ids',
+		) );
+
+		$this->assertEqualSets( array(), $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group dates
+	 */
+	public function test_get_creatives_date_start_should_only_retrieve_creatives_created_after_that_date() {
+		$creatives = $this->factory->creative->create_many( 3, array(
+			'date' => '2016-01-01',
+		) );
+
+		$results = affiliate_wp()->creatives->get_creatives( array(
+			'date'   => array(
+				'start' => '2016-01-02'
+			),
+			'fields' => 'ids',
+		) );
+
+		$this->assertEqualSets( self::$creatives, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_Creatives_DB::get_creatives()
+	 * @group dates
+	 */
+	public function test_get_creatives_date_end_should_only_retrieve_creatives_created_before_that_date() {
+		$creative = $this->factory->creative->create( array(
+			'date' => '+1 day',
+		) );
+
+		$results = affiliate_wp()->creatives->get_creatives( array(
+			'date'   => array( 'end' => 'today' ),
+			'fields' => 'ids',
+		) );
+
+		// Should catch all but the one just created +1 day.
+		$this->assertEqualSets( self::$creatives, $results );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Creatives_DB::count()
+	 */
+	public function test_count_should_count_creatives() {
+		$this->assertSame( 4, affiliate_wp()->creatives->count() );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Creatives_DB::count()
+	 */
+	public function test_count_with_args_should_count_those_creatives() {
+		$original_creative = affwp_get_creative( self::$creatives[0] );
+
+		affwp_update_creative( array(
+			'creative_id' => self::$creatives[0],
+			'status'      => 'foo'
+		) );
+
+		$this->assertSame( 1, affiliate_wp()->creatives->count( array( 'status' => 'foo' ) ) );
+
+		// Clean up.
+		affwp_update_creative( array(
+			'creative_id' => self::$creatives[0],
+			'status'      => $original_creative->status
+		) );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Creatives_DB::add()
+	 */
+	public function test_add_should_always_return_the_creative_id() {
+		$result = affiliate_wp()->creatives->add( array(
+			'these' => 'args',
+			'are'   => 'absurd',
+		) );
+
+		$this->assertNotFalse( $result );
+		$this->assertTrue( is_numeric( $result ) );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Creatives_DB::add()
+	 * @group dates
+	 */
+	public function test_add_without_date_registered_should_use_current_date_and_time() {
+		$creative_id = affiliate_wp()->creatives->add();
+
+		$creative = affwp_get_creative( $creative_id );
+
+		// Explicitly dropping seconds from the date strings for comparison.
+		$expected = gmdate( 'Y-m-d H:i' );
+		$actual   = gmdate( 'Y-m-d H:i', strtotime( $creative->date ) );
+
+		$this->assertSame( $expected, $actual );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Creatives_DB::add()
+	 * @group dates
+	 */
+	public function test_add_with_date_registered_should_assume_local_time_and_remove_offset_on_add() {
+		$creative_id = affiliate_wp()->creatives->add( array(
+			'date' => '05/04/2017',
+		) );
+
+		$creative = affwp_get_creative( $creative_id );
+
+		$expected_date = gmdate( 'Y-m-d H:i', strtotime( '05/04/2017' ) - affiliate_wp()->utils->wp_offset );
+		$actual        = gmdate( 'Y-m-d H:i', strtotime( $creative->date ) );
+
+		$this->assertSame( $expected_date, $actual );
+	}
+
 }

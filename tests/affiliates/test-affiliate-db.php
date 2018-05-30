@@ -3,6 +3,9 @@ namespace AffWP\Affiliate\Database;
 
 use AffWP\Tests\UnitTestCase;
 
+// Needed for actions to fire.
+require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/affiliates/actions.php';
+
 /**
  * Tests for Affiliate_WP_DB_Affiliates class
  *
@@ -34,6 +37,9 @@ class Tests extends UnitTestCase {
 	 * Set up fixtures once.
 	 */
 	public static function wpSetUpBeforeClass() {
+		update_option( 'gmt_offset', -5 );
+		affiliate_wp()->utils->_refresh_wp_offset();
+
 		self::$users = parent::affwp()->user->create_many( 4 );
 
 		foreach ( self::$users as $user_id ) {
@@ -109,6 +115,7 @@ class Tests extends UnitTestCase {
 			'payment_email'   => '%s',
 			'status'          => '%s',
 			'earnings'        => '%s',
+			'unpaid_earnings' => '%s',
 			'referrals'       => '%d',
 			'visits'          => '%d',
 			'date_registered' => '%s',
@@ -122,7 +129,8 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_get_column_defaults_should_return_column_defaults() {
 		$expected = array(
-			'user_id'  => get_current_user_id()
+			'user_id'         => get_current_user_id(),
+			'date_registered' => date( 'Y-m-d H:i:s' ),
 		);
 
 		$this->assertEqualSets( $expected, affiliate_wp()->affiliates->get_column_defaults() );
@@ -134,8 +142,7 @@ class Tests extends UnitTestCase {
 	public function test_get_affiliates_should_return_array_of_Affiliate_objects_if_not_count_query() {
 		$results = affiliate_wp()->affiliates->get_affiliates();
 
-		// Check a random affiliate.
-		$this->assertInstanceOf( 'AffWP\Affiliate', $results[0] );
+		$this->assertContainsOnlyType( 'AffWP\Affiliate', $results );
 	}
 
 	/**
@@ -196,9 +203,6 @@ class Tests extends UnitTestCase {
 
 		// Assert that the result we're looking for was found.
 		$this->assertNotEmpty( wp_list_filter( $results, array( 'user_id' => $user_id ) ) );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate_id );
 	}
 
 	/**
@@ -248,11 +252,6 @@ class Tests extends UnitTestCase {
 
 		// Assert that the third user wasn't found.
 		$this->assertEmpty( wp_list_filter( $results, array( 'user_id' => $user3 ) ) );
-
-		// Clean up.
-		foreach ( $affiliates as $affiliate ) {
-			affwp_delete_affiliate( $affiliate );
-		}
 	}
 
 	/**
@@ -676,6 +675,7 @@ class Tests extends UnitTestCase {
 
 	/**
 	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
 	 */
 	public function test_get_affiliates_fields_ids_should_return_an_array_of_ids_only() {
 		$results = affiliate_wp()->affiliates->get_affiliates( array(
@@ -687,6 +687,41 @@ class Tests extends UnitTestCase {
 
 	/**
 	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
+	 */
+	public function test_get_affiliates_fields_ids_should_return_an_array_of_integer_ids() {
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields' => 'ids'
+		) );
+
+		$this->assertContainsOnlyType( 'integer', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
+	 */
+	public function test_get_affiliates_with_no_fields_should_return_an_array_of_affiliate_objects() {
+		$results = affiliate_wp()->affiliates->get_affiliates();
+
+		$this->assertContainsOnlyType( 'AffWP\Affiliate', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
+	 */
+	public function test_get_affiliates_with_multiple_valid_fields_should_return_an_array_of_stdClass_objects() {
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields' => array( 'affiliate_id', 'rate' )
+		) );
+
+		$this->assertContainsOnlyType( 'stdClass', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
 	 */
 	public function test_get_affiliates_fields_valid_field_should_return_array_of_that_field_only() {
 		$results = affiliate_wp()->affiliates->get_affiliates( array(
@@ -698,6 +733,7 @@ class Tests extends UnitTestCase {
 
 	/**
 	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
 	 */
 	public function test_get_affiliates_invalid_fields_arg_should_return_regular_Affiliate_object_results() {
 		$affiliates = array_map( 'affwp_get_affiliate', self::$affiliates );
@@ -707,6 +743,109 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertEqualSets( $affiliates, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
+	 */
+	public function test_get_affiliates_fields_array_with_only_one_valid_field_should_return_an_array_of_those_values() {
+		$result = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields' => array( 'user_id', 'foo' )
+		) );
+
+		$this->assertEqualSets( self::$users, $result );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
+	 */
+	public function test_get_affiliates_fields_array_with_multiple_valid_fields_should_return_objects_with_those_fields_only() {
+		$fields = array( 'user_id', 'date_registered' );
+
+		$result = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields' => $fields
+		) );
+
+		$object_vars = get_object_vars( $result[0] );
+
+		$this->assertEqualSets( $fields, array_keys( $object_vars ) );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group database-fields
+	 */
+	public function test_get_affiliates_fields_array_with_multiple_valid_fields_should_return_array_of_stdClass_objects() {
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields' => array( 'user_id', 'rate' )
+		) );
+
+		$this->assertContainsOnlyType( 'stdClass', $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group dates
+	 */
+	public function test_get_affiliates_with_date_no_start_end_should_retrieve_affiliates_for_today() {
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'date_registered' => 'today',
+			'fields'          => 'ids',
+		) );
+
+		$this->assertEqualSets( self::$affiliates, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group dates
+	 */
+	public function test_get_affiliates_with_today_affiliates_yesterday_date_no_start_end_should_return_empty() {
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'date_registered' => 'yesterday',
+			'fields'          => 'ids',
+		) );
+
+		$this->assertEqualSets( array(), $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group dates
+	 */
+	public function test_get_affiliates_date_start_should_only_retrieve_affiliates_created_after_that_date() {
+		$affiliates = $this->factory->affiliate->create_many( 3, array(
+			'date_registered' => '2016-01-01',
+		) );
+
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields'          => 'ids',
+			'date_registered' => array(
+				'start' => '2016-01-02'
+			),
+		) );
+
+		$this->assertEqualSets( self::$affiliates, $results );
+	}
+
+	/**
+	 * @covers Affiliate_WP_DB_Affiliates::get_affiliates()
+	 * @group dates
+	 */
+	public function test_get_affiliates_date_end_should_only_retrieve_affiliates_created_before_that_date() {
+		$affiliate = $this->factory->affiliate->create( array(
+			'date_registered' => '+1 day',
+		) );
+
+		$results = affiliate_wp()->affiliates->get_affiliates( array(
+			'fields'          => 'ids',
+			'date_registered' => array( 'end' => 'today' ),
+		) );
+
+		// Should catch all but the one just created +1 day.
+		$this->assertEqualSets( self::$affiliates, $results );
 	}
 
 	/**
@@ -803,8 +942,71 @@ class Tests extends UnitTestCase {
 		) );
 
 		$this->assertSame( $affiliate, $results[0] );
-
-		// Clean up.
-		affwp_delete_affiliate( $affiliate );
 	}
+
+	/**
+	 * @covers \Affiliate_WP_DB_Affiliates::add()
+	 * @group dates
+	 */
+	public function test_add_without_date_registered_should_use_current_date_and_time() {
+		$affiliate_id = affiliate_wp()->affiliates->add( array(
+			'user_id' => $this->factory->user->create()
+		) );
+
+		$affiliate = affwp_get_affiliate( $affiliate_id );
+
+		// Explicitly dropping seconds from the date strings for comparison.
+		$expected = gmdate( 'Y-m-d H:i' );
+		$actual   = gmdate( 'Y-m-d H:i', strtotime( $affiliate->date_registered ) );
+
+		$this->assertSame( $expected, $actual );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB_Affiliates::add()
+	 * @group dates
+	 */
+	public function test_add_with_date_registered_should_assume_local_time_and_remove_offset_on_add() {
+		$affiliate_id = affiliate_wp()->affiliates->add( array(
+			'user_id'         => $this->factory->user->create(),
+			'date_registered' => '05/04/2017',
+		) );
+
+		$affiliate = affwp_get_affiliate( $affiliate_id );
+
+		$expected_date = gmdate( 'Y-m-d H:i', strtotime( '05/04/2017' ) - affiliate_wp()->utils->wp_offset );
+		$actual        = gmdate( 'Y-m-d H:i', strtotime( $affiliate->date_registered ) );
+
+		$this->assertSame( $expected_date, $actual );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB_Affiliates::add()
+	 */
+	public function test_add_without_website_url_should_not_change_the_user_url() {
+		$affiliate_id = affiliate_wp()->affiliates->add( array(
+			'user_id' => $user_id = $this->factory->user->create()
+		) );
+
+		$user_data = get_user_by( 'id', $user_id );
+
+		$this->assertSame( '', $user_data->user_url );
+	}
+
+	/**
+	 * @covers \Affiliate_WP_DB_Affiliates::add()
+	 */
+	public function test_add_with_website_url_should_set_that_url() {
+		$website_url = 'https://affiliatewp.com/awesome';
+
+		$affiliate_id = affiliate_wp()->affiliates->add( array(
+			'user_id'     => $user_id = $this->factory->user->create(),
+			'website_url' => $website_url
+		) );
+
+		$user_data = get_user_by( 'id', $user_id );
+
+		$this->assertSame( $website_url, $user_data->user_url );
+	}
+
 }

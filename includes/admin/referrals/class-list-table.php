@@ -135,7 +135,7 @@ class AffWP_Referrals_Table extends List_Table {
 	public function get_views() {
 
 		$affiliate_id   = isset( $_GET['affiliate_id'] ) ? absint( $_GET['affiliate_id'] ) : '';
-		$base           = admin_url( 'admin.php?page=affiliate-wp-referrals' );
+		$base           = affwp_admin_url( 'referrals' );
 		$base           = $affiliate_id ? add_query_arg( 'affiliate_id', $affiliate_id, $base ) : $base;
 		$current        = isset( $_GET['status'] ) ? $_GET['status'] : '';
 		$total_count    = '&nbsp;<span class="count">(' . $this->total_count    . ')</span>';
@@ -169,12 +169,20 @@ class AffWP_Referrals_Table extends List_Table {
 			'affiliate'   => __( 'Affiliate', 'affiliate-wp' ),
 			'reference'   => __( 'Reference', 'affiliate-wp' ),
 			'description' => __( 'Description', 'affiliate-wp' ),
+			'type'        => __( 'Type', 'affiliate-wp' ),
 			'date'        => __( 'Date', 'affiliate-wp' ),
 			'actions'     => __( 'Actions', 'affiliate-wp' ),
 			'status'      => __( 'Status', 'affiliate-wp' ),
 		);
 
-		return apply_filters( 'affwp_referral_table_columns', $this->prepare_columns( $columns ) );
+		/**
+		 * Filters the referrals list table columns.
+		 *
+		 * @param function               $prepared_columns Prepared columns.
+		 * @param array                  $columns          The columns for this list table.
+		 * @param \AffWP_Referrals_Table $this             List table instance.
+		 */
+		return apply_filters( 'affwp_referral_table_columns', $this->prepare_columns( $columns ), $columns, $this );
 	}
 
 	/**
@@ -185,12 +193,21 @@ class AffWP_Referrals_Table extends List_Table {
 	 * @return array Array of all the sortable columns
 	 */
 	public function get_sortable_columns() {
-		return array(
+		$columns = array(
 			'amount'    => array( 'amount', false ),
 			'affiliate' => array( 'affiliate_id', false ),
+			'type'      => array( 'type', false ),
 			'date'      => array( 'date', false ),
 			'status'    => array( 'status', false ),
 		);
+
+		/**
+		 * Filters the referrals list table sortable columns.
+		 *
+		 * @param array                  $columns          The sortable columns for this list table.
+		 * @param \AffWP_Referrals_Table $this             List table instance.
+		 */
+		return apply_filters( 'affwp_referral_table_sortable_columns', $columns, $this );
 	}
 
 	/**
@@ -199,8 +216,8 @@ class AffWP_Referrals_Table extends List_Table {
 	 * @access public
 	 * @since 1.0
 	 *
-	 * @param array $item Contains all the data of the affiliate
-	 * @param string $column_name The name of the column
+	 * @param \AffWP\Referral $referral    Contains all the data of the affiliate
+	 * @param string          $column_name The name of the column
 	 *
 	 * @return string Column Name
 	 */
@@ -208,12 +225,30 @@ class AffWP_Referrals_Table extends List_Table {
 		switch( $column_name ) {
 
 			case 'date' :
-				$value = date_i18n( get_option( 'date_format' ), strtotime( $referral->date ) );
+				$value = $referral->date_i18n();
 				break;
 
 			case 'description' :
 				$value = wp_trim_words( $referral->description, 10 );
+
+				/**
+				 * Filters the referral description column data in the referrals list table.
+				 *
+				 * @param string $value       Data shown in the Description column.
+				 * @param array  $description The referral description.
+				 */
 				$value = (string) apply_filters( 'affwp_referral_description_column', $value, $referral->description );
+				break;
+
+			case 'type' :
+
+				/**
+				 * Filters the referral type column data in the referrals list table.
+				 *
+				 * @param string $value       Data shown in the type column.
+				 * @param array  $type The referral type.
+				 */
+				$value = (string) apply_filters( 'affwp_referral_type_column', $referral->type(), $referral->type );
 				break;
 
 			default:
@@ -221,6 +256,17 @@ class AffWP_Referrals_Table extends List_Table {
 				break;
 		}
 
+		/**
+		 * Filters the default value for each column in the referrals list table.
+		 *
+		 * This dynamic filter is appended with a suffix of the column name, for example:
+		 *
+		 *     `affwp_referral_table_description`
+		 *
+		 * @param string $value    Column data to show.
+		 * @param array  $referral Referral data.
+		 *
+		 */
 		return apply_filters( 'affwp_referral_table_' . $column_name, $value, $referral );
 	}
 
@@ -228,8 +274,9 @@ class AffWP_Referrals_Table extends List_Table {
 	 * Render the checkbox column
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @param array $referral Contains all the data for the checkbox column
+	 * @since  1.0
+	 *
+	 * @param \AffWP\Referral $referral Contains all the data for the checkbox column
 	 * @return string Displays a checkbox
 	 */
 	public function column_cb( $referral ) {
@@ -237,54 +284,109 @@ class AffWP_Referrals_Table extends List_Table {
 	}
 
 	/**
-	 * Render the amount column
+	 * Renders the amount column.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @param array $referral Contains all the data for the checkbox column
+	 * @since  1.0
+	 *
+	 * @param \AffWP\Referral $referral Contains all the data for the checkbox column
 	 * @return string Displays the referral amount
 	 */
 	public function column_amount( $referral ) {
 		$value = affwp_currency_filter( affwp_format_amount( $referral->amount ) );
+
+		/**
+		 * The referral amount column data.
+		 *
+		 * @param string          $value    Data shown in the Amount column.
+		 * @param \AffWP\Referral $referral The referral data.
+		 */
 		return apply_filters( 'affwp_referral_table_amount', $value, $referral );
 	}
 
 	/**
-	 * Render the status column
+	 * Renders the status column.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @param array $referral Contains all the data for the checkbox column
+	 * @since  1.0
+	 *
+	 * @param \AffWP\Referral $referral Contains all the data for the checkbox column
 	 * @return string Displays the referral status
 	 */
 	public function column_status( $referral ) {
 		$value ='<span class="affwp-status ' . $referral->status . '"><i></i>' . affwp_get_referral_status_label( $referral ) . '</span>';
+
+		/**
+		 * Filters the referral status column data in the referrals list table.
+		 *
+		 * @param string          $value    Data shown in the Status column.
+		 * @param \AffWP\Referral $referral The referral data.
+		 */
 		return apply_filters( 'affwp_referral_table_status', $value, $referral );
 	}
 
 	/**
-	 * Render the affiliate column
+	 * Renders the affiliate column.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @param array $referral Contains all the data for the checkbox column
+	 * @since  1.0
+	 *
+	 * @param \AffWP\Referral $referral Contains all the data for the checkbox column
 	 * @return string The affiliate
 	 */
 	public function column_affiliate( $referral ) {
-		$value = apply_filters( 'affwp_referral_affiliate_column', '<a href="' . admin_url( 'admin.php?page=affiliate-wp-referrals&affiliate_id=' . $referral->affiliate_id ) . '">' . affiliate_wp()->affiliates->get_affiliate_name( $referral->affiliate_id ) . '</a>', $referral );
+
+		$value = affwp_admin_link(
+			'referrals',
+			affiliate_wp()->affiliates->get_affiliate_name( $referral->affiliate_id ),
+			array( 'affiliate_id' => $referral->affiliate_id )
+		);
+
+		/**
+		 * Filters the referring affiliate column data in the referrals list table.
+		 *
+		 * You'll also need to specify the wrapping html for this value (defaults to
+		 * an anchor to the referral admin screen for this referral).
+		 *
+		 * @param string          $value    Data shown in the Affiliate column.
+		 * @param \AffWP\Referral $referral The referral data.
+		 */
+		$value = apply_filters( 'affwp_referral_affiliate_column', $value, $referral );
+
+		/**
+		 * Filters the referring affiliate column data in the referrals list table.
+		 *
+		 * @param string          $value    Data shown in the Affiliate column.
+		 * @param \AffWP\Referral $referral The referral data.
+		 */
 		return apply_filters( 'affwp_referral_table_affiliate', $value, $referral );
 	}
 
 	/**
-	 * Render the reference column
+	 * Renders the reference column.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @param array $referral Contains all the data for the checkbox column
-	 * @return string The reference
+	 * @since  1.0
+	 *
+	 * @param \AffWP\Referral $referral Contains all the data for the checkbox column.
+	 * @return string The reference.
 	 */
 	public function column_reference( $referral ) {
+
+		/**
+		 * Filters the referral reference column value in the referrals list table.
+		 *
+		 * @param string          $reference Data shown in the Reference column.
+		 * @param \AffWP\Referral $referral  The current referral.
+		 */
 		$value = apply_filters( 'affwp_referral_reference_column', $referral->reference, $referral );
+
+		/**
+		 * Filters the referral reference column data in the referrals list table.
+		 *
+		 * @param string           $value    Data shown in the Reference column.
+		 * @param \AffWP\Referral  $referral The referral data.
+		 */
 		return apply_filters( 'affwp_referral_table_reference', $value, $referral );
 	}
 
@@ -292,9 +394,10 @@ class AffWP_Referrals_Table extends List_Table {
 	 * Render the actions column
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @param array $referral Contains all the data for the actions column
-	 * @return string The actions HTML
+	 * @since  1.0
+	 *
+	 * @param \AffWP\Referral $referral Contains all the data for the actions column.
+	 * @return string The actions HTML.
 	 */
 	public function column_actions( $referral ) {
 
@@ -313,8 +416,9 @@ class AffWP_Referrals_Table extends List_Table {
 					'action' => 'mark_as_unpaid'
 				) ),
 				array(
-					'nonce' => 'referral-nonce',
-					'class' => 'mark-as-unpaid'
+					'base_uri' => affwp_admin_url( 'referrals' ),
+					'nonce'    => 'referral-nonce',
+					'class'    => 'mark-as-unpaid'
 				)
 			);
 
@@ -329,8 +433,9 @@ class AffWP_Referrals_Table extends List_Table {
 						'action' => 'mark_as_paid'
 					) ),
 					array(
-						'nonce' => 'referral-nonce',
-						'class' => 'mark-as-paid'
+						'base_uri' => affwp_admin_url( 'referrals' ),
+						'nonce'    => 'referral-nonce',
+						'class'    => 'mark-as-paid'
 					)
 				);
 
@@ -345,8 +450,9 @@ class AffWP_Referrals_Table extends List_Table {
 						'action' => 'accept'
 					) ),
 					array(
-						'nonce' => 'referral-nonce',
-						'class' => 'accept'
+						'base_uri' => affwp_admin_url( 'referrals' ),
+						'nonce'    => 'referral-nonce',
+						'class'    => 'accept'
 					)
 				);
 
@@ -361,8 +467,9 @@ class AffWP_Referrals_Table extends List_Table {
 						'action' => 'reject'
 					) ),
 					array(
-						'nonce' => 'referral-nonce',
-						'class' => 'reject'
+						'base_uri' => affwp_admin_url( 'referrals' ),
+						'nonce'    => 'referral-nonce',
+						'class'    => 'reject'
 					)
 				);
 			}
@@ -375,7 +482,10 @@ class AffWP_Referrals_Table extends List_Table {
 			array_merge( $base_query_args, array(
 				'action' => 'edit_referral'
 			) ),
-			array( 'class' => 'edit' )
+			array(
+				'base_uri' => affwp_admin_url( 'referrals' ),
+				'class'    => 'edit'
+			)
 		);
 
 		// Delete.
@@ -385,19 +495,32 @@ class AffWP_Referrals_Table extends List_Table {
 				'affwp_action' => 'process_delete_referral'
 			) ),
 			array(
-				'nonce' => 'affwp_delete_referral_nonce',
-				'class' => 'delete'
+				'base_uri' => affwp_admin_url( 'referrals' ),
+				'nonce'    => 'affwp_delete_referral_nonce',
+				'class'    => 'delete'
 			)
 		);
 		$row_actions['delete'] = '<span class="trash">' . $row_actions['delete'] . '</span>';
 
 		/**
-		 * Filters the row actions array for the Creatives list table.
+		 * Filters the row actions array for the Referrals list table.
+		 *
+		 * Retained only for back-compat. Use {@see 'affwp_referral_row_actions'} instead.
 		 *
 		 * @since 1.2
 		 *
 		 * @param array           $row_actions Row actions array.
-		 * @param \AffWP\Creative $creative    Current creative.
+		 * @param \AffWP\Referral $referral    Current referral.
+		 */
+		$row_actions = apply_filters( 'affwp_referral_action_links', $row_actions, $referral );
+
+		/**
+		 * Filters the row actions array for the Referrals list table.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array           $row_actions Row actions array.
+		 * @param \AffWP\Referral $referral    Current referral.
 		 */
 		$row_actions = apply_filters( 'affwp_referral_row_actions', $row_actions, $referral );
 
@@ -405,7 +528,7 @@ class AffWP_Referrals_Table extends List_Table {
 	}
 
 	/**
-	 * Message to be displayed when there are no items
+	 * Renders the message to be displayed when there are no referrals.
 	 *
 	 * @since 1.7.2
 	 * @access public
@@ -415,11 +538,14 @@ class AffWP_Referrals_Table extends List_Table {
 	}
 
 	/**
-	 * Outputs the reporting views
+	 * Outputs the reporting views.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @return void
+	 * @since  1.0
+	 *
+	 * @param string $which Optional. Whether the bulk actions are being displayed at
+	 *                      the top or bottom of the list table. Accepts either 'top'
+	 *                      or bottom. Default empty.
 	 */
 	public function bulk_actions( $which = '' ) {
 
@@ -445,20 +571,50 @@ class AffWP_Referrals_Table extends List_Table {
 
 		echo "</select>\n";
 
-		do_action( 'affwp_referral_bulk_actions' );
+		/**
+		 * Fires at the top and bottom of the referral bulk-actions admin screen
+		 * (inside the form element).
+		 *
+		 * @param string $which Indicator for whether the bulk actions were rendered at the 'top'
+		 *                      or 'bottom' of the referrals list table.
+		 */
+		do_action( 'affwp_referral_bulk_actions', $which );
 
 		submit_button( __( 'Apply', 'affiliate-wp' ), 'action', false, false, array( 'id' => "doaction$two" ) );
 		echo "\n";
 
 		// Makes the filters only get output at the top of the page
 		if( ! did_action( 'affwp_referral_filters' ) ) {
+			$affiliate = isset( $_GET['affiliate_id'] ) ? $_GET['affiliate_id'] : false;
 
-			$from = ! empty( $_REQUEST['filter_from'] ) ? $_REQUEST['filter_from'] : '';
-			$to   = ! empty( $_REQUEST['filter_to'] )   ? $_REQUEST['filter_to']   : '';
+			if ( $affiliate && $affiliate = affwp_get_affiliate( $affiliate ) ) {
+				$affiliate_name = affwp_get_affiliate_username( $affiliate );
+			} else {
+				$affiliate_name = '';
+			}
+			?>
+			<span class="affwp-ajax-search-wrap">
+				<input type="text" name="affiliate_id" id="user_name" class="affwp-user-search" value="<?php echo esc_attr( $affiliate_name ); ?>" data-affwp-status="any" autocomplete="off" placeholder="<?php _e( 'Affiliate name', 'affiliate-wp' ); ?>" />
+			</span>
+			<?php
+			$from     = ! empty( $_REQUEST['filter_from'] ) ? $_REQUEST['filter_from'] : '';
+			$to       = ! empty( $_REQUEST['filter_to'] )   ? $_REQUEST['filter_to']   : '';
+			$set_type = ! empty( $_REQUEST['type'] )        ? $_REQUEST['type']        : '';
 
-			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_from' placeholder='" . __( 'From - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . $from . "'/>";
-			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_to' placeholder='" . __( 'To - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . $to . "'/>&nbsp;";
+			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_from' placeholder='" . __( 'From - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . esc_attr( $from ) . "'/>";
+			echo "<input type='text' class='affwp-datepicker' autocomplete='off' name='filter_to' placeholder='" . __( 'To - mm/dd/yyyy', 'affiliate-wp' ) . "' value='" . esc_attr( $to ) . "'/>&nbsp;";
 
+			?>
+			<select name="type" class="affwp-referral-type-select">
+				<option value=""><?php _e( 'All Types', 'affiliate-wp' ); ?></option>
+				<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+					<option value="<?php echo esc_attr( $type_id ); ?>"<?php selected( $type_id, $set_type ); ?>><?php echo esc_html( $type['label'] ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php
+			/**
+			 * Fires in the admin referrals screen, inside the search filters form area, prior to the submit button.
+			 */
 			do_action( 'affwp_referral_filters' );
 
 			submit_button( __( 'Filter', 'affiliate-wp' ), 'action', false, false );
@@ -468,11 +624,12 @@ class AffWP_Referrals_Table extends List_Table {
 	}
 
 	/**
-	 * Retrieve the bulk actions
+	 * Retrieves the bulk actions.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @return array $actions Array of the bulk actions
+	 * @since  1.0
+	 *
+	 * @return array $actions The array of bulk actions.
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
@@ -483,15 +640,19 @@ class AffWP_Referrals_Table extends List_Table {
 			'delete'         => __( 'Delete', 'affiliate-wp' ),
 		);
 
+		/**
+		 * Filters the bulk actions array for the referrals list table.
+		 *
+		 * @param array $actions List of bulk actions.
+		 */
 		return apply_filters( 'affwp_referrals_bulk_actions', $actions );
 	}
 
 	/**
-	 * Process the bulk actions
+	 * Processes bulk actions for the referrals list table.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @return void
+	 * @since  1.0
 	 */
 	public function process_bulk_action() {
 
@@ -544,18 +705,24 @@ class AffWP_Referrals_Table extends List_Table {
 				affwp_set_referral_status( $id, 'unpaid' );
 			}
 
+			/**
+			 * Fires after a referral bulk action is performed.
+			 *
+			 * The dynamic portion of the hook name, `$this->current_action()` refers
+			 * to the current bulk action being performed.
+			 *
+			 * @param int $id The ID of the object.
+			 */
 			do_action( 'affwp_referrals_do_bulk_action_' . $this->current_action(), $id );
-
 		}
 
 	}
 
 	/**
-	 * Retrieve the discount code counts
+	 * Retrieves the discount code counts.
 	 *
 	 * @access public
-	 * @since 1.0
-	 * @return void
+	 * @since  1.0
 	 */
 	public function get_referral_counts() {
 
@@ -606,18 +773,29 @@ class AffWP_Referrals_Table extends List_Table {
 	 */
 	public function referrals_data() {
 
-		$page      = isset( $_GET['paged'] )        ? absint( $_GET['paged'] ) : 1;
-		$status    = isset( $_GET['status'] )       ? $_GET['status']          : '';
-		$affiliate = isset( $_GET['affiliate_id'] ) ? $_GET['affiliate_id']    : '';
-		$reference = isset( $_GET['reference'] )    ? $_GET['reference']       : '';
-		$context   = isset( $_GET['context'] )      ? $_GET['context']         : '';
-		$campaign  = isset( $_GET['campaign'] )     ? $_GET['campaign']        : '';
-		$from      = isset( $_GET['filter_from'] )  ? $_GET['filter_from']     : '';
-		$to        = isset( $_GET['filter_to'] )    ? $_GET['filter_to']       : '';
-		$order     = isset( $_GET['order'] )        ? $_GET['order']           : 'DESC';
-		$orderby   = isset( $_GET['orderby'] )      ? $_GET['orderby']         : 'referral_id';
-		$referral  = '';
-		$is_search = false;
+		$page        = isset( $_GET['paged'] )        ? absint( $_GET['paged'] ) : 1;
+		$status      = isset( $_GET['status'] )       ? $_GET['status']          : '';
+		$affiliate   = isset( $_GET['affiliate_id'] ) ? $_GET['affiliate_id']    : '';
+		$reference   = isset( $_GET['reference'] )    ? $_GET['reference']       : '';
+		$context     = isset( $_GET['context'] )      ? $_GET['context']         : '';
+		$campaign    = isset( $_GET['campaign'] )     ? $_GET['campaign']        : '';
+		$type        = isset( $_GET['type'] )         ? $_GET['type']            : '';
+		$from        = isset( $_GET['filter_from'] )  ? $_GET['filter_from']     : '';
+		$to          = isset( $_GET['filter_to'] )    ? $_GET['filter_to']       : '';
+		$order       = isset( $_GET['order'] )        ? $_GET['order']           : 'DESC';
+		$orderby     = isset( $_GET['orderby'] )      ? $_GET['orderby']         : 'referral_id';
+		$referral    = '';
+		$description = '';
+		$is_search   = false;
+
+		$amount = isset( $_GET['amount'] ) ? sanitize_text_field( $_GET['amount'] ) : 0;
+
+		if ( $affiliate && $affiliate = affwp_get_affiliate( $affiliate ) ) {
+			$affiliate = $affiliate->ID;
+		} else {
+			// Switch back to empty for the benefit of get_referrals().
+			$affiliate = '';
+		}
 
 		$date = array();
 		if( ! empty( $from ) ) {
@@ -644,6 +822,10 @@ class AffWP_Referrals_Table extends List_Table {
 				$affiliate = absint( trim( str_replace( 'affiliate:', '', $search ) ) );
 			} elseif ( strpos( $search, 'campaign:' ) !== false ) {
 				$campaign = trim( str_replace( 'campaign:', '', $search ) );
+			} elseif ( strpos( $search, 'amount:' ) !== false ) {
+				$amount = trim( str_replace( 'amount:', '', $search ) );
+			} elseif ( strpos( $search, 'desc:' ) !== false ) {
+				$description = trim( str_replace( 'desc:', '', $search ) );
 			}
 
 		}
@@ -659,6 +841,9 @@ class AffWP_Referrals_Table extends List_Table {
 			'reference'    => $reference,
 			'context'      => $context,
 			'campaign'     => $campaign,
+			'type'         => $type,
+			'amount'       => $amount,
+			'description'  => $description,
 			'date'         => $date,
 			'search'       => $is_search,
 			'orderby'      => sanitize_text_field( $orderby ),
@@ -666,6 +851,11 @@ class AffWP_Referrals_Table extends List_Table {
 		) );
 
 		$referrals = affiliate_wp()->referrals->get_referrals( $args );
+
+		// Retrieve the "current" total count for pagination purposes.
+		$args['number']      = -1;
+		$this->current_count = affiliate_wp()->referrals->count( $args );
+
 		return $referrals;
 	}
 
@@ -709,7 +899,7 @@ class AffWP_Referrals_Table extends List_Table {
 				$total_items = $this->rejected_count;
 				break;
 			case 'any':
-				$total_items = $this->total_count;
+				$total_items = $this->current_count;
 				break;
 		}
 

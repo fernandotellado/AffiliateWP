@@ -30,11 +30,11 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 
 		if( $this->was_referred() ) {
 
-			if( affwp_get_affiliate_email( $this->affiliate_id ) == $user->email ) {
+			$this->email = $user->email;
 
-				if( $this->debug ) {
-					$this->log( 'Referral not created because affiliate\'s own account was used.' );
-				}
+			if( affwp_get_affiliate_email( $this->affiliate_id ) == $this->email ) {
+
+				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
 				return false; // Customers cannot refer themselves
 			}
@@ -84,9 +84,7 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 
 			if( 0 == $amount && affiliate_wp()->settings->get( 'ignore_zero_referrals' ) ) {
 			
-				if( $this->debug ) {
-					$this->log( 'Referral not created due to 0.00 amount.' );
-				}
+				$this->log( 'Referral not created due to 0.00 amount.' );
 
 				return false; // Ignore a zero amount referral
 			}
@@ -103,9 +101,7 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 				'context'      => $this->context
 			), $amount, $order_id, $description, $this->affiliate_id, $visit_id, array(), $this->context ) );
 
-			if( $this->debug ) {
-				$this->log( sprintf( 'Pending Referral #%d created successfully', $referral_id ) );
-			}
+			$this->log( sprintf( 'Pending Referral #%d created successfully', $referral_id ) );
 
 		}
 
@@ -161,4 +157,7 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 
 	}
 }
-new Affiliate_WP_EasyCart;
+
+if ( function_exists( 'wpeasycart_load_startup' ) ) {
+	new Affiliate_WP_EasyCart;
+}

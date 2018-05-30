@@ -20,80 +20,248 @@ class Affiliate_WP_Upgrades {
 	 */
 	private $logs;
 
+	/**
+	 * Signals whether the upgrade was successful.
+	 *
+	 * @access public
+	 * @var    bool
+	 */
 	private $upgraded = false;
 
-	public function __construct() {
+	/**
+	 * AffiliateWP version.
+	 *
+	 * @access private
+	 * @since  2.0
+	 * @var    string
+	 */
+	private $version;
+
+	/**
+	 * Utilities class instance.
+	 *
+	 * @access private
+	 * @since  2.0
+	 * @var    \Affiliate_WP_Utilities
+	 */
+	private $utils;
+
+	/**
+	 * Upgrade routine registry.
+	 *
+	 * @access private
+	 * @since  2.0.5
+	 * @var    \AffWP\Utils\Upgrades\Registry
+	 */
+	private $registry;
+
+	/**
+	 * Sets up the Upgrades class instance.
+	 *
+	 * @access public
+	 *
+	 * @param \Affiliate_WP_Utilities $utils Utilities class instance.
+	 */
+	public function __construct( $utils ) {
+
+		$this->utils    = $utils;
+		$this->version  = get_option( 'affwp_version' );
+		$this->registry = new \AffWP\Utils\Upgrades\Registry;
 
 		add_action( 'admin_init', array( $this, 'init' ), -9999 );
 
 		$settings = new Affiliate_WP_Settings;
 		$this->debug = (bool) $settings->get( 'debug_mode', false );
 
-		if ( $this->debug ) {
-			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-logging.php';
-
-			$this->logs = new Affiliate_WP_Logging;
-		}
+		$this->register_core_upgrades();
 	}
 
+	/**
+	 * Initializes upgrade routines for the current version of AffiliateWP.
+	 *
+	 * @access public
+	 */
 	public function init() {
 
-		$version = get_option( 'affwp_version' );
-		if ( empty( $version ) ) {
-			$version = '1.0.6'; // last version that didn't have the version option set
+		if ( empty( $this->version ) ) {
+			$this->version = '1.0.6'; // last version that didn't have the version option set
 		}
 
-		if ( version_compare( $version, '1.1', '<' ) ) {
+		if ( version_compare( $this->version, '1.1', '<' ) ) {
 			$this->v11_upgrades();
 		}
 
-		if ( version_compare( $version, '1.2.1', '<' ) ) {
+		if ( version_compare( $this->version, '1.2.1', '<' ) ) {
 			$this->v121_upgrades();
 		}
 
-		if ( version_compare( $version, '1.3', '<' ) ) {
+		if ( version_compare( $this->version, '1.3', '<' ) ) {
 			$this->v13_upgrades();
 		}
 
-		if ( version_compare( $version, '1.6', '<' ) ) {
+		if ( version_compare( $this->version, '1.6', '<' ) ) {
 			$this->v16_upgrades();
 		}
 
-		if ( version_compare( $version, '1.7', '<' ) ) {
+		if ( version_compare( $this->version, '1.7', '<' ) ) {
 			$this->v17_upgrades();
 		}
 
-		if ( version_compare( $version, '1.7.3', '<' ) ) {
+		if ( version_compare( $this->version, '1.7.3', '<' ) ) {
 			$this->v173_upgrades();
 		}
 
-		if ( version_compare( $version, '1.7.11', '<' ) ) {
+		if ( version_compare( $this->version, '1.7.11', '<' ) ) {
 			$this->v1711_upgrades();
 		}
 
-		if ( version_compare( $version, '1.7.14', '<' ) ) {
+		if ( version_compare( $this->version, '1.7.14', '<' ) ) {
 			$this->v1714_upgrades();
 		}
 
-		if ( version_compare( $version, '1.9', '<' ) ) {
+		if ( version_compare( $this->version, '1.9', '<' ) ) {
 			$this->v19_upgrade();
 		}
 
-		if ( version_compare( $version, '1.9.5', '<' ) ) {
-//			$this->v195_upgrade();
+		if ( version_compare( $this->version, '1.9.5', '<' ) ) {
+			$this->v195_upgrade();
+		}
+
+		if ( true === version_compare( AFFILIATEWP_VERSION, '2.0', '<' ) ) {
+			$this->v20_upgrade();
+		}
+
+		if ( version_compare( $this->version, '2.0.2', '<' ) ) {
+			$this->v202_upgrade();
+		}
+
+		if ( version_compare( $this->version, '2.0.10', '<' ) ) {
+			$this->v210_upgrade();
+		}
+
+		if ( version_compare( $this->version, '2.1', '<' ) ) {
+			$this->v21_upgrade();
+		}
+
+		if ( version_compare( $this->version, '2.1.3.1', '<' ) ) {
+			$this->v2131_upgrade();
+		}
+
+		if ( version_compare( $this->version, '2.2', '<' ) ) {
+			$this->v22_upgrade();
 		}
 
 		// Inconsistency between current and saved version.
-		if ( version_compare( $version, AFFILIATEWP_VERSION, '<>' ) ) {
+		if ( version_compare( $this->version, AFFILIATEWP_VERSION, '<>' ) ) {
 			$this->upgraded = true;
 		}
 
 		// If upgrades have occurred
 		if ( $this->upgraded ) {
-			update_option( 'affwp_version_upgraded_from', $version );
+			update_option( 'affwp_version_upgraded_from', $this->version );
 			update_option( 'affwp_version', AFFILIATEWP_VERSION );
 		}
 
+	}
+
+	/**
+	 * Registers core upgrade routines.
+	 *
+	 * @access private
+	 * @since  2.0.5
+	 *
+	 * @see \Affiliate_WP_Upgrades::add_routine()
+	 */
+	private function register_core_upgrades() {
+		$this->add_routine( 'upgrade_v20_recount_unpaid_earnings', array(
+			'version' => '2.0',
+			'compare' => '<',
+			'batch_process' => array(
+				'id'    => 'recount-affiliate-stats-upgrade',
+				'class' => 'AffWP\Utils\Batch_Process\Upgrade_Recount_Stats',
+				'file'  => AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/upgrades/class-batch-upgrade-recount-affiliate-stats.php'
+			)
+		) );
+
+		$this->add_routine( 'upgrade_v22_create_customer_records', array(
+			'version' => '2.2',
+			'compare' => '<',
+			'batch_process' => array(
+				'id'    => 'create-customers-upgrade',
+				'class' => 'AffWP\Utils\Batch_Process\Upgrade_Create_Customers',
+				'file'  => AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/upgrades/class-batch-upgrade-create-customers.php'
+			)
+		) );
+	}
+
+	/**
+	 * Registers a new upgrade routine.
+	 *
+	 * @access public
+	 * @since  2.0.5
+	 *
+	 * @param string $upgrade_id Upgrade ID.
+	 * @param array  $args {
+	 *     Arguments for registering a new upgrade routine.
+	 *
+	 *     @type string $version       Version the upgrade routine should be run against.
+	 *     @type string $compare       Comparison operator to use when determining if the routine
+	 *                                 should be executed.
+	 *     @type array  $batch_process {
+	 *         Optional. Arguments for registering a batch process.
+	 *
+	 *         @type string $id    Batch process ID.
+	 *         @type string $class Batch processor class to use.
+	 *         @type string $file  File containing the batch processor class.
+	 *     }
+	 * }
+	 * @return bool True if the upgrade routine was added, otherwise false.
+	 */
+	public function add_routine( $upgrade_id, $args ) {
+		// Register the batch process if one has been defined.
+		if ( ! empty( $args['batch_process'] ) ) {
+
+			$utils = $this->utils;
+			$batch = $args['batch_process'];
+
+			// Log an error if it's too late to register the batch process.
+			if ( did_action( 'affwp_batch_process_init' ) ) {
+
+				$utils->log( sprintf( 'The %s batch process was registered too late. Registrations must occur while/before <code>affwp_batch_process_init</code> fires.',
+					esc_html( $args['batch_process']['id'] )
+				) );
+
+				return false;
+
+			} else {
+
+				add_action( 'affwp_batch_process_init', function() use ( $utils, $batch ) {
+					$utils->batch->register_process( $batch['id'], array(
+						'class' => $batch['class'],
+						'file'  => $batch['file'],
+					) );
+				} );
+
+			}
+
+			unset( $args['batch_process'] );
+		}
+
+		// Add the routine to the registry.
+		return $this->registry->add_upgrade( $upgrade_id, $args );
+	}
+
+	/**
+	 * Retrieves an upgrade routine from the registry.
+	 *
+	 * @access public
+	 * @since  2.0.5
+	 *
+	 * @param string $upgrade_id Upgrade ID.
+	 * @return array|false Upgrade entry from the registry, otherwise false.
+	 */
+	public function get_routine( $upgrade_id ) {
+		return $this->registry->get( $upgrade_id );
 	}
 
 	/**
@@ -105,9 +273,7 @@ class Affiliate_WP_Upgrades {
 	 * @param string $message Optional. Message to log.
 	 */
 	private function log( $message = '' ) {
-		if ( $this->debug ) {
-			$this->logs->log( $message );
-		}
+		$this->utils->log( $message );
 	}
 
 	/**
@@ -412,13 +578,13 @@ class Affiliate_WP_Upgrades {
 	 */
 	private function v19_upgrade() {
 		@affiliate_wp()->referrals->create_table();
-		$this->log( 'Upgrade: The Referrals table upgrade for 1.9 has completed.' );
+		@affiliate_wp()->utils->log( 'Upgrade: The Referrals table upgrade for 1.9 has completed.' );
 
 		@affiliate_wp()->affiliates->payouts->create_table();
-		$this->log( 'Upgrade: The Payouts table creation process for 1.9 has completed.' );
+		@affiliate_wp()->utils->log( 'Upgrade: The Payouts table creation process for 1.9 has completed.' );
 
 		@affiliate_wp()->REST->consumers->create_table();
-		$this->log( 'Upgrade: The API consumers table creation process for 1.9 has completed' );
+		@affiliate_wp()->utils->log( 'Upgrade: The API consumers table creation process for 1.9 has completed' );
 
 		$this->upgraded = true;
 	}
@@ -431,13 +597,190 @@ class Affiliate_WP_Upgrades {
 	 */
 	private function v195_upgrade() {
 		@affiliate_wp()->affiliates->payouts->create_table();
-		$this->log( 'Upgrade: The Payouts table upgrade for 1.9.5 has completed.' );
+		@affiliate_wp()->utils->log( 'Upgrade: The Payouts table upgrade for 1.9.5 has completed.' );
 
 		wp_cache_set( 'last_changed', microtime(), 'payouts' );
-		$this->log( 'Upgrade: The Payouts cache has been invalidated following the 1.9.5 upgrade routine.' );
+		@affiliate_wp()->utils->log( 'Upgrade: The Payouts cache has been invalidated following the 1.9.5 upgrade routine.' );
 
 		$this->upgraded = true;
 	}
 
+	/**
+	 * Performs database upgrades for version 2.0.
+	 *
+	 * @since 2.0
+	 * @access private
+	 */
+	private function v20_upgrade() {
+		// New primitive and meta capabilities.
+		@affiliate_wp()->capabilities->add_caps();
+		@affiliate_wp()->utils->log( 'Upgrade: Core capabilities have been upgraded.' );
+
+
+		// Update settings
+		@affiliate_wp()->settings->set( array(
+			'required_registration_fields' => array(
+				'your_name'   => __( 'Your Name', 'affiliate-wp' ),
+				'website_url' => __( 'Website URL', 'affiliate-wp' )
+			)
+		), $save = true );
+		@affiliate_wp()->utils->log( 'Upgrade: The default required registration field settings have been configured.' );
+
+		// Affiliate schema update.
+		@affiliate_wp()->affiliates->create_table();
+		@affiliate_wp()->utils->log( 'Upgrade: The unpaid_earnings column has been added to the affiliates table.' );
+
+		wp_cache_set( 'last_changed', microtime(), 'affiliates' );
+		@affiliate_wp()->utils->log( 'Upgrade: The Affiliates cache has been invalidated following the 2.0 upgrade.' );
+
+		$this->upgraded = true;
+	}
+
+	/**
+	 * Performs database upgrades for version 2.0.2.
+	 *
+	 * @since 2.0.2
+	 * @access private
+	 */
+	private function v202_upgrade() {
+		// New 'context' column for visits.
+		@affiliate_wp()->visits->create_table();
+		$this->log( 'Upgrade: The context column has been added to the Visits table.' );
+
+		wp_cache_set( 'last_changed', microtime(), 'visits' );
+		$this->log( 'Upgrade: The Visits cache has been invalidated following the 2.0.2 upgrade.' );
+
+		$this->upgraded = true;
+	}
+
+	/**
+	 * Performs database upgrades for version 2.0.10.
+	 *
+	 * @since 2.0.10
+	 * @access private
+	 */
+	private function v210_upgrade() {
+		update_option( 'affwp_flush_rewrites', '1' );
+		@affiliate_wp()->utils->log( 'Upgrade: AffiliateWP rewrite rules have been flushed following the 2.0.10 upgrade.' );
+
+		$this->upgraded = true;
+	}
+
+	/**
+	 * Performs database upgrades for version 2.1.
+	 *
+	 * @access private
+	 * @since  2.1
+	 */
+	private function v21_upgrade() {
+		// Schedule a rewrites flush.
+		flush_rewrite_rules();
+		$this->log( 'Upgrade: Rewrite rules flushed following the 2.1 upgrade.' );
+
+		$this->upgraded = true;
+	}
+
+	/**
+	 * Performs database upgrades for version 2.1.3.1.
+	 *
+	 * @access private
+	 * @since  2.1.3.1
+	 */
+	private function v2131_upgrade() {
+		// Refresh capabilities missed in 2.1 update (export_visit_data).
+		@affiliate_wp()->capabilities->add_caps();
+		@affiliate_wp()->utils->log( 'Upgrade: Core capabilities have been upgraded for 2.1.3.1.' );
+
+		$this->upgraded = true;
+	}
+
+	/**
+	 * Performs database upgrades for version 2.2.
+	 *
+	 * @access private
+	 * @since  2.2
+	 */
+	private function v22_upgrade() {
+		
+		global $wpdb;
+
+		// Add type column to referrals database.
+		@affiliate_wp()->referrals->create_table();
+		$table = affiliate_wp()->referrals->table_name;
+		$wpdb->query( "UPDATE $table SET type = 'sale' where type IS NULL;" );
+		@affiliate_wp()->utils->log( 'Upgrade: Referrals table has been upgraded for 2.2.' );
+
+		// New 'customer_id' column for referrals.
+		@affiliate_wp()->referrals->create_table();
+		@affiliate_wp()->capabilities->add_caps();
+		@affiliate_wp()->customers->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customers table has been created.' );
+		@affiliate_wp()->customer_meta->create_table();
+		affiliate_wp()->utils->log( 'Upgrade: The customer meta table has been created.' );
+
+		// Update email settings
+		$registration_notifications   = 'registration_notifications';
+		$admin_referral_notifications = 'admin_referral_notifications';
+		$disable_all_emails           = 'disable_all_emails';
+
+		/**
+		 * Enable all email notifications by default.
+		 * Fresh installations of AffiliateWP and upgrades should enable all notifications.
+		 */
+		$email_notifications = affiliate_wp()->settings->email_notifications( true );
+
+		/**
+		 * If "Disable All Emails" checkbox option was previously enabled,
+		 * clear out the email notification array, essentially disabling all notifications.
+		 */
+		if ( affiliate_wp()->settings->get( $disable_all_emails ) ) {
+			$email_notifications = array();
+		}
+
+		// Enable the new admin affiliate registration email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $registration_notifications ) ) {
+			$email_notifications['admin_affiliate_registration_email'] = __( 'Notify site admin when a new affiliate has registered', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin affiliate registration email if it was previously unchecked.
+			unset( $email_notifications['admin_affiliate_registration_email'] );
+		}
+
+		// Enable the new admin referral notification email if it was previously enabled.
+		if ( affiliate_wp()->settings->get( $admin_referral_notifications ) ) {
+			$email_notifications['admin_new_referral_email'] = __( 'Notify site admin when new referrals are earned', 'affiliate-wp' );
+		} else {
+			// Uncheck the new admin referral notification email if it was previously unchecked.
+			unset( $email_notifications['admin_new_referral_email'] );
+		}
+
+		// Make the required changes to the Email Notifications.
+		@affiliate_wp()->settings->set( array(
+			'email_notifications' => $email_notifications
+		), $save = true );
+
+		// Get all settings.
+		$settings = affiliate_wp()->settings->get_all();
+
+		// Remove old "Disable All Emails" setting.
+		if ( isset( $settings[$disable_all_emails] ) ) {
+			unset( $settings[$disable_all_emails] );
+		}
+
+		// Remove old "Notify Admin" setting.
+		if ( isset( $settings[$registration_notifications] ) ) {
+			unset( $settings[$registration_notifications] );
+		}
+
+		// Remove old "Notify Admin of Referrals" setting.
+		if ( isset( $settings[$admin_referral_notifications] ) ) {
+			unset( $settings[$admin_referral_notifications] );
+		}
+
+		// Update affwp_settings option.
+		update_option( 'affwp_settings', $settings );
+
+		$this->upgraded = true;
+
+	}
+
 }
-new Affiliate_WP_Upgrades;

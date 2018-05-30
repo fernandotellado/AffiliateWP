@@ -93,6 +93,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 			'payment_email'   => '%s',
 			'status'          => '%s',
 			'earnings'        => '%s',
+			'unpaid_earnings' => '%s',
 			'referrals'       => '%d',
 			'visits'          => '%d',
 			'date_registered' => '%s',
@@ -107,7 +108,8 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 	*/
 	public function get_column_defaults() {
 		return array(
-			'user_id'  => get_current_user_id()
+			'user_id'         => get_current_user_id(),
+			'date_registered' => gmdate( 'Y-m-d H:i:s' ),
 		);
 	}
 
@@ -122,21 +124,22 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 	 * @param array $args {
 	 *     Optional. Arguments for querying affiliates. Default empty array.
 	 *
-	 *     @type int       $number       Number of affiliates to query for. Default 20.
-	 *     @type int       $offset       Number of affiliates to offset the query for. Default 0.
-	 *     @type int|array $exclude      Affiliate ID or array of IDs to explicitly exclude.
-	 *     @type int|array $user_id      User ID or array of user IDs that correspond to the affiliate user.
-	 *     @type int|array $affiliate_id Affiliate ID or array of affiliate IDs to retrieve.
-	 *     @type string    $status       Affiliate status. Default empty.
-	 *     @type string    $order        How to order returned affiliate results. Accepts 'ASC' or 'DESC'.
-	 *                                   Default 'DESC'.
-	 *     @type string    $orderby      Affiliates table column to order results by. Also accepts 'paid',
-	 *                                   'unpaid', 'rejected', or 'pending' referral statuses, 'name'
-	 *                                   (user display_name), or 'username' (user user_login). Default 'affiliate_id'.
-	 *     @type string    $fields       Specific fields to retrieve. Accepts 'ids' or '*' (all). Default '*'.
+	 *     @type int          $number       Number of affiliates to query for. Default 20.
+	 *     @type int          $offset       Number of affiliates to offset the query for. Default 0.
+	 *     @type int|array    $exclude      Affiliate ID or array of IDs to explicitly exclude.
+	 *     @type int|array    $user_id      User ID or array of user IDs that correspond to the affiliate user.
+	 *     @type int|array    $affiliate_id Affiliate ID or array of affiliate IDs to retrieve.
+	 *     @type string       $status       Affiliate status. Default empty.
+	 *     @type string       $order        How to order returned affiliate results. Accepts 'ASC' or 'DESC'.
+	 *                                      Default 'DESC'.
+	 *     @type string       $orderby      Affiliates table column to order results by. Also accepts 'paid',
+	 *                                      'unpaid', 'rejected', or 'pending' referral statuses, 'name'
+	 *                                      (user display_name), or 'username' (user user_login). Default 'affiliate_id'.
+	 *     @type string|array $fields       Specific fields to retrieve. Accepts 'ids', a single affiliate field, or an
+	 *                                      array of fields. Default '*' (all).
 	 * }
 	 * @param bool  $count Optional. Whether to return only the total number of results found. Default false.
-	 * @return array|int Array of affiliate objects (if found), int if `$count` is true.
+	 * @return array|int Array of affiliate objects or field(s) (if found), int if `$count` is true.
 	 */
 	public function get_affiliates( $args = array(), $count = false ) {
 		global $wpdb;
@@ -254,37 +257,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 
 		// Affiliates registered on a date or date range
 		if( ! empty( $args['date'] ) ) {
-
-			if( is_array( $args['date'] ) ) {
-
-				$start = date( 'Y-m-d H:i:s', strtotime( $args['date']['start'] ) );
-				$end   = date( 'Y-m-d H:i:s', strtotime( $args['date']['end'] ) );
-
-				if( empty( $where ) ) {
-
-					$where .= " WHERE `date_registered` >= '{$start}' AND `date_registered` <= '{$end}'";
-
-				} else {
-
-					$where .= " AND `date_registered` >= '{$start}' AND `date_registered` <= '{$end}'";
-
-				}
-
-			} else {
-
-				$year  = date( 'Y', strtotime( $args['date'] ) );
-				$month = date( 'm', strtotime( $args['date'] ) );
-				$day   = date( 'd', strtotime( $args['date'] ) );
-
-				if( empty( $where ) ) {
-					$where .= " WHERE";
-				} else {
-					$where .= " AND";
-				}
-
-				$where .= " $year = YEAR ( date_registered ) AND $month = MONTH ( date_registered ) AND $day = DAY ( date_registered )";
-			}
-
+			$where = $this->prepare_date_query( $where, $args['date'], 'date_registered' );
 		}
 
 		if ( 'DESC' === strtoupper( $args['order'] ) ) {
@@ -319,6 +292,11 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 				$orderby = 'earnings+0';
 				break;
 
+			case 'unpaid_earnings':
+				// Unpaid earnings.
+				$orderby = 'unpaid_earnings+0';
+				break;
+
 			case 'referrals':
 				// Referrals.
 				$orderby = 'referrals+0';
@@ -347,13 +325,16 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 		$args['orderby'] = $orderby;
 		$args['order']   = $order;
 
-		$fields = "*";
+		$callback = '';
 
-		if ( ! empty( $args['fields'] ) ) {
-			if ( 'ids' === $args['fields'] ) {
-				$fields = "$this->primary_key";
-			} elseif ( array_key_exists( $args['fields'], $this->get_columns() ) ) {
-				$fields = $args['fields'];
+		if ( 'ids' === $args['fields'] ) {
+			$fields   = "$this->primary_key";
+			$callback = 'intval';
+		} else {
+			$fields = $this->parse_fields( $args['fields'] );
+
+			if ( '*' === $fields ) {
+				$callback = 'affwp_get_affiliate';
 			}
 		}
 
@@ -361,7 +342,8 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 
 		$last_changed = wp_cache_get( 'last_changed', $this->cache_group );
 		if ( ! $last_changed ) {
-			wp_cache_set( 'last_changed', microtime(), $this->cache_group );
+			$last_changed = microtime();
+			wp_cache_set( 'last_changed', $last_changed, $this->cache_group );
 		}
 
 		$cache_key = "{$key}:{$last_changed}";
@@ -372,7 +354,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 
 			$clauses = compact( 'fields', 'join', 'where', 'orderby', 'order', 'count' );
 
-			$results = $this->get_results( $clauses, $args, 'affwp_get_affiliate' );
+			$results = $this->get_results( $clauses, $args, $callback );
 		}
 
 		wp_cache_add( $cache_key, $results, $this->cache_group, HOUR_IN_SECONDS );
@@ -461,6 +443,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 	 *     @type int    $referrals       Number of affiliate referrals.
 	 *     @type int    $visits          Number of visits.
 	 *     @type int    $user_id         User ID used to correspond to the affiliate.
+	 *     @type string $website_url     The affiliate's website URL.
 	 * }
 	 * @return int|false Affiliate ID if successfully added, otherwise false.
 	*/
@@ -468,7 +451,6 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 
 		$defaults = array(
 			'status'          => 'active',
-			'date_registered' => current_time( 'mysql' ),
 			'earnings'        => 0,
 			'referrals'       => 0,
 			'visits'          => 0
@@ -480,10 +462,33 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 			return false;
 		}
 
+		if ( isset( $args['date_registered'] ) ) {
+
+			if ( empty( $args['date_registered'] ) ) {
+				unset( $args['date_registered'] );
+			} else {
+				$time = strtotime( $args['date_registered'] );
+
+				$args['date_registered'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
+			}
+		}
+
+		if ( ! empty( $data['website_url'] ) ) {
+			$args['website_url'] = sanitize_text_field( $data['website_url'] );
+		}
+
 		$add = $this->insert( $args, 'affiliate' );
 
 		if ( $add ) {
-			do_action( 'affwp_insert_affiliate', $add );
+
+			/**
+			 * Fires immediately after an affiliate has been added to the database.
+			 *
+			 * @param int   $add  The new affiliate ID.
+			 * @param array $args The arguments passed to the insert method.
+			 */
+			do_action( 'affwp_insert_affiliate', $add, $args );
+
 			return $add;
 		}
 
@@ -508,6 +513,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 			payment_email mediumtext NOT NULL,
 			status tinytext NOT NULL,
 			earnings mediumtext NOT NULL,
+			unpaid_earnings mediumtext NOT NULL,
 			referrals bigint(20) NOT NULL,
 			visits bigint(20) NOT NULL,
 			date_registered datetime NOT NULL,

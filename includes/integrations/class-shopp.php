@@ -28,13 +28,11 @@ class Affiliate_WP_Shopp extends Affiliate_WP_Base {
 
 			$this->order = apply_filters( 'affwp_get_shopp_order', shopp_order( $order_id->order ) );
 
-			$customer_email = $this->order->email;
+			$this->email = $this->order->email;
 
-			if ( $this->is_affiliate_email( $customer_email ) ) {
+			if ( $this->is_affiliate_email( $this->email ) ) {
 			
-				if( $this->debug ) {
-					$this->log( 'Referral not created because affiliate\'s own account was used.' );
-				}
+				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
 				return; // Customers cannot refer themselves
 			}
@@ -126,4 +124,7 @@ class Affiliate_WP_Shopp extends Affiliate_WP_Base {
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 	}	
 }
-new Affiliate_WP_Shopp;
+
+if ( function_exists( 'shopp_order' ) ) {
+	new Affiliate_WP_Shopp;
+}

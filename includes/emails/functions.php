@@ -112,13 +112,13 @@ function affwp_email_tag_promo_method( $affiliate_id = 0 ) {
  * Email template tag: affwp_email_tag_rejection_reason
  * The affiliate rejection reason
  *
- * @param int $affiliate_id
+ * @param int $affiliate_id Affiliate ID.
  * @return string rejection_reason
  */
-function affwp_email_tag_rejection_reason( $affiliate_id = 0 ) {
+function affwp_email_tag_rejection_reason( $affiliate_id ) {
 	$reason = affwp_get_affiliate_meta( $affiliate_id, '_rejection_reason', true );
 	if( empty( $reason ) ) {
-		$reason = __( 'No reason provided', 'affiliate-wp' );
+		$reason = '';
 	}
 	return $reason;
 }
@@ -195,7 +195,7 @@ function affwp_email_tag_referral_rate( $affiliate_id = 0 ) {
  * @return string URL to the review page
  */
 function affwp_email_tag_review_url( $affiliate_id = 0 ) {
-	return admin_url( 'admin.php?page=affiliate-wp-affiliates&affiliate_id=' . absint( $affiliate_id ) . '&action=review_affiliate' );
+	return affwp_admin_url( 'affiliates', array( 'affiliate_id' => absint( $affiliate_id ), 'action' => 'review_affiliate' ) );
 }
 
 /**
@@ -219,4 +219,66 @@ function affwp_email_tag_get_landing_page( $affiliate_id = 0, $referral ) {
  */
 function affwp_email_tag_campaign_name( $affiliate_id = 0, $referral ) {
 	return empty( $referral->campaign ) ? __( '(no campaign)', 'affiliate-wp' ) : esc_html( $referral->campaign );
+}
+
+/**
+ * Determine if New Referral Notifications can be sent to the affiliate 
+ *
+ * @since 2.2
+ * @uses affwp_email_notification_enabled()
+ * @param int $affiliate_id The affiliate's ID
+ *
+ * @return boolean True if new referral notifications are enabled, false otherwise.
+ */
+function affwp_email_referral_notifications( $affiliate_id = 0 ) {
+
+	$enabled = false;
+
+	if ( true === affwp_email_notification_enabled( 'affiliate_new_referral_email', $affiliate_id ) ) {
+		$enabled = true;
+	}
+
+	return (bool) $enabled;
+
+}
+
+/**
+ * Determine if a specific email notification is enabled.
+ *
+ * @since 2.2
+ * @param string $email_notification The email notification to check.
+ * @param int $affiliate_id The affiliate's ID
+ * 
+ * @return boolean True if the email notification is enabled, false otherwise.
+ */
+function affwp_email_notification_enabled( $email_notification = '', $affiliate_id = 0 ) {
+
+	$enabled = false;
+
+	if ( array_key_exists( $email_notification, affwp_get_enabled_email_notifications() ) ) {
+		$enabled = true;
+	}
+
+	return (bool) apply_filters( 'affwp_email_notification_enabled', $enabled, $email_notification, $affiliate_id );
+
+}
+
+/**
+ * Get the email notifications settings array.
+ *
+ * @since 2.2
+ *
+ * @return array $email_notifications
+ */
+function affwp_get_enabled_email_notifications() {
+
+	$email_notifications = affiliate_wp()->settings->get( 'email_notifications' );
+
+	if ( is_array( $email_notifications ) ) {
+		return $email_notifications;
+	}
+
+	// Return empty array.
+	return array();
+
 }

@@ -67,7 +67,7 @@ class Affiliate_WP_Campaigns_DB extends Affiliate_WP_DB {
 	 *     @type string       $fields           Specific fields to retrieve. Accepts 'ids' or '*' (all). Default '*'.
 	 * }
 	 * @param bool  $count Optional. Whether to return only the total number of results found. Default false.
-	 * @return array
+	 * @return array|int Array of campaign objects or field(s) (if found) or integer if `$count` is true.
 	 */
 	public function get_campaigns( $args = array(), $count = false ) {
 		global $wpdb;
@@ -227,21 +227,22 @@ class Affiliate_WP_Campaigns_DB extends Affiliate_WP_DB {
 		$args['orderby'] = $orderby;
 		$args['order']   = $order;
 
-		$fields = "*";
+		// Fields.
+		$callback = '';
 
-		if ( ! empty( $args['fields'] ) ) {
-			if ( 'ids' === $args['fields'] ) {
-				$fields = "$this->primary_key";
-			} elseif ( array_key_exists( $args['fields'], $this->get_columns() ) ) {
-				$fields = $args['fields'];
-			}
+		if ( 'ids' === $args['fields'] ) {
+			$fields   = "$this->primary_key";
+			$callback = 'intval';
+		} else {
+			$fields = $this->parse_fields( $args['fields'] );
 		}
 
 		$key = ( true === $count ) ? md5( 'affwp_campaigns_count' . serialize( $args ) ) : md5( 'affwp_campaigns_' . serialize( $args ) );
 
 		$last_changed = wp_cache_get( 'last_changed', $this->cache_group );
 		if ( ! $last_changed ) {
-			wp_cache_set( 'last_changed', microtime(), $this->cache_group );
+			$last_changed = microtime();
+			wp_cache_set( 'last_changed', $last_changed, $this->cache_group );
 		}
 
 		$cache_key = "{$key}:{$last_changed}";
@@ -252,13 +253,26 @@ class Affiliate_WP_Campaigns_DB extends Affiliate_WP_DB {
 
 			$clauses = compact( 'fields', 'join', 'where', 'orderby', 'order', 'count' );
 
-			$results = $this->get_results( $clauses, $args );
+			$results = $this->get_results( $clauses, $args, $callback );
 		}
 
 		wp_cache_add( $cache_key, $results, $this->cache_group, HOUR_IN_SECONDS );
 
 		return $results;
 
+	}
+
+	/**
+	 * Retrieves the number of results found for a given query.
+	 *
+	 * @access public
+	 * @since  2.0.2
+	 *
+	 * @param array $args get_campaigns() arguments.
+	 * @return int Number of campaigns for the given arguments.
+	 */
+	public function count( $args = array() ) {
+		return $this->get_campaigns( $args, true );
 	}
 
 	/**

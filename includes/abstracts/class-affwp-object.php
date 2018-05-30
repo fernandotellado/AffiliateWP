@@ -262,32 +262,42 @@ abstract class Base_Object {
 	 *
 	 * @access public
 	 * @since  1.9
+	 * @since  1.9.5 Added the `$defaults` parameter.
 	 * @static
 	 *
-	 * @param object|array $object Object or array of object data.
+	 * @param object|array $object_data Object or array of object data.
+	 * @param array        $extra_vars  Optional. Additional vars to ensure get populated.
+	 *                                  Default empty array.
 	 * @return object|array Object or data array with filled members.
 	 */
-	public static function fill_vars( $object ) {
-		if ( is_object( $object ) ) {
-			if ( isset( $object->filled ) ) {
-				return $object;
+	public static function fill_vars( $object_data, $extra_vars = array() ) {
+		if ( is_object( $object_data ) ) {
+			if ( isset( $object_data->filled ) && empty( $extra_vars ) ) {
+				return $object_data;
 			}
 
-			foreach ( array_keys( get_object_vars( $object ) ) as $field ) {
-				$object->$field = static::sanitize_field( $field, $object->$field );
-				$object->filled = true;
+			$vars   = get_object_vars( $object_data );
+			$fields = empty( $extra_vars ) ? $vars : wp_parse_args( $extra_vars, $vars );
+
+			foreach ( $fields as $field => $value ) {
+				$object_data->$field = static::sanitize_field( $field, $value );
+
+				$object_data->filled = true;
 			}
-		} elseif ( is_array( $object ) ) {
-			if ( isset( $object['filled'] ) ) {
-				return $object;
+		} elseif ( is_array( $object_data ) ) {
+			if ( isset( $object_data['filled'] ) && empty( $extra_vars ) ) {
+				return $object_data;
 			}
 
-			foreach ( array_keys( $object ) as $field ) {
-				$object[ $field ] = static::sanitize_field( $field, $object[ $field ] );
-				$object['filled'] = true;
+			$fields = empty( $extra_vars ) ? $object_data : wp_parse_args( $extra_vars, $object_data );
+
+			foreach ( $fields as $field => $value ) {
+				$object_data[ $field ] = static::sanitize_field( $field, $value );
+
+				$object_data['filled'] = true;
 			}
 		}
-		return $object;
+		return $object_data;
 	}
 
 	/**
@@ -305,6 +315,55 @@ abstract class Base_Object {
 	 */
 	public static function sanitize_field( $field, $value ) {
 		return $value;
+	}
+
+	/**
+	 * Retrieves the (maybe formatted) date for the current object if set.
+	 *
+	 * @since 2.1.9
+	 *
+	 * @param true|string $date_format Optional. How to format the object date. Accepts 'date', 'time',
+	 *                                 or 'datetime' shorthand formats. Also accepts 'object', 'timestamp',
+	 *                                 'wp_timestamp', or any other valid date_format() string.
+	 *                                 Default empty string.
+	 * @return mixed Formatted object date, timestamp, or Date object.
+	 *               If `$format` is empty, the un-formatted `$date` value
+	 *               will be returned. If `$format` is 'object', a Date object
+	 *               will be retrieved for further manipulation.
+	 */
+	public function date( $format = '' ) {
+
+		if ( empty( $format ) ) {
+
+			$date = $this->date;
+
+		} else {
+
+			$date = affiliate_wp()->utils->date( $this->date )->format( $format );
+
+		}
+
+		return $date;
+	}
+
+	/**
+	 * Retrieves a localized version of the formatted date for the current object if set.
+	 *
+	 * @since 2.1.9
+	 *
+	 * @param true|string $date_format Optional. How to format the object date. Accepts 'date', 'time',
+	 *                                 or 'datetime' shorthand formats. Also accepts 'object', 'timestamp',
+	 *                                 'wp_timestamp', or any other valid date_format() string.
+	 *                                 Default 'date', which represents the value of the 'date_format' option.
+	 * @return mixed Localized, formatted object date, timestamp, or Date object.
+	 *               If `$format` is empty, the un-formatted `$date` value
+	 *               will be returned. If `$format` is 'object', a Date object
+	 *               will be retrieved for further manipulation.
+	 */
+	public function date_i18n( $format = 'date' ) {
+		$timestamp = affiliate_wp()->utils->date( $this->date )->getWPTimestamp();
+
+		return affwp_date_i18n( $timestamp, $format );
 	}
 
 }

@@ -63,9 +63,7 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 			// Customers cannot refer themselves
 			if ( ! empty( $user->user_email ) && $this->is_affiliate_email( $user->user_email ) ) {
 
-				if( $this->debug ) {
-					$this->log( 'Referral not created because affiliate\'s own account was used.' );
-				}
+				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
 				return;
 			}
@@ -74,20 +72,14 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 				return; // Referrals are disabled on this membership
 			}
 
+			$this->email = $user->user_email;
+
 			// Set the base amount from the transaction at the top of the stack.
 			$amount = $txn->amount;
 
-			// If there's a free trial subscription and rate type is percentage, override $amount.
-			if ( $txn->subscription()
-				&& ( $txn->subscription()->trial && 0 == intval( $txn->subscription()->trial_amount ) )
-				&& 'percentage' === affwp_get_affiliate_rate_type( $this->affiliate_id )
-			) {
+			// If there's a subscription and the subscription has a trial, override $amount.
+			if( $txn->subscription() && $txn->subscription()->trial ) {
 				$amount = $txn->subscription()->trial_amount;
-			}
-
-			// If there's coupon trial amount, override $amount.
-			if ( $txn->coupon() && $txn->coupon()->trial ) {
-				$amount = $txn->coupon()->trial_amount;
 			}
 
 			// get referral total
@@ -272,6 +264,7 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 		add_filter( 'affwp_is_admin_page', '__return_true' );
 		affwp_admin_scripts();
 
+		$user_id      = 0;
 		$user_name    = '';
 		$affiliate_id = get_post_meta( $post->ID, 'affwp_discount_affiliate', true );
 		if( $affiliate_id ) {
@@ -284,7 +277,6 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 			<label for="user_name"><?php _e( 'If you would like to connect this discount to an affiliate, enter the name of the affiliate it belongs to.', 'affiliate-wp' ); ?></label>
 			<span class="affwp-ajax-search-wrap">
 				<span class="affwp-memberpress-coupon-input-wrap">
-					<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user_id ); ?>" />
 					<input type="text" name="user_name" id="user_name" value="<?php echo esc_attr( $user_name ); ?>" class="affwp-user-search" data-affwp-status="active" autocomplete="off" />
 				</span>
 			</span>
@@ -341,17 +333,9 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 			return;
 		}
 
-		if( empty( $_POST['user_id'] ) ) {
-			$user = get_user_by( 'login', $_POST['user_name'] );
+		$data = affiliate_wp()->utils->process_request_data( $_POST, 'user_name' );
 
-			if( $user ) {
-				$user_id = $user->ID;
-			}
-		} else {
-			$user_id = absint( $_POST['user_id'] );
-		}
-
-		$affiliate_id = affwp_get_affiliate_id( $user_id );
+		$affiliate_id = affwp_get_affiliate_id( $data['user_id'] );
 		update_post_meta( $post_id, 'affwp_discount_affiliate', $affiliate_id );
 	}
 
@@ -382,4 +366,7 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 		return false;
 	}
 }
-new Affiliate_WP_MemberPress;
+
+if ( class_exists( 'MeprAppCtrl' ) ) {
+	new Affiliate_WP_MemberPress;
+}

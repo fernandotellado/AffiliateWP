@@ -20,6 +20,7 @@ require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/overview/metaboxes/class-m
 require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/overview/metaboxes/class-metabox-overview-most-valuable.php';
 require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/overview/metaboxes/class-metabox-overview-recent-referrals.php';
 require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/overview/metaboxes/class-metabox-overview-recent-referral-visits.php';
+require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/overview/metaboxes/class-metabox-overview-highest-converting-urls.php';
 
 /**
  * Initializes meta boxes displayed via the Overview screen.
@@ -32,6 +33,7 @@ function affwp_init_overview_meta_boxes() {
 	new Meta_Box\Most_Valuable_Affiliates;
 	new Meta_Box\Recent_Referrals;
 	new Meta_Box\Recent_Referral_Visits;
+	new Meta_Box\Highest_Converting_URLs;
 
 	/**
 	 * Fires after all core Overview meta boxes have been instantiated.
@@ -53,7 +55,12 @@ function affwp_affiliates_dashboard() {
 
 		<h2><?php _e( 'Overview', 'affiliate-wp' ); ?></h2>
 
-		<?php do_action( 'affwp_overview_meta_boxes' ); ?>
+		<?php
+		/**
+		 * Fires at the top of the Overview page, in the area used for Overview meta-boxes.
+		 */
+		do_action( 'affwp_overview_meta_boxes' );
+		?>
 
 		<div id="affwp-dashboard-widgets-wrap">
 			<div id="dashboard-widgets" class="metabox-holder">
@@ -73,7 +80,12 @@ function affwp_affiliates_dashboard() {
 			</div>
 		</div>
 
-		<?php do_action( 'affwp_overview_bottom' ); ?>
+		<?php
+		/**
+		 * Fires at the bottom of the Overview admin screen.
+		 */
+		do_action( 'affwp_overview_bottom' );
+		?>
 
 	</div>
 <?php }

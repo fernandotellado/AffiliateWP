@@ -45,6 +45,7 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	 */
 	public function add_pending_referral( $entry, $form ) {
 
+		// Block referral if form does not allow them
 		if ( ! rgar( $form, 'affwp_allow_referrals' ) ) {
 			return;
 		}
@@ -52,8 +53,31 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 		// Check if an affiliate coupon was included
 		$this->maybe_check_coupons( $form, $entry );
 
-		if( ! $this->was_referred() && empty( $this->affiliate_id ) ) {
+		// Block referral if not referred or affiliate ID is empty
+		if ( ! $this->was_referred() && empty( $this->affiliate_id ) ) {
 			return;
+		}
+
+		// Get the referral type we are creating
+		$type = rgar( $form, 'affwp_referral_type' );
+		$type = empty( $type ) ? 'sale' : $type;
+
+		$this->referral_type = $type;
+
+		// Get all emails from submitted form
+		$emails = $this->get_emails( $entry, $form );
+
+		// Block referral if any of the affiliate's emails have been submitted
+		if ( $emails ) {
+			foreach ( $emails as $customer_email ) {
+				if ( $this->is_affiliate_email( $customer_email, $this->affiliate_id ) ) {
+
+					$this->log( 'Referral not created because affiliate\'s own account was used.' );
+
+					return false;
+
+				}
+			}
 		}
 
 		// Do some craziness to determine the price (this should be easy but is not)
@@ -230,6 +254,31 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Get all emails from form
+	 *
+	 * @since 2.0
+	 * @access public
+	 * @return array $emails all emails submitted via email fields
+	 */
+	public function get_emails( $entry, $form ) {
+
+		$email_fields = GFCommon::get_email_fields( $form );
+
+		$emails = array();
+
+		if ( $email_fields ) {
+			foreach ( $email_fields as $email_field ) {
+				if ( ! empty( $entry[ $email_field->id ] ) ) {
+					$emails[] = $entry[ $email_field->id ];
+				}
+			}
+		}
+
+		return $emails;
+
+	}
+
+	/**
 	 * Register the form-specific settings
 	 *
 	 * @since  1.7
@@ -237,15 +286,26 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	 */
 	public function add_settings( $settings, $form ) {
 
-		$checked = rgar( $form, 'affwp_allow_referrals' );
+		$checked  = rgar( $form, 'affwp_allow_referrals' );
+		$selected = rgar( $form, 'affwp_referral_type' );
 
 		$field  = '<input type="checkbox" id="affwp_allow_referrals" name="affwp_allow_referrals" value="1" ' . checked( 1, $checked, false ) . ' />';
 		$field .= ' <label for="affwp_allow_referrals">' . __( 'Enable affiliate referral creation for this form', 'affiliate-wp' ) . '</label>';
 
+		$field_type = '<select name="affwp_referral_type" id="affwp_referral_type">';
+			foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) {
+				$field_type .= '<option value="' . esc_attr( $type_id ) . '"' . selected( $type_id, $selected, false ) .'>' . esc_html( $type['label'] ) . '</option>';
+			}
+		$field_type .= '</select>';
+		$field_type .= ' <label for="affwp_referral_type">' . __( 'Referral Type', 'affiliate-wp' ) . '</label>';
+
 		$settings['Form Options']['affwp_allow_referrals'] = '
 			<tr>
 				<th>' . __( 'Allow referrals', 'affiliate-wp' ) . '</th>
-				<td>' . $field . '</td>
+				<td>' .
+					'<p>' . $field . '</p>' . 
+					'<p>' . $field_type . '</p>' . 
+				'</td>
 			</tr>';
 
 		return $settings;
@@ -260,6 +320,7 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	public function save_settings( $form ) {
 
 		$form['affwp_allow_referrals'] = rgpost( 'affwp_allow_referrals' );
+		$form['affwp_referral_type'] = rgpost( 'affwp_referral_type' );
 
 		return $form;
 
@@ -336,6 +397,35 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 <?php
 	}
 
+	/**
+	 * Retrieves the customer details for a form submission
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $entry_id The ID of the entry to retrieve customer details for.
+	 * @return array An array of the customer details
+	*/
+	public function get_customer( $entry_id = 0 ) {
+
+		$customer = array();
+
+		if ( class_exists( 'GFCommon' ) ) {
+
+			$entry  = GFFormsModel::get_lead( $entry_id );
+			$form   = GFAPI::get_form( $entry['form_id'] );
+			$emails = $this->get_emails( $entry, $form );
+
+			$customer = array(
+				'email' => current( $emails )
+			);
+
+		}
+
+		return $customer;
+	}
+
 }
 
-new Affiliate_WP_Gravity_Forms;
+if ( class_exists( 'GFCommon' ) ) {
+	new Affiliate_WP_Gravity_Forms;
+}

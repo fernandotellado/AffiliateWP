@@ -21,7 +21,11 @@ class Command extends \WP_CLI_Command {
 	 */
 	public function details( $_, $assoc_args ) {
 		if ( ! class_exists( 'Affiliate_WP' ) ) {
-			\WP_CLI::error( __( 'AffiliateWP is not installed', 'affiliate-wp' ) );
+			try {
+
+				\WP_CLI::error( __( 'AffiliateWP is not installed', 'affiliate-wp' ) );
+
+			} catch( \Exception $exception ) {}
 		}
 
 		// Version.
@@ -63,7 +67,7 @@ class Command extends \WP_CLI_Command {
 			 *
 			 * Remember, it's backward logic.
 			 */
-			if ( ! affiliate_wp()->settings->get( 'disable_all_emails' ) ) {
+			if ( ! affiliate_wp()->emails->is_email_disabled() ) {	
 				$notifications_disabled = '%G' . _x( 'Enabled', 'emails disabled', 'affiliate-wp' ) . '%N';
 			} else {
 				$notifications_disabled = '%R' . _x( 'Disabled', 'emails disabled', 'affiliate-wp' ) . '%N';
@@ -213,13 +217,16 @@ class Command extends \WP_CLI_Command {
 	 * @subcommand debug
 	 */
 	public function debug_log( $_, $assoc_args ) {
-		$logger = new \Affiliate_WP_Logging();
+		// Retain the logger instance for back-compat.
+		$logger = affiliate_wp()->utils->logs;
+
 		$clear  = \WP_CLI\Utils\get_flag_value( $assoc_args, 'clear', false );
 
 		if ( $clear ) {
 			\WP_CLI::confirm( __( 'Are you sure you want to clear the debug log?', 'affiliate-wp' ), $assoc_args );
 
-			$logger->clear_log();
+			// Clear the log.
+			affiliate_wp()->utils->logs->clear_log();
 
 			\WP_CLI::success( __( 'The debug log has been cleared.', 'affiliate-wp' ) );
 		}

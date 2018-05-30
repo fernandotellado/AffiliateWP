@@ -5,14 +5,22 @@ $name             = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_i
 $user_info        = get_userdata( $affiliate->user_id );
 $user_url         = $user_info->user_url;
 $promotion_method = get_user_meta( $affiliate->user_id, 'affwp_promotion_method', true );
+$payment_email    = $affiliate->payment_email;
 ?>
 <div class="wrap">
 
-	<h2><?php _e( 'Review Affiliate', 'affiliate-wp' ); ?> <a href="<?php echo admin_url( 'admin.php?page=affiliate-wp-affiliates' ); ?>" class="button-secondary"><?php _e( 'Go Back', 'affiliate-wp' ); ?></a></h2>
+	<h2><?php _e( 'Review Affiliate', 'affiliate-wp' ); ?> <?php affwp_admin_link( 'affiliates', __( 'Go Back', 'affiliate-wp' ), array(), array( 'class' => 'button-secondary' ) ); ?></h2>
 
 	<form method="post" id="affwp_review_affiliate">
 
-		<?php do_action( 'affwp_review_affiliate_top', $affiliate ); ?>
+		<?php
+		/**
+		 * Fires at the top of the review-affiliate admin screen, just inside of the form element.
+		 *
+		 * @param \AffWP\Affiliate $affiliate Affiliate object.
+		 */
+		do_action( 'affwp_review_affiliate_top', $affiliate );
+		?>
 
 		<table class="form-table">
 
@@ -52,6 +60,20 @@ $promotion_method = get_user_meta( $affiliate->user_id, 'affwp_promotion_method'
 
 			</tr>
 
+			<?php if ( $payment_email ) : ?>
+			<tr class="form-row form-required">
+
+				<th scope="row">
+					<?php _e( 'Payment Email', 'affiliate-wp' ); ?>
+				</th>
+
+				<td>
+					<?php echo esc_html( $payment_email ); ?>
+				</td>
+
+			</tr>
+			<?php endif; ?>
+
 			<?php if ( $user_url ) : ?>
 			<tr class="form-row form-required">
 
@@ -65,7 +87,7 @@ $promotion_method = get_user_meta( $affiliate->user_id, 'affwp_promotion_method'
 
 			</tr>
 			<?php endif; ?>
-			
+
 			<?php if ( $promotion_method ) : ?>
 				<tr class="form-row form-required">
 
@@ -88,16 +110,30 @@ $promotion_method = get_user_meta( $affiliate->user_id, 'affwp_promotion_method'
 
 				<td>
 					<textarea class="large-text" name="affwp_rejection_reason" rows="10"></textarea>
-					<p class="description"><?php _e( 'Leave blank if approving this affiliate', 'affiliate-wp' ); ?></p>
+					<p class="description"><?php _e( 'Leave blank if approving this affiliate.', 'affiliate-wp' ); ?></p>
 				</td>
 
 			</tr>
 
-			<?php do_action( 'affwp_review_affiliate_end', $affiliate ); ?>
+			<?php
+			/**
+			 * Fires at the end of the review-affiliate admin screen, prior to the closing table element tag.
+			 *
+			 * @param \AffWP\Affiliate $affiliate Affiliate object.
+			 */
+			do_action( 'affwp_review_affiliate_end', $affiliate );
+			?>
 
 		</table>
 
-		<?php do_action( 'affwp_review_affiliate_bottom', $affiliate ); ?>
+		<?php
+		/**
+		 * Fires at the bottom of the review-affiliate admin screen, just prior to the submit button.
+		 *
+		 * @param \AffWP\Affiliate $affiliate Affiliate object.
+		 */
+		do_action( 'affwp_review_affiliate_bottom', $affiliate );
+		?>
 
 		<?php wp_nonce_field( 'affwp_moderate_affiliates_nonce', 'affwp_moderate_affiliates_nonce' ); ?>
 		<input type="hidden" name="affiliate_id" value="<?php echo esc_attr( absint( $affiliate_id ) ); ?>"/>

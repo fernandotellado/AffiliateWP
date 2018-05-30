@@ -38,8 +38,6 @@ table.affwp-table th {
 .affwp-form input[type="password"],
 .affwp-form input[type="email"],
 .affwp-form input[type="url"] {
-	display: inline-block;
-	width: 200px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -62,9 +60,12 @@ table.affwp-table th {
 }
 
 .affwp-form label {
-	display: inline-block;
-	width: 200px;
 	cursor: pointer;
+}
+
+.affwp-form label + input,
+.affwp-form label + textarea {
+	width: 100%;
 }
 
 .affwp-wrap {
@@ -179,7 +180,7 @@ p.affwp-error {
 	color: #ef6c5e;
 }
 
-#affwp-affiliate-dashboard-creatives pre {
+.affwp-creative pre {
 	background-color: transparent;
 	background-color: rgba( 0, 0, 0, 0.01 );
 	border: 1px solid #eaeaea;
@@ -193,8 +194,8 @@ p.affwp-error {
 	word-wrap: break-word;
 }
 
-#affwp-affiliate-dashboard-creatives pre,
-#affwp-affiliate-dashboard-creatives code {
+.affwp-creative pre,
+.affwp-creative code {
 	-webkit-hyphens: none;
 	-moz-hyphens: none;
 	-ms-hyphens: none;
@@ -227,4 +228,55 @@ p.affwp-error {
 	clip: rect(0 0 0 0);
 	border: 0;
 	word-wrap: normal !important;
+}
+
+/* Responsive table styling for mobile resolutions */
+.affwp-table-responsive td:before {
+	content: attr(data-th) ":\00a0";
+	font-weight: bold;
+}
+
+.affwp-table-responsive td:before {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	
+	#affwp-affiliate-dashboard-campaign-stats .affwp-table-responsive td.affwp-table-no-data {
+		display: block;
+	}
+
+	#affwp-affiliate-dashboard-visits .affwp-table-responsive td.affwp-table-no-data:before,
+	#affwp-affiliate-dashboard-payouts .affwp-table-responsive td.affwp-table-no-data:before,
+	#affwp-affiliate-dashboard-referrals .affwp-table-responsive td.affwp-table-no-data:before {
+		display: none;
+	}
+
+	.affwp-table-responsive td:last-child {
+		margin-bottom: 20px;
+	}
+
+	.affwp-table-responsive td:first-child {
+		background-color: #fafafa;
+	}
+	
+	.affwp-table-responsive td:before {
+		display: inline-block;
+	}
+	
+	.affwp-table-responsive th {
+		display: none;
+	}
+
+	.affwp-table-responsive td {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
+		-webkit-box-pack: justify;
+		-webkit-justify-content: space-between;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+	}
+
 }

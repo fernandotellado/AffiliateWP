@@ -95,7 +95,7 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 	*/
 	public function get_column_defaults() {
 		return array(
-			'date' => date( 'Y-m-d H:i:s' ),
+			'date' => gmdate( 'Y-m-d H:i:s' ),
 		);
 	}
 
@@ -108,17 +108,19 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 	 * @param array $args {
 	 *     Optional. Arguments for querying creatives. Default empty array.
 	 *
-	 *     @type int       $number      Number of creatives to query for. Default 20.
-	 *     @type int       $offset      Number of creatives to offset the query for. Default 0.
-	 *     @type int|array $creative_id Creative ID or array of creative IDs to explicitly retrieve. Default 0.
-	 *     @type string    $status      Creative status. Default empty (all).
-	 *     @type string    $order       How to order returned creative results. Accepts 'ASC' or 'DESC'.
-	 *                                  Default 'DESC'.
-	 *     @type string    $orderby     Creatives table column to order results by. Accepts any AffWP\Creative
-	 *                                  field. Default 'creative_id'.
-	 *     @type string    $fields      Fields to limit the selection for. Accepts 'ids' or '*' (all). Default '*'.
+	 *     @type int          $number      Number of creatives to query for. Default 20.
+	 *     @type int          $offset      Number of creatives to offset the query for. Default 0.
+	 *     @type int|array    $creative_id Creative ID or array of creative IDs to explicitly retrieve. Default 0.
+	 *     @type string       $status      Creative status. Default empty (all).
+	 *     @type string       $order       How to order returned creative results. Accepts 'ASC' or 'DESC'.
+	 *                                     Default 'DESC'.
+	 *     @type string       $orderby     Creatives table column to order results by. Accepts any AffWP\Creative
+	 *                                     field. Default 'creative_id'.
+	 *     @type string|array $fields      Specific fields to retrieve. Accepts 'ids', a single creative field, or an
+	 *                                     array of fields. Default '*' (all).
 	 * }
 	 * @param bool $count Whether to retrieve only the total number of results found. Default false.
+	 * @return array|int Array of creative objects or field(s) (if found), int if `$count` is true.
 	 */
 	public function get_creatives( $args = array(), $count = false ) {
 		global $wpdb;
@@ -169,6 +171,11 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 			}
 		}
 
+		// Creatives for a date or date range.
+		if( ! empty( $args['date'] ) ) {
+			$where = $this->prepare_date_query( $where, $args['date'] );
+		}
+
 		// There can be only two orders.
 		if ( 'ASC' === strtoupper( $args['order'] ) ) {
 			$order = 'ASC';
@@ -182,13 +189,17 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 		$args['orderby'] = $orderby;
 		$args['order']   = $order;
 
-		$fields = "*";
+		// Fields.
+		$callback = '';
 
-		if ( ! empty( $args['fields'] ) ) {
-			if ( 'ids' === $args['fields'] ) {
-				$fields = "$this->primary_key";
-			} elseif ( array_key_exists( $args['fields'], $this->get_columns() ) ) {
-				$fields = $args['fields'];
+		if ( 'ids' === $args['fields'] ) {
+			$fields   = "$this->primary_key";
+			$callback = 'intval';
+		} else {
+			$fields = $this->parse_fields( $args['fields'] );
+
+			if ( '*' === $fields ) {
+				$callback = 'affwp_get_creative';
 			}
 		}
 
@@ -196,7 +207,8 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 
 		$last_changed = wp_cache_get( 'last_changed', $this->cache_group );
 		if ( ! $last_changed ) {
-			wp_cache_set( 'last_changed', microtime(), $this->cache_group );
+			$last_changed = microtime();
+			wp_cache_set( 'last_changed', $last_changed, $this->cache_group );
 		}
 
 		$cache_key = "{$key}:{$last_changed}";
@@ -207,7 +219,7 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 
 			$clauses = compact( 'fields', 'join', 'where', 'orderby', 'order', 'count' );
 
-			$results = $this->get_results( $clauses, $args, 'affwp_get_creative' );
+			$results = $this->get_results( $clauses, $args, $callback );
 		}
 
 		wp_cache_add( $cache_key, $results, $this->cache_group, HOUR_IN_SECONDS );
@@ -236,16 +248,28 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 
 		$defaults = array(
 			'status' => 'active',
-			'date'   => current_time( 'mysql' ),
 			'url'	 => '',
 			'image'  => '',
 		);
 
 		$args = wp_parse_args( $data, $defaults );
 
+		if ( empty( $args['date'] ) ) {
+			unset( $args['date'] );
+		} else {
+			$time = strtotime( $args['date'] );
+
+			$args['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
+		}
+
 		$add = $this->insert( $args, 'creative' );
 
 		if ( $add ) {
+			/**
+			 * Fires immediately after a creative has been added to the database.
+			 *
+			 * @param array $add The creative data being added.
+			 */
 			do_action( 'affwp_insert_creative', $add );
 			return $add;
 		}

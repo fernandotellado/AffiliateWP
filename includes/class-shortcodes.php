@@ -12,7 +12,8 @@ class Affiliate_WP_Shortcodes {
 		add_shortcode( 'affiliate_content',           array( $this, 'affiliate_content'      ) );
 		add_shortcode( 'non_affiliate_content',       array( $this, 'non_affiliate_content'  ) );
 		add_shortcode( 'affiliate_creative',          array( $this, 'affiliate_creative'     ) );
-		add_shortcode( 'affiliate_creatives',         array( $this, 'affiliate_creatives'     ) );
+		add_shortcode( 'affiliate_creatives',         array( $this, 'affiliate_creatives'    ) );
+		add_shortcode( 'opt_in',                      array( $this, 'opt_in_form'            ) );
 
 	}
 
@@ -29,21 +30,41 @@ class Affiliate_WP_Shortcodes {
 			return;
 		}
 
+		affwp_enqueue_script( 'affwp-frontend', 'affiliate_area' );
+
+		/**
+		 * Filters the display of the registration form
+		 *
+		 * @since 2.0
+		 * @param bool $show Whether to show the registration form. Default true.
+		 */
+		$show_registration = apply_filters( 'affwp_affiliate_area_show_registration', true );
+
+		/**
+		 * Filters the display of the login form
+		 *
+		 * @since 2.0
+		 * @param bool $show Whether to show the login form. Default true.
+		 */
+		$show_login = apply_filters( 'affwp_affiliate_area_show_login', true );
+
 		ob_start();
 
 		if ( is_user_logged_in() && affwp_is_affiliate() ) {
-
 			affiliate_wp()->templates->get_template_part( 'dashboard' );
-
 		} elseif ( is_user_logged_in() && affiliate_wp()->settings->get( 'allow_affiliate_registration' ) ) {
 
-			affiliate_wp()->templates->get_template_part( 'register' );
+			if ( true === $show_registration ) {
+				affiliate_wp()->templates->get_template_part( 'register' );
+			}
 
 		} else {
 
 			if ( affiliate_wp()->settings->get( 'allow_affiliate_registration' ) ) {
 
-				affiliate_wp()->templates->get_template_part( 'register' );
+				if ( true === $show_registration ) {
+					affiliate_wp()->templates->get_template_part( 'register' );
+				}
 
 			} else {
 				affiliate_wp()->templates->get_template_part( 'no', 'access' );
@@ -51,7 +72,9 @@ class Affiliate_WP_Shortcodes {
 
 			if ( ! is_user_logged_in() ) {
 
-				affiliate_wp()->templates->get_template_part( 'login' );
+				if ( true === $show_login ) {
+					affiliate_wp()->templates->get_template_part( 'login' );
+				}
 
 			}
 
@@ -99,15 +122,10 @@ class Affiliate_WP_Shortcodes {
 		}
 
 		if ( ! is_user_logged_in() ) {
-
-			$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
-			wp_enqueue_style( 'affwp-forms', AFFILIATEWP_PLUGIN_URL . 'assets/css/forms' . $suffix . '.css', AFFILIATEWP_VERSION );
-
 			return affiliate_wp()->login->login_form( $redirect );
 		}
 
 	}
-
 
 	/**
 	 *  Renders the affiliate registration form
@@ -135,7 +153,7 @@ class Affiliate_WP_Shortcodes {
 			return;
 		}
 
-		wp_enqueue_style( 'affwp-forms' );
+		affwp_enqueue_script( 'affwp-frontend', 'affiliate_registration' );
 
 		// redirect added to shortcode
 		if ( $redirect ) {
@@ -168,6 +186,10 @@ class Affiliate_WP_Shortcodes {
 	 */
 	public function conversion_script( $atts, $content = null ) {
 
+		if ( is_admin() ) {
+			return;
+		}
+
 		$atts = shortcode_atts(
 			array(
 				'amount'      => '',
@@ -175,7 +197,8 @@ class Affiliate_WP_Shortcodes {
 				'reference'   => '',
 				'context'     => '',
 				'campaign'    => '',
-				'status'      => ''
+				'status'      => '',
+				'type'        => 'sale',
 			),
 			$atts,
 			'affwp_conversion_script'
@@ -326,6 +349,45 @@ class Affiliate_WP_Shortcodes {
 
 		return do_shortcode( $content );
 	}
+
+	/**
+	 *  Renders the opt-in
+	 *
+	 *  @since 2.2
+	 *  @return string
+	 */
+	public function opt_in_form( $atts, $content = null ) {
+
+		$atts = shortcode_atts(
+			array(
+				'redirect' => '',
+			),
+			$atts,
+			'opt_in'
+		);
+
+		$redirect = ! empty( $atts['redirect'] ) ? $atts['redirect'] : '';
+
+		// redirect added to shortcode
+		if ( $redirect ) {
+
+			if ( 'current' === $redirect ) {
+				// redirect to current page
+				$redirect = '';
+			} elseif ( 'referrer' === $redirect && wp_get_referer() ) {
+				// redirect to the page before landing on login page
+				$redirect = wp_get_referer();
+			} else {
+				// redirect to the location entered in the shortcode
+				$redirect = $redirect;
+			}
+
+		}
+
+		return affiliate_wp()->integrations->opt_in->form( $redirect );
+
+	}
+
 
 }
 new Affiliate_WP_Shortcodes;

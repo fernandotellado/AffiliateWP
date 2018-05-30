@@ -28,21 +28,7 @@ function affwp_settings_admin() {
 	?>
 	<div class="wrap">
 		<h2 class="nav-tab-wrapper">
-			<?php
-			foreach( affwp_get_settings_tabs() as $tab_id => $tab_name ) {
-
-				$tab_url = add_query_arg( array(
-					'settings-updated' => false,
-					'tab' => $tab_id
-				) );
-
-				$active = $active_tab == $tab_id ? ' nav-tab-active' : '';
-
-				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">';
-					echo esc_html( $tab_name );
-				echo '</a>';
-			}
-			?>
+			<?php affwp_navigation_tabs( affwp_get_settings_tabs(), $active_tab, array( 'settings-updated' => false ) ); ?>
 		</h2>
 		<div id="tab_container">
 			<form method="post" action="options.php">
@@ -62,18 +48,51 @@ function affwp_settings_admin() {
 
 
 /**
- * Retrieve settings tabs
+ * Retrieves the settings tabs.
  *
  * @since 1.0
- * @return array $tabs
+ *
+ * @return array $tabs Settings tabs.
  */
 function affwp_get_settings_tabs() {
 
 	$tabs                 = array();
 	$tabs['general']      = __( 'General', 'affiliate-wp' );
 	$tabs['integrations'] = __( 'Integrations', 'affiliate-wp' );
+	$tabs['opt_in_forms'] = __( 'Opt-In Form', 'affiliate-wp' );
 	$tabs['emails']       = __( 'Emails', 'affiliate-wp' );
 	$tabs['misc']         = __( 'Misc', 'affiliate-wp' );
 
+	/**
+	 * Filters the list of settings tabs.
+	 *
+	 * @param array $tabs Settings tabs.
+	 */
 	return apply_filters( 'affwp_settings_tabs', $tabs );
 }
+
+/**
+ * Forces a license key check anytime the General settings tab is loaded
+ *
+ * @since 2.1.4
+ *
+ * @return void
+ */
+function affwp_check_license_before_settings_load() {
+
+	if( empty( $_GET['page'] ) || 'affiliate-wp-settings' !== $_GET['page'] ) {
+		return;
+	}
+
+	if( empty( $_GET['tab'] ) ) {
+		return;
+	}
+
+	$active_tab = isset( $_GET[ 'tab' ] ) && array_key_exists( $_GET['tab'], affwp_get_settings_tabs() ) ? $_GET[ 'tab' ] : 'general';
+
+	if( 'general' === $active_tab && affiliate_wp()->settings->get_license_key() ) {
+		affiliate_wp()->settings->check_license( true );
+	}
+
+}
+add_action( 'admin_init', 'affwp_check_license_before_settings_load', 0 );

@@ -8,6 +8,7 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0
 */
+use \AffWP\Utils\Exporter;
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -100,23 +101,74 @@ function affwp_process_settings_export() {
 	if( ! wp_verify_nonce( $_POST['affwp_export_nonce'], 'affwp_export_nonce' ) )
 		return;
 
-	if( ! current_user_can( 'manage_options' ) )
+	if( ! current_user_can( 'manage_affiliate_options' ) )
 		return;
 
-	$settings = array();
-	$settings = get_option( 'affwp_settings' );
+	$settings = new Exporter\Settings();
+	$settings->export();
 
-	ignore_user_abort( true );
-
-	if ( ! ini_get( 'safe_mode' ) )
-		set_time_limit( 0 );
-
-	nocache_headers();
-	header( 'Content-Type: application/json; charset=utf-8' );
-	header( 'Content-Disposition: attachment; filename=affwp-settings-export-' . date( 'm-d-Y' ) . '.json' );
-	header( "Expires: 0" );
-
-	echo json_encode( $settings );
 	exit;
 }
 add_action( 'affwp_export_settings', 'affwp_process_settings_export' );
+
+/**
+ * Converts the character encoding for the export data
+ *
+ * @since 2.1.17
+ *
+ * @param array $data Single row of exported data.
+ * @return array Single row of exported data.
+ */
+function affwp_export_set_data_charset( $data ) {
+
+	if ( defined( 'AFFILIATE_WP_EXPORT_CHARSET' ) ) {
+
+		$charset = AFFILIATE_WP_EXPORT_CHARSET;
+
+		foreach ( $data as $key => $value ) {
+
+			$data[ $key ] = mb_convert_encoding( $value , $charset, get_option( 'blog_charset' ));
+
+		}
+
+	}
+
+	return $data;
+
+}
+add_filter( 'affwp_visit_export_get_data_line', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_payout_export_get_data_line', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_referral_export_get_data_line', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_affiliate_export_get_data_line', 'affwp_export_set_data_charset' );
+
+/**
+ * Converts the character encoding for the export CSV columns (headers)
+ *
+ * @since 2.1.17
+ *
+ * @param array $cols The export CSV columns (headers)
+ * @return array The export CSV columns (headers)
+ */
+function affwp_export_set_header_charset( $cols ) {
+
+	if ( defined( 'AFFILIATE_WP_EXPORT_CHARSET' ) ) {
+
+		$charset = AFFILIATE_WP_EXPORT_CHARSET;
+
+		foreach ( $cols as $key => $value ) {
+
+			$cols[ $key ] = mb_convert_encoding( $value , $charset, get_option( 'blog_charset' ));
+
+		}
+
+	}
+
+	return $cols;
+
+}
+add_filter( 'affwp_export_csv_cols_visits', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_export_csv_cols_payouts', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_export_csv_cols_referrals', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_export_csv_cols_affiliates', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_export_csv_cols_payout-logs', 'affwp_export_set_data_charset' );
+add_filter( 'affwp_export_csv_cols_referrals_payout', 'affwp_export_set_data_charset' );

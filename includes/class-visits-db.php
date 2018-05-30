@@ -39,7 +39,7 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			$this->table_name  = $wpdb->prefix . 'affiliate_wp_visits';
 		}
 		$this->primary_key = 'visit_id';
-		$this->version     = '1.0';
+		$this->version     = '1.1';
 
 		// REST endpoints.
 		if ( version_compare( $wp_version, '4.4', '>=' ) ) {
@@ -70,6 +70,7 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			'url'          => '%s',
 			'referrer'     => '%s',
 			'campaign'     => '%s',
+			'context'      => '%s',
 			'ip'           => '%s',
 			'date'         => '%s',
 		);
@@ -79,9 +80,10 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 		return array(
 			'affiliate_id' => 0,
 			'referral_id'  => 0,
-			'date'         => date( 'Y-m-d H:i:s' ),
+			'date'         => gmdate( 'Y-m-d H:i:s' ),
 			'referrer'     => ! empty( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '',
-			'campaign'     => ! empty( $_REQUEST['campaign'] )    ? $_REQUEST['campaign']    : ''
+			'campaign'     => ! empty( $_REQUEST['campaign'] )    ? $_REQUEST['campaign']    : '',
+			'context'      => ! empty( $_REQUEST['context'] )     ? $_REQUEST['context']     : ''
 		);
 	}
 
@@ -108,13 +110,21 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 	 *                                          Accepts '=', '!=' or 'NOT EMPTY'. If 'EMPTY' or 'NOT EMPTY', `$campaign`
 	 *                                          will be ignored and visits will simply be queried based on whether
 	 *                                          the campaign column is empty or not. Default '='.
+	 *     @type string|array $context          Context or array of contexts under which the visit was generated.
+	 *                                          Default empty.
+	 *     @type string       $context_compare  Comparison operator to use when querying for visits by context. Accepts
+	 *                                          '=', '!=', or 'NOT EMPTY'. If 'EMPTY' or 'NOT EMPTY', `$context`
+	 *                                          will be ignored and visits will simply be queried based on whether the
+	 *                                          context column is empty or not. Default '='.
 	 *     @type string       $orderby          Column to order results by. Accepts any valid referrals table column.
 	 *                                          Default 'referral_id'.
 	 *     @type string       $order            How to order results. Accepts 'ASC' (ascending) or 'DESC' (descending).
 	 *                                          Default 'DESC'.
-	 *     @type string       $fields           Fields to query for. Accepts 'ids' or '*' (all). Default '*'.
+	 *     @type string|array $fields           Specific fields to retrieve. Accepts 'ids', a single visit field, or an
+	 *                                          array of fields. Default '*' (all).
 	 * }
 	 * @param   bool  $count  Return only the total number of results found (optional)
+	 * @return array|int Array of visit objects or field(s) (if found), int if `$count` is true.
 	*/
 	public function get_visits( $args = array(), $count = false ) {
 		global $wpdb;
@@ -128,6 +138,8 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			'referral_status'  => '',
 			'campaign'         => '',
 			'campaign_compare' => '=',
+			'context'          => '',
+			'context_compare'  => '=',
 			'order'            => 'DESC',
 			'orderby'          => 'visit_id',
 			'fields'           => '',
@@ -225,7 +237,53 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 				if ( empty( $args['campaign'] ) ) {
 					$where .= "`campaign` {$campaign_compare} '' ";
 				} else {
-					$where .= "`campaign` {$campaign_compare} {$args['campaign']} ";
+					$where .= "`campaign` {$campaign_compare} '{$args['campaign']}' ";
+				}
+			}
+
+		}
+
+		// Visits context comparison.
+		if ( empty( $args['context_compare'] ) ) {
+			$context_compare = '=';
+		} else {
+			if ( 'NOT EMPTY' === $args['context_compare'] ) {
+				$context_compare = '!=';
+
+				// Cancel out context value for comparison purposes.
+				$args['context'] = '';
+			} elseif ( 'EMPTY' === $args['context_compare'] ) {
+				$context_compare = '=';
+
+				// Cancel out context value for comparison purposes.
+				$args['context'] = '';
+			} else {
+				$context_compare = $args['context_compare'];
+			}
+		}
+
+		// Visits context.
+		if( ! empty( $args['context'] )
+			|| ( empty( $args['context'] ) && '=' !== $context_compare )
+			|| ( empty( $args['context'] ) && '=' === $context_compare && 'EMPTY' === $args['context_compare'] )
+		) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
+			if( is_array( $args['context'] ) ) {
+
+				if ( '!=' === $context_compare ) {
+					$where .= "`context` NOT IN('" . join("', '", array_map( 'esc_sql', $args['context'] ) ) . "') ";
+				} else {
+					$where .= "`context` IN('" . join("', '", array_map( 'esc_sql', $args['context'] ) ) . "') ";
+				}
+
+			} else {
+
+				if ( empty( $args['context'] ) ) {
+					$where .= "`context` {$context_compare} '' ";
+				} else {
+					$where .= "`context` {$context_compare} '{$args['context']}' ";
 				}
 			}
 
@@ -246,38 +304,7 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 
 		// Visits for a date or date range
 		if( ! empty( $args['date'] ) ) {
-
-			if( is_array( $args['date'] ) ) {
-
-				if( ! empty( $args['date']['start'] ) ) {
-
-					$where .= empty( $where ) ? "WHERE " : "AND ";
-
-					$start = esc_sql( date( 'Y-m-d H:i:s', strtotime( $args['date']['start'] ) ) );
-
-					$where .= "`date` >= '{$start}' ";
-				}
-
-				if( ! empty( $args['date']['end'] ) ) {
-
-					$where .= empty( $where ) ? "WHERE " : "AND ";
-
-					$end = esc_sql( date( 'Y-m-d H:i:s', strtotime( $args['date']['end'] ) ) );
-
-					$where .= "`date` <= '{$end}' ";
-				}
-
-			} else {
-
-				$year  = date( 'Y', strtotime( $args['date'] ) );
-				$month = date( 'm', strtotime( $args['date'] ) );
-				$day   = date( 'd', strtotime( $args['date'] ) );
-
-				$where .= empty( $where ) ? "WHERE " : "AND ";
-
-				$where .= "$year = YEAR ( date ) AND $month = MONTH ( date ) AND $day = DAY ( date ) ";
-			}
-
+			$where = $this->prepare_date_query( $where, $args['date'] );
 		}
 
 		// Build the search query
@@ -306,13 +333,17 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 		$args['orderby'] = $orderby;
 		$args['order']   = $order;
 
-		$fields = "*";
+		// Fields.
+		$callback = '';
 
-		if ( ! empty( $args['fields'] ) ) {
-			if ( 'ids' === $args['fields'] ) {
-				$fields = "$this->primary_key";
-			} elseif ( array_key_exists( $args['fields'], $this->get_columns() ) ) {
-				$fields = $args['fields'];
+		if ( 'ids' === $args['fields'] ) {
+			$fields   = "$this->primary_key";
+			$callback = 'intval';
+		} else {
+			$fields = $this->parse_fields( $args['fields'] );
+
+			if ( '*' === $fields ) {
+				$callback = 'affwp_get_visit';
 			}
 		}
 
@@ -320,7 +351,8 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 
 		$last_changed = wp_cache_get( 'last_changed', $this->cache_group );
 		if ( ! $last_changed ) {
-			wp_cache_set( 'last_changed', microtime(), $this->cache_group );
+			$last_changed = microtime();
+			wp_cache_set( 'last_changed', $last_changed, $this->cache_group );
 		}
 
 		$cache_key = "{$key}:{$last_changed}";
@@ -331,7 +363,7 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 
 			$clauses = compact( 'fields', 'join', 'where', 'orderby', 'order', 'count' );
 
-			$results = $this->get_results( $clauses, $args, 'affwp_get_visit' );
+			$results = $this->get_results( $clauses, $args, $callback );
 		}
 
 		wp_cache_add( $cache_key, $results, $this->cache_group, HOUR_IN_SECONDS );
@@ -371,10 +403,25 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 
 		}
 
+		if ( ! empty( $data['context'] ) ) {
+			$data['context'] = sanitize_key( substr( $data['context'], 0, 50 ) );
+		}
+
+		if ( ! empty( $data['date'] ) ) {
+			$time = strtotime( $data['date'] );
+
+			$data['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
+		}
+
+		if ( affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+			$data['ip'] = '';
+		}
+
 		$visit_id = $this->insert( $data, 'visit' );
 
-
-		affwp_increase_affiliate_visit_count( $data['affiliate_id'] );
+		if ( $visit_id ) {
+			affwp_increase_affiliate_visit_count( $data['affiliate_id'] );
+		}
 
 		return $visit_id;
 	}
@@ -403,12 +450,22 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			$data['campaign'] = substr( $data['campaign'], 0, 50 );
 		}
 
+		if ( ! empty( $data['context'] ) ) {
+			$data['context'] = sanitize_key( substr( $data['context'], 0, 50 ) );
+		}
+
 		if ( ! empty( $data['affiliate_id'] ) ) {
 			// If the passed affiliate ID is invalid, ignore the new value.
 			if ( ! affwp_get_affiliate( $data['affiliate_id'] ) ) {
 				$data['affiliate_id'] = $visit->affiliate_id;
 			}
 		}
+
+		if ( ! empty( $data['date' ] ) && $data['date'] !== $visit->date ) {
+			$timestamp    = strtotime( $data['date'] ) - affiliate_wp()->utils->wp_offset;
+			$data['date'] = gmdate( 'Y-m-d H:i:s', $timestamp );
+		}
+
 		if ( $this->update( $visit->ID, $data, '', 'visit' ) ) {
 			$updated_visit = affwp_get_visit( $visit->ID );
 
@@ -439,6 +496,7 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			url mediumtext NOT NULL,
 			referrer mediumtext NOT NULL,
 			campaign varchar(50) NOT NULL,
+			context varchar(50) NOT NULL,
 			ip tinytext NOT NULL,
 			date datetime NOT NULL,
 			PRIMARY KEY  (visit_id),

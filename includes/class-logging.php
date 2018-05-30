@@ -25,7 +25,7 @@ class Affiliate_WP_Logging {
 	 */
 	public function init() {
 
-		$upload_dir       = wp_upload_dir();
+		$upload_dir       = wp_upload_dir( null, false );
 		$this->filename   = 'affwp-debug.log';
 		$this->file       = trailingslashit( $upload_dir['basedir'] ) . $this->filename;
 
