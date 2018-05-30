@@ -144,6 +144,8 @@ class Affiliate_WP_OptimizeMember extends Affiliate_WP_Base {
 				$this->complete_referral( $txn_id );
 
 				$this->log( 'OptimizeMember referral completed.' );
+			
+				exit;
 			}
 
 			$this->log( 'OptimizeMember referral validation failed. Missing affiliate ID.' );
