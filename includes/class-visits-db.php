@@ -413,6 +413,10 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			$data['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
 		}
 
+		if ( affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+			$data['ip'] = '';
+		}
+
 		$visit_id = $this->insert( $data, 'visit' );
 
 		if ( $visit_id ) {
