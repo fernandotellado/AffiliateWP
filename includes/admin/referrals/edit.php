@@ -144,6 +144,23 @@ $disabled = disabled( (bool) $payout, true, false );
 			<tr class="form-row form-required">
 
 				<th scope="row">
+					<label for="type"><?php _e( 'Referral Type', 'affiliate-wp' ); ?></label>
+				</th>
+
+				<td>
+					<select name="type" id="type">
+						<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+							<option value="<?php echo esc_attr( $type_id ); ?>"<?php selected( $type_id, $referral->type ); ?>><?php echo esc_html( $type['label'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php _e( 'Select the type of the referral.', 'affiliate-wp' ); ?></p>
+				</td>
+
+			</tr>
+
+			<tr class="form-row form-required">
+
+				<th scope="row">
 					<label for="date"><?php _e( 'Date', 'affiliate-wp' ); ?></label>
 				</th>
 

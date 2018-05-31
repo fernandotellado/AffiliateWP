@@ -158,11 +158,16 @@ class Affiliate_WP_ZippyCourses extends Affiliate_WP_Base {
 
 			if( $event->new_status == 'pending' && $event->old_status != 'pending' ) {
 
-				$order = $event->order;
+				$order       = $event->order;
+				$customer    = $order->getCustomer();
 
-				$customer = $order->getCustomer();
+				if( ! $order || ! $customer ) {
+					return;
+				}
 
-				if ( $customer === null || $this->is_affiliate_email( $customer->getEmail() ) ) {
+				$this->email = $customer->getEmail();
+
+				if ( $customer === null || $this->is_affiliate_email( $this->email ) ) {
    
 					$this->log( 'Referral not created because affiliate\'s own account was used.' );
 

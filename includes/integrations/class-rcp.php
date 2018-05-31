@@ -110,6 +110,7 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 					'description'  => $subscription,
 					'affiliate_id' => $this->affiliate_id,
 					'context'      => $this->context,
+					'customer'     => $this->get_customer(),
 					'campaign'     => affiliate_wp()->tracking->get_campaign(),
 				), $amount, $key, $subscription, $this->affiliate_id, $visit_id, array(), $this->context ) );
 
@@ -160,6 +161,54 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 		return apply_filters( 'affwp_get_product_rate', $rate, $level_id, $args, $this->affiliate_id, $this->context );
 
+	}
+
+	/**
+	 * Retrieves the customer details for a specific subscription key
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $subscription_key The subscription key to retrieve customer details for.
+	 * @return array An array of the customer details
+	*/
+	public function get_customer( $subscription_key = 0 ) {
+
+		global $wpdb;
+
+		if( ! empty( $subscription_key ) ) {
+
+			$user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = 'rcp_subscription_key' AND meta_value = '%s' LIMIT 1;", $subscription_key ) );
+
+			if( $user_id ) {
+
+				$user = get_userdata( $user_id );
+
+				$customer = array(
+					'first_name'   => is_user_logged_in() && $user ? $user->last_name : '',
+					'last_name'    => is_user_logged_in() && $user ? $user->first_name : '',
+					'email'        => is_user_logged_in() && $user ? $user->user_email : $this->email,
+					'user_id'      => $user_id,
+					'affiliate_id' => $this->affiliate_id
+				);
+
+			}
+
+		}
+
+		if( empty( $customer ) ) {
+
+			$customer = array(
+				'first_name'   => is_user_logged_in() ? wp_get_current_user()->last_name : '',
+				'last_name'    => is_user_logged_in() ? wp_get_current_user()->first_name : '',
+				'email'        => is_user_logged_in() ? wp_get_current_user()->user_email : $this->email,
+				'user_id'      => get_current_user_id(),
+				'ip'           => affiliate_wp()->tracking->get_ip(),
+				'affiliate_id' => $this->affiliate_id
+			);
+
+		}
+
+		return $customer;
 	}
 
 	/**

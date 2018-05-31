@@ -99,6 +99,7 @@ class Referrals_DB_Tests extends UnitTestCase {
 			'referral_id' => '%d',
 			'affiliate_id'=> '%d',
 			'visit_id'    => '%d',
+			'customer_id' => '%d',
 			'description' => '%s',
 			'status'      => '%s',
 			'amount'      => '%s',
@@ -106,6 +107,7 @@ class Referrals_DB_Tests extends UnitTestCase {
 			'custom'      => '%s',
 			'context'     => '%s',
 			'campaign'    => '%s',
+			'type'        => '%s',
 			'reference'   => '%s',
 			'products'    => '%s',
 			'payout_id'   => '%d',
@@ -762,6 +764,7 @@ class Referrals_DB_Tests extends UnitTestCase {
 		$this->assertFalse( affiliate_wp()->referrals->get_by( 'affiliate_id', '' ) );
 	}
 
+
 	/**
 	 * @covers \Affiliate_WP_Referrals_DB::paid_earnings()
 	 */
@@ -774,6 +777,47 @@ class Referrals_DB_Tests extends UnitTestCase {
 		$total = affwp_currency_filter( affwp_format_amount( $total ) );
 
 		$this->assertSame( $total, affiliate_wp()->referrals->paid_earnings( '', self::$affiliate_id ) );
+	}
+
+	/**
+	 *
+	 * @group type
+	 */
+	public function test_referral_type_is_sale() {
+		$referral = affwp_get_referral( self::$referrals[0] );
+
+		$this->assertEquals( 'sale', $referral->type );
+
+	}
+
+	/**
+	 * @covers \Affiliate_WP_Referrals_DB::update_referral()
+	 * @group type
+	 */
+	public function test_update_referral_new_type_of_opt_in() {
+	
+		affiliate_wp()->referrals->update_referral( self::$referrals[0], array(
+			'type' => 'opt-in'
+		) );
+
+		$referral = affwp_get_referral( self::$referrals[0] );
+
+		$this->assertEquals( 'opt-in', $referral->type );
+
+	}
+
+	/**
+	 * @covers Affiliate_WP_Referrals_DB::count_by_status()
+	 * @group type
+	 */
+	public function test_count_when_querying_for_opt_in_type_referrals() {
+		// Set up 3 referrals with type of opt-in.
+		$this->factory->referral->create_many( 3, array(
+			'affiliate_id' => self::$affiliate_id,
+			'type'         => 'opt-in'
+		) );
+
+		$this->assertSame( 3, affiliate_wp()->referrals->count( array( 'type' => 'opt-in' ) ) );
 	}
 
 }

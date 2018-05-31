@@ -237,7 +237,7 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 				if ( empty( $args['campaign'] ) ) {
 					$where .= "`campaign` {$campaign_compare} '' ";
 				} else {
-					$where .= "`campaign` {$campaign_compare} {$args['campaign']} ";
+					$where .= "`campaign` {$campaign_compare} '{$args['campaign']}' ";
 				}
 			}
 
@@ -411,6 +411,10 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 			$time = strtotime( $data['date'] );
 
 			$data['date'] = gmdate( 'Y-m-d H:i:s', $time - affiliate_wp()->utils->wp_offset );
+		}
+
+		if ( affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+			$data['ip'] = '';
 		}
 
 		$visit_id = $this->insert( $data, 'visit' );

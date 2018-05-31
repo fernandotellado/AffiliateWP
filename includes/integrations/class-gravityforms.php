@@ -58,6 +58,12 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 			return;
 		}
 
+		// Get the referral type we are creating
+		$type = rgar( $form, 'affwp_referral_type' );
+		$type = empty( $type ) ? 'sale' : $type;
+
+		$this->referral_type = $type;
+
 		// Get all emails from submitted form
 		$emails = $this->get_emails( $entry, $form );
 
@@ -275,15 +281,26 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	 */
 	public function add_settings( $settings, $form ) {
 
-		$checked = rgar( $form, 'affwp_allow_referrals' );
+		$checked  = rgar( $form, 'affwp_allow_referrals' );
+		$selected = rgar( $form, 'affwp_referral_type' );
 
 		$field  = '<input type="checkbox" id="affwp_allow_referrals" name="affwp_allow_referrals" value="1" ' . checked( 1, $checked, false ) . ' />';
 		$field .= ' <label for="affwp_allow_referrals">' . __( 'Enable affiliate referral creation for this form', 'affiliate-wp' ) . '</label>';
 
+		$field_type = '<select name="affwp_referral_type" id="affwp_referral_type">';
+			foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) {
+				$field_type .= '<option value="' . esc_attr( $type_id ) . '"' . selected( $type_id, $selected, false ) .'>' . esc_html( $type['label'] ) . '</option>';
+			}
+		$field_type .= '</select>';
+		$field_type .= ' <label for="affwp_referral_type">' . __( 'Referral Type', 'affiliate-wp' ) . '</label>';
+
 		$settings['Form Options']['affwp_allow_referrals'] = '
 			<tr>
 				<th>' . __( 'Allow referrals', 'affiliate-wp' ) . '</th>
-				<td>' . $field . '</td>
+				<td>' .
+					'<p>' . $field . '</p>' . 
+					'<p>' . $field_type . '</p>' . 
+				'</td>
 			</tr>';
 
 		return $settings;
@@ -298,6 +315,7 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	public function save_settings( $form ) {
 
 		$form['affwp_allow_referrals'] = rgpost( 'affwp_allow_referrals' );
+		$form['affwp_referral_type'] = rgpost( 'affwp_referral_type' );
 
 		return $form;
 
@@ -372,6 +390,33 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 		});
 		</script>
 <?php
+	}
+
+	/**
+	 * Retrieves the customer details for a form submission
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $entry_id The ID of the entry to retrieve customer details for.
+	 * @return array An array of the customer details
+	*/
+	public function get_customer( $entry_id = 0 ) {
+
+		$customer = array();
+
+		if ( class_exists( 'GFCommon' ) ) {
+
+			$entry  = GFFormsModel::get_lead( $entry_id );
+			$form   = GFAPI::get_form( $entry['form_id'] );
+			$emails = $this->get_emails( $entry, $form );
+
+			$customer = array(
+				'email' => current( $emails )
+			);
+
+		}
+
+		return $customer;
 	}
 
 }

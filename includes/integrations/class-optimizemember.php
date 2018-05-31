@@ -128,6 +128,15 @@ class Affiliate_WP_OptimizeMember extends Affiliate_WP_Base {
 					'affiliate_id'	=> $affiliate_id
 				);
 
+				if( $user_id ) {
+
+					$user = get_userdata( $user_id );
+
+					if( $user ) {
+						$this->email = $user->user_email;
+					}
+				}
+
 				$this->add_pending_referral( $args );
 
 				$this->log( 'OptimizeMember pending referral created.' );
@@ -135,6 +144,8 @@ class Affiliate_WP_OptimizeMember extends Affiliate_WP_Base {
 				$this->complete_referral( $txn_id );
 
 				$this->log( 'OptimizeMember referral completed.' );
+			
+				exit;
 			}
 
 			$this->log( 'OptimizeMember referral validation failed. Missing affiliate ID.' );

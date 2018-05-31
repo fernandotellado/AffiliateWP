@@ -56,6 +56,7 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 			return;
 		}
 
+		$this->referral_type = isset( $args['type'] ) ? $args['type'] : 'sale';
 		$referral_total = $this->calculate_referral_amount( $total, $reference );
 
 		$this->insert_pending_referral( $referral_total, $reference, $description );
@@ -127,6 +128,47 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 
+	}
+
+	/**
+	 * Retrieves the customer details for a form submission
+	 *
+	 * @since 2.2
+	 *
+	 * @param int $entry_id The ID of the entry to retrieve customer details for.
+	 * @return array An array of the customer details
+	 */
+	public function get_customer( $entry_id = 0 ) {
+
+		$customer = array();
+
+		if ( class_exists( 'Ninja_Forms' ) ) {
+
+			$fields = Ninja_Forms()->form()->get_sub( $entry_id )->get_field_values();
+
+			if( ! is_array( $fields ) ) {
+				return array();
+			}
+
+			foreach( $fields as $key => $value ) {
+
+				if( false !== strpos( $key, 'email' ) ) {
+					$customer['email'] = $value;
+				}
+
+				if( false !== strpos( $key, 'firstname' ) ) {
+					$customer['first_name'] = $value;
+				}
+
+				if( false !== strpos( $key, 'lastname' ) ) {
+					$customer['last_name'] = $value;
+				}
+
+			}
+
+		}
+
+		return $customer;
 	}
 
 	/**
