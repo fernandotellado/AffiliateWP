@@ -41,8 +41,11 @@ class Tests extends UnitTestCase {
 		self::$users = parent::affwp()->user->create_many( 4 );
 
 		foreach ( self::$users as $user_id ) {
+			$user = get_user_by( 'id', $user_id );
+
 			self::$customers[] = parent::affwp()->customer->create( array(
-				'user_id' => $user_id
+				'user_id' => $user_id,
+				'email'   => $user->user_email
 			) );
 		}
 	}
@@ -228,11 +231,13 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_get_customers_orderby_date_should_order_by_registered_date() {
 		$customer1 = $this->factory->customer->create( array(
-			'date_created' => ( time() - WEEK_IN_SECONDS )
+			'date_created' => ( time() - WEEK_IN_SECONDS ),
+			'email'        => 'customer1@affiliatewp.dev'
 		) );
 
 		$customer2 = $this->factory->customer->create( array(
-			'date_created' => ( time() + WEEK_IN_SECONDS )
+			'date_created' => ( time() + WEEK_IN_SECONDS ),
+			'email'        => 'customer2@affiliatewp.dev'
 		) );
 
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -432,9 +437,17 @@ class Tests extends UnitTestCase {
 	 * @group dates
 	 */
 	public function test_get_customers_date_start_should_only_retrieve_customers_created_after_that_date() {
-		$customers = $this->factory->affiliate->create_many( 3, array(
-			'date_created' => '2016-01-01',
-		) );
+		for ( $i = 1; $i <= 3; $i++ ) {
+			$user_id = $this->factory->user->create();
+
+			$user    = get_user_by( 'id', $user_id );
+
+			$customers[] = affiliate_wp()->customers->add( array(
+				'user_id'      => $user_id,
+				'date_created' => '2016-01-01',
+				'email'        => $user->user_email
+			) );
+		}
 
 		$results = affiliate_wp()->customers->get_customers( array(
 			'fields'       => 'ids',
@@ -451,8 +464,9 @@ class Tests extends UnitTestCase {
 	 * @group dates
 	 */
 	public function test_get_customers_date_end_should_only_retrieve_customers_created_before_that_date() {
-		$affiliate = $this->factory->affiliate->create( array(
+		$customer = $this->factory->customer->create( array(
 			'date_created' => '+1 day',
+			'email'        => 'customer@affiliatewp.dev'
 		) );
 
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -478,7 +492,10 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_add_successful_should_return_id_of_the_new_customer() {
 		$customer = affiliate_wp()->customers->add( array(
-			'user_id' => $this->factory->user->create()
+			'user_id' => $this->factory->user->create( array(
+				'user_email' => 'customer@affiliatewp.dev'
+			) ),
+			'email'   => 'customer@affiliatewp.dev'
 		) );
 
 		$results = affiliate_wp()->customers->get_customers( array(
@@ -496,7 +513,10 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_add_without_date_created_should_use_current_date_and_time() {
 		$customer_id = affiliate_wp()->customers->add( array(
-			'user_id' => $this->factory->user->create()
+			'user_id' => $this->factory->user->create( array(
+				'user_email' => 'customer@affiliatewp.dev'
+			) ),
+			'email' => 'customer@affiliatewp.dev'
 		) );
 
 		$customer = affwp_get_customer( $customer_id );
@@ -514,8 +534,11 @@ class Tests extends UnitTestCase {
 	 */
 	public function test_add_with_date_created_should_assume_local_time_and_remove_offset_on_add() {
 		$customer_id = affiliate_wp()->customers->add( array(
-			'user_id'         => $this->factory->user->create(),
+			'user_id'      => $this->factory->user->create( array(
+				'user_email' => 'customer@affiliatewp.dev'
+			) ),
 			'date_created' => '05/04/2017',
+			'email'        => 'customer@affiliatewp.dev'
 		) );
 
 		$customer = affwp_get_customer( $customer_id );
@@ -524,6 +547,16 @@ class Tests extends UnitTestCase {
 		$actual        = gmdate( 'Y-m-d H:i', strtotime( $customer->date() ) );
 
 		$this->assertSame( $expected_date, $actual );
+	}
+
+	/**
+	 * @covers ::add()
+	 */
+	public function test_add_should_return_false_if_email_is_empty() {
+		$this->assertFalse( affiliate_wp()->customers->add( array(
+			'user_id' => $this->factory->user->create(),
+			'email'   => ''
+		) ) );
 	}
 
 }

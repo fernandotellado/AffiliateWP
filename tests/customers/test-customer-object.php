@@ -26,7 +26,9 @@ class Tests extends UnitTestCase {
 	 * @covers AffWP\Base_Object::get_instance()
 	 */
 	public function test_get_instance_with_customer_id_should_return_customer_object() {
-		$customer_id = affiliate_wp()->customers->add();
+		$customer_id = affiliate_wp()->customers->add( array(
+			'email' => 'customer@affiliatewp.dev'
+		) );
 
 		$this->assertInstanceOf( 'AffWP\Customer', Customer::get_instance( $customer_id ) );
 	}

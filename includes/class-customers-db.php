@@ -343,6 +343,11 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 
 		$args = wp_parse_args( $args, $defaults );
 
+		if( empty( $args['email'] ) ) {
+			affiliate_wp()->utils->log( 'Customer not created due to empty email' );
+			return false;
+		}
+
 		if ( isset( $args['date_created'] ) ) {
 
 			if ( empty( $args['date_created'] ) ) {
@@ -374,6 +379,10 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 			
 			}
 
+		}
+
+		if( affiliate_wp()->settings->get( 'disable_ip_logging' ) ) {
+			unset( $args['ip'] );
 		}
 
 		if( ! empty( $existing ) ) {
@@ -424,9 +433,9 @@ class Affiliate_WP_Customers_DB extends Affiliate_WP_DB {
 	public function update( $row_id, $data = array(), $where = '', $type = 'customer' ) {
 
 		if( isset( $data['affiliate_id'] ) ) {
-			$affiliate_id = absint( $args['affiliate_id'] );
+			$affiliate_id = absint( $data['affiliate_id'] );
 			affwp_add_customer_meta( $row_id, 'affiliate_id', $affiliate_id, false );
-			unset( $args['affiliate_id'] );
+			unset( $data['affiliate_id'] );
 		}
 
 		return parent::update( $row_id, $data, $where, $type );
