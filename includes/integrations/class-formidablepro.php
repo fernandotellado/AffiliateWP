@@ -123,6 +123,19 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 					</select>
 				</td>
 			</tr>
+			<tr>
+				<th scope="row" nowrap="nowrap">
+					<label for="affwp_referral_type"><?php _e( 'Referral Type', 'affiliate-wp' ); ?></label>
+				</th>
+				<td>
+					<select name="options[affiliatewp][referral_type]" id="affwp_referral_type">
+						<?php foreach( affiliate_wp()->referrals->types_registry->get_types() as $type_id => $type ) : ?>
+							<option value="<?php echo esc_attr( $type_id ); ?>"<?php selected( $type_id, self::get_array_values( $values, 'affiliatewp/referral_type' ) ); ?>><?php echo esc_html( $type['label'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<?php esc_html_e( 'Select the referral type for this form.', 'affiliate-wp' ); ?>
+				</td>
+			</tr>
 		</table>
 	<?php
 	}
@@ -163,6 +176,8 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 		if ( $this->was_referred() ) {
 
 			$form = FrmForm::getOne( $form_id );
+
+			$this->referral_type = isset( $form->options['affiliatewp']['referral_type'] ) ? $form->options['affiliatewp']['referral_type'] : 'sale';
 
 			$field_referral_description = $form->options['affiliatewp']['referral_description_field'];
 			$field_purchase_amount      = $form->options['affiliatewp']['purchase_amount_field'];

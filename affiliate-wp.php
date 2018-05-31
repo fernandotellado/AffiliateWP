@@ -5,7 +5,7 @@
  * Description: Affiliate Plugin for WordPress
  * Author: AffiliateWP, LLC
  * Author URI: https://affiliatewp.com
- * Version: 2.1.17
+ * Version: 2.2
  * Text Domain: affiliate-wp
  * Domain Path: languages
  * GitHub Plugin URI: affiliatewp/affiliatewp
@@ -25,7 +25,7 @@
  * @package AffiliateWP
  * @category Core
  * @author Pippin Williamson
- * @version 2.1.17
+ * @version 2.2
  */
 
 // Exit if accessed directly
@@ -57,7 +57,7 @@ final class Affiliate_WP {
 	 * @since  1.0
 	 * @var    string
 	 */
-	private $version = '2.1.17';
+	private $version = '2.2';
 
 	/**
 	 * The affiliates DB instance variable.
@@ -76,6 +76,24 @@ final class Affiliate_WP {
 	 * @var    Affiliate_WP_Affiliate_Meta_DB
 	 */
 	public $affiliate_meta;
+
+	/**
+	 * The customers DB instance variable.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    Affiliate_WP_Customers_DB
+	 */
+	public $customers;
+
+	/**
+	 * The customer meta DB instance variable.
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    Affiliate_WP_Customer_Meta_DB
+	 */
+	public $customer_meta;
 
 	/**
 	 * The referrals instance variable.
@@ -139,6 +157,15 @@ final class Affiliate_WP {
 	 * @var    Affiliate_WP_Login
 	 */
 	public $login;
+
+	/**
+	 * The opt in form handler instance variable
+	 *
+	 * @access public
+	 * @since  2.2
+	 * @var    Affiliate_WP_Opt_In
+	 */
+	public $opt_in;
 
 	/**
 	 * The affiliate registration handler instance variable
@@ -341,6 +368,7 @@ final class Affiliate_WP {
 
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/abstracts/class-affwp-object.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-affiliate.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-customer.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-creative.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-payout.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affwp-referral.php';
@@ -395,25 +423,31 @@ final class Affiliate_WP {
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referrals-graph.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-visits-graph.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/class-payouts-graph.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/abstracts/class-affwp-opt-in-platform.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-integrations.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-login.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referrals-db.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-referral-type-registry.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-register.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-templates.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-tracking.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-rewrites.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-visits-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-campaigns-db.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-customers-db.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-customer-meta-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-creatives-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-creatives.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-affiliate-meta-db.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/affiliate-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/affiliate-meta-functions.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/customer-meta-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/class-registrations-graph.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/misc-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/payout-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/referral-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/visit-functions.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/customer-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/creative-functions.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/install.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/plugin-compatibility.php';
@@ -440,12 +474,14 @@ final class Affiliate_WP {
 
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-affiliate-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-creative-fetcher.php';
+			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-customer-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-payout-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-referral-fetcher.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/utils/class-visit-fetcher.php';
 
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/class-affiliate-sub-commands.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/class-creative-sub-commands.php';
+			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/class-customer-sub-commands.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/class-payout-sub-commands.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/class-referral-sub-commands.php';
 			require_once AFFILIATEWP_PLUGIN_DIR . 'includes/cli/class-visit-sub-commands.php';
@@ -465,6 +501,8 @@ final class Affiliate_WP {
 		self::$instance->affiliate_meta = new Affiliate_WP_Affiliate_Meta_DB;
 		self::$instance->referrals      = new Affiliate_WP_Referrals_DB;
 		self::$instance->visits         = new Affiliate_WP_Visits_DB;
+		self::$instance->customers      = new Affiliate_WP_Customers_DB;
+		self::$instance->customer_meta  = new Affiliate_WP_Customer_Meta_DB;
 		self::$instance->campaigns      = new Affiliate_WP_Campaigns_DB;
 		self::$instance->settings       = new Affiliate_WP_Settings;
 		self::$instance->tracking       = new Affiliate_WP_Tracking;
