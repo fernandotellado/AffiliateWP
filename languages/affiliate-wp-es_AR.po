@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AffiliateWP\n"
 "Report-Msgid-Bugs-To: https://affiliatewp.com/support/\n"
 "POT-Creation-Date: 2018-05-21 13:44:31+00:00\n"
-"PO-Revision-Date: 2018-05-22 18:30+0200\n"
+"PO-Revision-Date: 2018-05-23 20:12+0200\n"
 "Last-Translator: Chris Christoff <chriscct7@gmail.com>\n"
 "Language-Team: AffiliateWP <support@affiliatewp.com>\n"
 "Language: en\n"
@@ -5689,7 +5689,7 @@ msgstr ""
 
 #: includes/misc-functions.php:28
 msgid "Argentine Peso"
-msgstr "Peso Argentino "
+msgstr "Peso Mexicano (&#36;)"
 
 #: includes/misc-functions.php:29
 msgid "Australian Dollars"
@@ -5717,7 +5717,7 @@ msgstr "Dólares Canadienses (&#36;)"
 
 #: includes/misc-functions.php:35
 msgid "Chilean Peso"
-msgstr "Pesos Filipinos"
+msgstr "Pesos Chilenos"
 
 #: includes/misc-functions.php:36
 msgid "Chinese Yuan"
@@ -5797,7 +5797,7 @@ msgstr "Ringgits de Malasia"
 
 #: includes/misc-functions.php:55
 msgid "Mexican Peso"
-msgstr "Peso Mexicano"
+msgstr "Peso Mexicano (&#36;)"
 
 #: includes/misc-functions.php:56
 msgid "Nepali Rupee"
