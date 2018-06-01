@@ -835,7 +835,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 		}
 
 		if ( empty( $rate ) || ! is_numeric( $rate ) ) {
-            // Global referral rate setting, fallback to 20
+			// Global referral rate setting, fallback to 20
 			$default_rate = affiliate_wp()->settings->get( 'referral_rate', 20 );
 			$rate = affwp_abs_number_round( $default_rate );
 		}
