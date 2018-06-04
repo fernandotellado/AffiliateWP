@@ -219,11 +219,12 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 					$name           = affiliate_wp()->affiliates->get_affiliate_name( $affiliate_id );
 					$referral_link  = affwp_admin_link( 'referrals', esc_html( '#' . $referral_id ), array( 'action' => 'edit_referral', 'referral_id' => $referral_id ) );
 
-					/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name */
-					$this->order->add_order_note( sprintf( __( 'Referral %1$s for %2$s recorded for %3$s', 'affiliate-wp' ),
+					/* translators: 1: Referral link, 2: Amount, 3: Affiliate Name, 4: Affiliate ID */
+					$this->order->add_order_note( sprintf( __( 'Referral %1$s for %2$s recorded for %3$s (ID: %4$d).', 'affiliate-wp' ),
 						$referral_link,
 						$amount,
-						$name
+						$name,
+						$affiliate_id
 					) );
 
 				} else {
