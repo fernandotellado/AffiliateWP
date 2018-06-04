@@ -834,6 +834,12 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			$rate = $this->get_product_rate( $product_id, $args = array( 'reference' => $reference, 'affiliate_id' => $affiliate_id ) );
 		}
 
+		if ( empty( $rate ) || ! is_numeric( $rate ) ) {
+			// Global referral rate setting, fallback to 20
+			$default_rate = affiliate_wp()->settings->get( 'referral_rate', 20 );
+			$rate = affwp_abs_number_round( $default_rate );
+		}
+
 		$type = get_post_meta( $product_id, '_affwp_' . $this->context . '_product_rate_type', true );
 
 		if ( $type ) {
