@@ -420,18 +420,22 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		// Specific referrals
 		if( ! empty( $args['referral_id'] ) ) {
 
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
 			if( is_array( $args['referral_id'] ) ) {
 				$referral_ids = implode( ',', array_map( 'intval', $args['referral_id'] ) );
 			} else {
 				$referral_ids = intval( $args['referral_id'] );
 			}
 
-			$where .= "WHERE `referral_id` IN( {$referral_ids} ) ";
+			$where .= "`referral_id` IN( {$referral_ids} ) ";
 
 		}
 
 		// Referrals for specific affiliates
 		if( ! empty( $args['affiliate_id'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
 
 			if( is_array( $args['affiliate_id'] ) ) {
 				$affiliate_ids = implode( ',', array_map( 'intval', $args['affiliate_id'] ) );
@@ -439,12 +443,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				$affiliate_ids = intval( $args['affiliate_id'] );
 			}
 
-			$where .= "WHERE `affiliate_id` IN( {$affiliate_ids} ) ";
+			$where .= "`affiliate_id` IN( {$affiliate_ids} ) ";
 
 		}
 
 		// Referrals for specific customers
 		if( ! empty( $args['customer_id'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
 
 			if( is_array( $args['customer_id'] ) ) {
 				$customer_ids = implode( ',', array_map( 'intval', $args['customer_id'] ) );
@@ -452,12 +458,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				$customer_ids = intval( $args['customer_id'] );
 			}
 
-			$where .= "WHERE `customer_id` IN( {$customer_ids} ) ";
+			$where .= "`customer_id` IN( {$customer_ids} ) ";
 
 		}
 
 		// Referrals for specific payouts
 		if( ! empty( $args['payout_id'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
 
 			if( is_array( $args['payout_id'] ) ) {
 				$payout_ids = implode( ',', array_map( 'intval', $args['payout_id'] ) );
@@ -465,7 +473,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				$payout_ids = intval( $args['payout_id'] );
 			}
 
-			$where .= "WHERE `payout_id` IN( {$payout_ids} ) ";
+			$where .= "`payout_id` IN( {$payout_ids} ) ";
 
 		}
 
