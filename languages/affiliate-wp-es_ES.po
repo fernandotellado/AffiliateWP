@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AffiliateWP\n"
 "Report-Msgid-Bugs-To: https://affiliatewp.com/support/\n"
 "POT-Creation-Date: 2018-05-21 13:44:31+00:00\n"
-"PO-Revision-Date: 2018-05-23 20:16+0200\n"
+"PO-Revision-Date: 2018-06-06 20:20+0200\n"
 "Last-Translator: Fernando Tellado <fernando@tellado.es>\n"
 "Language-Team: Fernando Tellado <admin@ayudawordpress.com>\n"
 "Language: es_ES\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Loco-Source-Locale: es_ES\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.0.3\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
@@ -524,11 +524,12 @@ msgstr "La fecha en que se generó la visita."
 
 #: includes/abstracts/class-affwp-opt-in-platform.php:141
 msgid "Please provide a platform API URL"
-msgstr ""
+msgstr "Por favor, facilita una URL de la API de la plataforma"
 
 #: includes/abstracts/class-affwp-opt-in-platform.php:146
 msgid "Please provide platform API body parameters"
 msgstr ""
+"Por favor, facilita parámetros para el cuerpo de la API de la plataforma"
 
 #: includes/abstracts/class-affwp-reports-tab.php:135
 msgid "Filters"
@@ -616,9 +617,8 @@ msgid "Affiliate name"
 msgstr "Nombre de afiliado"
 
 #: includes/actions.php:112
-#, fuzzy
 msgid "Affiliate Area Page"
-msgstr "Area de afiliados"
+msgstr "Página del área de afiliados"
 
 #: includes/admin/AFFWP_Plugin_Updater.php:201
 msgid ""
@@ -696,22 +696,20 @@ msgid "You do not have permission to manage affiliates"
 msgstr "No tienes permisos para gestionar afiliados."
 
 #: includes/admin/affiliates/actions.php:26
-#, fuzzy
 msgid ""
 "Invalid user login name. User login name must include at least one letter"
 msgstr ""
-"Nombre de usuario no válido. Los nombres de usuario deben incluir al menos "
-"una letra"
+"Nombre de usuario de acceso no válido. Los nombres de usuario de acceso "
+"deben incluir al menos una letra"
 
 #: includes/admin/affiliates/actions.php:30
-#, fuzzy
 msgid "Invalid user login name. Must be between 4 and 60 characters."
-msgstr "Nombre de usuario no válido. Debe tener entre 1 y 60 caracteres."
+msgstr ""
+"Nombre de usuario de acceso no válido. Debe tener entre 4 y 60 caracteres."
 
 #: includes/admin/affiliates/actions.php:34
-#, fuzzy
 msgid "Invalid user email"
-msgstr "Correo electrónico de la cuenta no válido"
+msgstr "Correo electrónico de usuario no válido"
 
 #: includes/admin/affiliates/actions.php:38 includes/class-register.php:111
 msgid "Invalid payment email"
@@ -1472,15 +1470,12 @@ msgid "Referral added successfully"
 msgstr "Referido añadido correctamente"
 
 #: includes/admin/class-notices.php:230
-#, fuzzy
 msgid "Referral wasn&#8217;t created, please try again."
-msgstr "No se añadió el afiliado, inténtalo de nuevo."
+msgstr "No se creó el referido, por favor, inténtalo de nuevo."
 
 #: includes/admin/class-notices.php:237
-#, fuzzy
 msgid "Referral not created because affiliate is invalid"
-msgstr ""
-"No se creó el referido debido a que se usó la propia cuenta del afiliado."
+msgstr "No se creó el referido debido a que el afiliado no es válido"
 
 #: includes/admin/class-notices.php:244
 msgid "Referral updated successfully"
@@ -1503,14 +1498,12 @@ msgid "A payout has been created."
 msgstr "Se ha generado un pago."
 
 #: includes/admin/class-notices.php:275
-#, fuzzy
 msgid "Payout deleted successfully."
-msgstr "Creatividad eliminado correctamente"
+msgstr "Pago eliminado correctamente."
 
 #: includes/admin/class-notices.php:281
-#, fuzzy
 msgid "Payout deletion failed, please try again."
-msgstr "La eliminación del afiliado fallo, por favor inténtalo de nuevo"
+msgstr "La eliminación del pago fallo, por favor inténtalo de nuevo"
 
 #: includes/admin/class-notices.php:288
 msgid "Creative updated successfully"
@@ -1612,12 +1605,13 @@ msgid "Upgrade Database"
 msgstr "Actualizar base de datos"
 
 #: includes/admin/class-notices.php:468
-#, fuzzy
 msgid ""
 "Your database needs to be upgraded following the latest AffiliateWP update. "
 "Depending on the size of your database, this upgrade could take some time."
 msgstr ""
-"Tu base de datos tienes que actualizarse a la última versión de AffiliateWP."
+"Tu base de datos tienes que actualizarse a la última versión de AffiliateWP. "
+"Dependiendo del tamaño de tu base de datos esta actualización podría llevar "
+"algo de tiempo."
 
 #: includes/admin/class-notices.php:494 tests/admin/test-notices.php:605
 msgid ""
@@ -1653,14 +1647,12 @@ msgid "Your Name"
 msgstr "Tu nombre y apellidos"
 
 #: includes/admin/class-upgrades.php:742
-#, fuzzy
 msgid "Notify site admin when a new affiliate has registered"
-msgstr "Avisar a los administrares de nuevos registros de afiliados."
+msgstr "Avisar al administrador cuando se registre un nuevo afiliado"
 
 #: includes/admin/class-upgrades.php:750
-#, fuzzy
 msgid "Notify site admin when new referrals are earned"
-msgstr "Avisar a los administrares cuando se consigan nuevos referidos."
+msgstr "Avisar al administrador cuando se consigan nuevos referidos"
 
 #: includes/admin/creatives/actions.php:16
 #: includes/admin/creatives/actions.php:80
@@ -1773,14 +1765,12 @@ msgstr ""
 "servidor. "
 
 #: includes/admin/creatives/edit.php:100
-#, fuzzy
 msgid "Created"
-msgstr "Creatividad"
+msgstr "Creada"
 
 #: includes/admin/creatives/edit.php:105
-#, fuzzy
 msgid "The date the creative was created. This cannot be changed."
-msgstr "La fecha en que se creó la creatividad."
+msgstr "La fecha en que se creó la creatividad. Esto no se puede cambiar"
 
 #: includes/admin/creatives/edit.php:121 includes/admin/creatives/new.php:97
 msgid "Select the status of the creative."
@@ -1828,15 +1818,13 @@ msgid "Number of creatives per page:"
 msgstr "Número de creatividades por página:"
 
 #: includes/admin/overview/metaboxes/class-metabox-overview-highest-converting-urls.php:33
-#, fuzzy
 msgid "Highest Converting URLs"
-msgstr "Afiliado con mayor conversión"
+msgstr "URLs con mayor conversión"
 
 #: includes/admin/overview/metaboxes/class-metabox-overview-highest-converting-urls.php:99
 #: includes/admin/overview/metaboxes/class-metabox-overview-highest-converting-urls.php:105
-#, fuzzy
 msgid "No highest converting urls recorded yet."
-msgstr "Aun no hay referidos guardados"
+msgstr "Aun no hay urls con gran conversión."
 
 #: includes/admin/overview/metaboxes/class-metabox-overview-most-valuable.php:39
 msgid "Most Valuable Affiliates"
@@ -2003,15 +1991,12 @@ msgid "You do not have permission to manage referrals"
 msgstr "No tienes permisos para gestionar referidos"
 
 #: includes/admin/referrals/actions.php:26
-#, fuzzy
 msgid "Referral not created because affiliate is invalid."
-msgstr ""
-"No se creó el referido debido a que se usó la propia cuenta del afiliado."
+msgstr "No se creó el referido debido a el afiliado no es válido."
 
 #: includes/admin/referrals/actions.php:131
-#, fuzzy
 msgid "You do not have permission to manage payouts"
-msgstr "No tienes permisos para gestionar creatividades."
+msgstr "No tienes permisos para gestionar pagos"
 
 #: includes/admin/referrals/class-list-table.php:150
 #: includes/admin/referrals/edit.php:277 includes/admin/referrals/new.php:135
@@ -2033,9 +2018,8 @@ msgid "Reference"
 msgstr "Referencia"
 
 #: includes/admin/referrals/class-list-table.php:172
-#, fuzzy
 msgid "Type"
-msgstr "Tipo de tasa"
+msgstr "Tipo"
 
 #: includes/admin/referrals/class-list-table.php:173
 #: includes/admin/referrals/edit.php:164 includes/admin/referrals/new.php:66
@@ -2089,9 +2073,8 @@ msgid "To - mm/dd/yyyy"
 msgstr "Hasta - mm/dd/yyyy"
 
 #: includes/admin/referrals/class-list-table.php:601
-#, fuzzy
 msgid "All Types"
-msgstr "Todo el tiempo"
+msgstr "Todos los tipos"
 
 #: includes/admin/referrals/contextual-help.php:29
 #: includes/admin/visits/contextual-help.php:29
@@ -2285,14 +2268,12 @@ msgstr "El cantidad del referido, por ejemplo 15."
 #: includes/integrations/class-formidablepro.php:128
 #: includes/integrations/class-gravityforms.php:295
 #: includes/integrations/extras/class-ninja-forms-action-add-referral.php:101
-#, fuzzy
 msgid "Referral Type"
-msgstr "Tipo de tasa para referidos"
+msgstr "Tipo de referido"
 
 #: includes/admin/referrals/edit.php:156 includes/admin/referrals/new.php:58
-#, fuzzy
 msgid "Select the type of the referral."
-msgstr "Elige el estado del referido."
+msgstr "Elige el tipo de referido."
 
 #: includes/admin/referrals/edit.php:176
 msgid "Visit"
@@ -2723,24 +2704,24 @@ msgid "Terms of Use"
 msgstr "Términos de uso."
 
 #: includes/admin/settings/class-settings.php:478
-#, fuzzy
 msgid "Select the page that shows the terms of use for Affiliate Registration."
 msgstr ""
 "Elige la página que mostrará los términos de uso para el registro de "
 "afiliados."
 
 #: includes/admin/settings/class-settings.php:484
-#, fuzzy
 msgid "Terms of Use Label"
-msgstr "Términos de uso."
+msgstr "Etiqueta de los términos de uso"
 
 #: includes/admin/settings/class-settings.php:485
 msgid "Enter the text you would like shown for the Terms of Use checkbox."
 msgstr ""
+"Introduce el texto que te gustaría mostrar en la casilla de los términos de "
+"uso."
 
 #: includes/admin/settings/class-settings.php:487 templates/register.php:121
 msgid "Agree to our Terms of Use and Privacy Policy"
-msgstr ""
+msgstr "Aceptación de nuestros términos de uso y política de privacidad."
 
 #: includes/admin/settings/class-settings.php:490
 msgid "Referral Settings"
@@ -2831,9 +2812,8 @@ msgstr ""
 "referido."
 
 #: includes/admin/settings/class-settings.php:559
-#, fuzzy
 msgid "Cookie Sharing"
-msgstr "Expiración de la cookie"
+msgstr "Compartición de cookies"
 
 #: includes/admin/settings/class-settings.php:560
 msgid ""
@@ -2841,6 +2821,10 @@ msgid ""
 "enabled, tracking cookies created on domain.com will also be available on "
 "sub.domain.com. Note: this only applies to WordPress Multisite installs."
 msgstr ""
+"Comparte cookies de seguimiento con subdominios en una instalación "
+"multisitio. Cuando se activa las cookies de seguimiento creadas en el "
+"dominio.com también estarán disponibles en sub.dominio.com. Nota: esto solo "
+"se aplica a instalaciones multisitio."
 
 #: includes/admin/settings/class-settings.php:564
 msgid "Currency Settings"
@@ -2947,39 +2931,43 @@ msgstr ""
 "\">documentación</a> para obtener ayuda con este tema."
 
 #: includes/admin/settings/class-settings.php:642
-#, fuzzy
 msgid "Opt-In Referral Amount"
-msgstr "Cantidad del referido."
+msgstr "Cantidad de referido suscrito"
 
 #: includes/admin/settings/class-settings.php:647
 msgid ""
 "Enter the amount affiliates should receive for each opt-in referral. Default "
 "is 0.00."
 msgstr ""
+"Introduce la cantidad que deben recibir los afiliados por cada referido de "
+"la aceptación. Por defecto es 0,00."
 
 #: includes/admin/settings/class-settings.php:650
-#, fuzzy
 msgid "Opt-In Referral Status"
-msgstr "Estados del referido"
+msgstr "Estados del referido suscrito"
 
 #: includes/admin/settings/class-settings.php:657
 msgid ""
 "Select the status that should be assigned to opt-in referrals by default."
 msgstr ""
+"Elige el estado que debería asignarse por defecto a los referidos de "
+"suscripción."
 
 #: includes/admin/settings/class-settings.php:660
 msgid "Message shown upon opt-in success"
-msgstr ""
+msgstr "Mensaje mostrado al finalizar con éxito la suscripción"
 
 #: includes/admin/settings/class-settings.php:663
 msgid ""
 "Enter the message you would like to show subscribers after they have opted-"
 "in successfully."
 msgstr ""
+"Introduce el mensaje que te gustaría mostrar a los suscriptores después de "
+"que hayan aceptado con éxito."
 
 #: includes/admin/settings/class-settings.php:666
 msgid "Platform"
-msgstr ""
+msgstr "Plataforma"
 
 #: includes/admin/settings/class-settings.php:667
 msgid ""
@@ -2988,15 +2976,19 @@ msgid ""
 "using the [opt_in] shortcode. <a href=\"https://docs.affiliatewp.com/"
 "article/2034-optin-opt-in-form\">Learn more</a>."
 msgstr ""
+"Elige el proveedor de la plataforma de aceptación que te gustaría usar "
+"cuando se haga clic en Guardar cambios para configurar los asuntos. El "
+"formulario de aceptación se podrá mostrar en cualquier página usando el "
+"shortcode [opt_in]. <a href=“https://docs.affiliatewp.com/article/2034-optin-"
+"opt-in-form”>Aprende más</a>."
 
 #: includes/admin/settings/class-settings.php:669
 msgid "(select one)"
-msgstr ""
+msgstr "(elige uno)"
 
 #: includes/admin/settings/class-settings.php:684
-#, fuzzy
 msgid "Email Options"
-msgstr "Correos electrónicos"
+msgstr "Opciones de correos electrónicos"
 
 #: includes/admin/settings/class-settings.php:689
 msgid "Logo"
@@ -3039,24 +3031,21 @@ msgstr ""
 "para el \"de\" y \"responder a\"."
 
 #: includes/admin/settings/class-settings.php:712
-#, fuzzy
 msgid "Email Notifications"
-msgstr "Los avisos por correo electrónico están: %s"
+msgstr "Avisos por correo electrónico"
 
 #: includes/admin/settings/class-settings.php:713
-#, fuzzy
 msgid "The email notifications sent to the admin and affiliate."
-msgstr "Correo electrónico del afiliado"
+msgstr ""
+"Los avisos por correo electrónico enviados al administrador y al afiliado."
 
 #: includes/admin/settings/class-settings.php:718
-#, fuzzy
 msgid "Registration Email Admin Options"
-msgstr "Contenido del correo electrónico de registro."
+msgstr "Opciones del correo electrónico de registro del administrador"
 
 #: includes/admin/settings/class-settings.php:723
-#, fuzzy
 msgid "Registration Email Admin Subject"
-msgstr "Asunto del correo electrónico."
+msgstr "Asunto del correo electrónico de registro al administrador"
 
 #: includes/admin/settings/class-settings.php:724
 msgid ""
@@ -3072,9 +3061,8 @@ msgid "New Affiliate Registration"
 msgstr "Registro de nuevo afiliado"
 
 #: includes/admin/settings/class-settings.php:729
-#, fuzzy
 msgid "Registration Email Admin Content"
-msgstr "Contenido del correo electrónico de registro."
+msgstr "Contenido del correo electrónico de registro al administrador"
 
 #: includes/admin/settings/class-settings.php:730
 msgid ""
@@ -3095,9 +3083,8 @@ msgid "Name: "
 msgstr "Nombre:"
 
 #: includes/admin/settings/class-settings.php:735
-#, fuzzy
 msgid "New Referral Admin Email Options"
-msgstr "Contenido del correo electrónico de nuevo referido"
+msgstr "Ocpiones del correo electrónico de nuevo referido"
 
 #: includes/admin/settings/class-settings.php:740
 msgid "New Referral Admin Email Subject"
@@ -3133,9 +3120,8 @@ msgid "{name} has been awarded a new referral of {amount} on {site_name}."
 msgstr "{name} ha obtenido un nuevo referido de {amount} en {site_name}."
 
 #: includes/admin/settings/class-settings.php:752
-#, fuzzy
 msgid "New Referral Email Options"
-msgstr "Contenido del correo electrónico de nuevo referido"
+msgstr "Opciones del correo electrónico de nuevo referido"
 
 #: includes/admin/settings/class-settings.php:757
 msgid "New Referral Email Subject"
@@ -3185,9 +3171,8 @@ msgstr ""
 "Accede a tu área de afiliado para ver las ganancias o desactiva estos avisos:"
 
 #: includes/admin/settings/class-settings.php:769
-#, fuzzy
 msgid "Application Accepted Email Options"
-msgstr "Contenido del correo electrónico de solicitud aceptada"
+msgstr "Opciones del correo electrónico de solicitud aceptada"
 
 #: includes/admin/settings/class-settings.php:774
 msgid "Application Accepted Email Subject"
@@ -3400,7 +3385,6 @@ msgid "Required Registration Fields"
 msgstr "Campos de registro obligatorios"
 
 #: includes/admin/settings/class-settings.php:899
-#, fuzzy
 msgid ""
 "Select which fields should be required for affiliate registration. The "
 "<strong>Username</strong> and <strong>Account Email</strong> form fields are "
@@ -3408,9 +3392,9 @@ msgid ""
 "not required."
 msgstr ""
 "Elige qué campos deben ser obligatorios para el registro de afiliados. Los "
-"campos de formulario <strong>Nombre de usuario</strong>, <strong>Correo "
-"electrónico de la cuenta</strong> y <strong>Contraseña</strong> siempre son "
-"obligatorios."
+"campos de formulario <strong>nombre de usuario</strong> y <strong>correo "
+"electrónico de la cuenta</strong> siempre son obligatorios. El campo "
+"<strong>contraseña</strong> se borrará si no es obligatorio."
 
 #: includes/admin/settings/class-settings.php:902 templates/login.php:30
 #: templates/register.php:98
@@ -3422,38 +3406,32 @@ msgid "How will you promote us?"
 msgstr "¿Cómo nos vas a promocionar?"
 
 #: includes/admin/settings/class-settings.php:927
-#, fuzzy
 msgid "Notify admin when a new affiliate has registered"
-msgstr "Avisar a los administrares de nuevos registros de afiliados."
+msgstr "Avisar al administrador cuando se registre un nuevo afiliado"
 
 #: includes/admin/settings/class-settings.php:928
-#, fuzzy
 msgid "Notify admin when a new referral has been created"
-msgstr "Avisar a los administrares cuando se consigan nuevos referidos."
+msgstr "Avisar al administrador cuando se cree un nuevo referido"
 
 #: includes/admin/settings/class-settings.php:929
-#, fuzzy
 msgid "Notify affiliate when they earn a new referral"
-msgstr "Avisar a los administrares cuando se consigan nuevos referidos."
+msgstr "Avisar al administrador cuando se consiga un nuevo referido"
 
 #: includes/admin/settings/class-settings.php:930
-#, fuzzy
 msgid "Notify affiliate when their affiliate application is accepted"
-msgstr "¡Tu solicitud de afiliación en %s ha sido aceptada!"
+msgstr "Avisar al afiliado cuando se acepte su solicitud de afiliación"
 
 #: includes/admin/settings/class-settings.php:934
 msgid "Notify affiliate when their affiliate application is pending"
-msgstr ""
+msgstr "Informar al afiliado cuando su solicitud de afiliación esté pendiente"
 
 #: includes/admin/settings/class-settings.php:935
-#, fuzzy
 msgid "Notify affiliate when their affiliate application is rejected"
-msgstr "Tu solicitud de ser afiliado ha sido rechazada."
+msgstr "Avisar al afiliado cuando se rechaza su solicitud de afilidado"
 
 #: includes/admin/settings/class-settings.php:959
-#, fuzzy
 msgid "Application Pending Email Options"
-msgstr "Mensaje de correo electrónico para solicitudes pendientes"
+msgstr "Opciones del correo electrónico para solicitudes pendientes"
 
 #: includes/admin/settings/class-settings.php:964
 msgid "Application Pending Email Subject"
@@ -3499,9 +3477,8 @@ msgstr ""
 "Actualmente estamos revisando tu solicitud, ¡pronto contactaremos contigo!"
 
 #: includes/admin/settings/class-settings.php:976
-#, fuzzy
 msgid "Application Rejection Email Options"
-msgstr "Contenido del mensaje para solicitudes rechazadas"
+msgstr "Opciones del mensaje para solicitudes rechazadas"
 
 #: includes/admin/settings/class-settings.php:981
 msgid "Application Rejection Email Subject"
@@ -3618,7 +3595,7 @@ msgstr "General"
 
 #: includes/admin/settings/display-settings.php:62
 msgid "Opt-In Form"
-msgstr ""
+msgstr "Formulario de suscripción"
 
 #: includes/admin/settings/display-settings.php:63
 msgid "Emails"
@@ -4310,52 +4287,44 @@ msgstr[1] "%s elementos procesados correctamente."
 #: includes/admin/utilities/class-privacy-tools.php:55
 #: includes/admin/utilities/class-privacy-tools.php:90
 #: includes/admin/utilities/class-privacy-tools.php:122
-#, fuzzy
 msgid "Affiliate Record"
-msgstr "Tasa del afiliado"
+msgstr "Registro del afiliado"
 
 #: includes/admin/utilities/class-privacy-tools.php:37
 #: includes/admin/utilities/class-privacy-tools.php:60
 #: includes/admin/utilities/class-privacy-tools.php:155
 #: includes/admin/utilities/class-privacy-tools.php:185
-#, fuzzy
 msgid "Affiliate Customer Record"
-msgstr "Nombre de usuario de afiliado"
+msgstr "Registro del cliente del afiliado"
 
 #: includes/admin/utilities/class-privacy-tools.php:94
 #: includes/admin/utilities/class-privacy-tools.php:126
 #: includes/admin/utilities/class-privacy-tools.php:159
 #: includes/admin/utilities/class-privacy-tools.php:189
-#, fuzzy
 msgid "Customer ID"
-msgstr "Correo electrónico del cliente"
+msgstr "ID del cliente"
 
 #: includes/admin/utilities/class-privacy-tools.php:98
-#, fuzzy
 msgid "Primary Email"
-msgstr "Correo electrónico desde"
+msgstr "Correo electrónico principal"
 
 #: includes/admin/utilities/class-privacy-tools.php:110
 #: includes/admin/utilities/class-privacy-tools.php:175
-#, fuzzy
 msgid "Date Created"
-msgstr "Actualizar creatividad"
+msgstr "Fecha de creación"
 
 #: includes/admin/utilities/class-privacy-tools.php:127
 #: includes/admin/utilities/class-privacy-tools.php:190
-#, fuzzy
 msgid "No records found"
-msgstr "No se encontraron referidos."
+msgstr "No se encontraron registros"
 
 #: includes/admin/utilities/class-privacy-tools.php:233
-#, fuzzy
 msgid "Affiliate record has been deleted."
-msgstr "Tu perfil de afiliado se ha actualizado"
+msgstr "El registro de afiliado se ha borrado."
 
 #: includes/admin/utilities/class-privacy-tools.php:266
-#, fuzzy
 msgid "Affiliate customer record has been deleted."
-msgstr "No se pudo borrar la cuenta de afiliado."
+msgstr "El registro del cliente del afiliado se ha borrado."
 
 #: includes/admin/visits/class-list-table.php:104
 msgid "Landing Page"
@@ -4526,20 +4495,19 @@ msgstr "Nombre de usuario o contraseña incorrectos"
 
 #: includes/class-referral-type-registry.php:50
 msgid "Sale"
-msgstr ""
+msgstr "Oferta"
 
 #: includes/class-referral-type-registry.php:55
 msgid "Opt-In"
-msgstr ""
+msgstr "Suscripcion"
 
 #: includes/class-referral-type-registry.php:60
 msgid "Lead"
-msgstr ""
+msgstr "Mensaje"
 
 #: includes/class-referral-type-registry.php:83
-#, fuzzy
 msgid "A referral type label must be specified."
-msgstr "Debe especificarse una clase de proceso por lotes."
+msgstr "Debe especificarse una etiqueta del tipo de referido."
 
 #: includes/class-referrals-graph.php:142
 msgid "Unpaid Referral Earnings"
@@ -4851,52 +4819,43 @@ msgid "Number of creatives: %d"
 msgstr "Número de creatividades: %d"
 
 #: includes/cli/class-customer-sub-commands.php:120
-#, fuzzy
 msgid "A --email value must be specified to add a new customer."
-msgstr "Se debe especificar un valor —name para añadir una nueva creatividad."
+msgstr "Se debe especificar un valor —email para añadir un nuevo cliente."
 
 #: includes/cli/class-customer-sub-commands.php:136
-#, fuzzy
 msgid "A customer with the ID %d has been successfully created."
-msgstr "Se ha creado correctamente una creatividad con el ID %d."
+msgstr "Se ha creado correctamente un cliente con el ID %d."
 
 #: includes/cli/class-customer-sub-commands.php:140
-#, fuzzy
 msgid "The customer could not be created."
-msgstr "No se pudo crear la visita."
+msgstr "No se pudo crear el cliente."
 
 #: includes/cli/class-customer-sub-commands.php:183
 #: includes/cli/class-customer-sub-commands.php:191
 #: includes/cli/class-customer-sub-commands.php:239
 #: includes/cli/class-customer-sub-commands.php:247
-#, fuzzy
 msgid "A valid customer ID is required to proceed."
-msgstr "Se requiere un ID de visita válido para continuar."
+msgstr "Se requiere un ID de cliente válido para continuar."
 
 #: includes/cli/class-customer-sub-commands.php:207
-#, fuzzy
 msgid "The customer was successfully updated."
-msgstr "Creatividad actualizada correctamente."
+msgstr "Cliente actualizado correctamente."
 
 #: includes/cli/class-customer-sub-commands.php:211
-#, fuzzy
 msgid "The customer could not be updated."
-msgstr "No se pudo actualizar la visita."
+msgstr "No se pudo actualizar el cliente."
 
 #: includes/cli/class-customer-sub-commands.php:255
-#, fuzzy
 msgid "The customer was successfully deleted."
-msgstr "Creatividad borrada correctamente."
+msgstr "Cliente borrado correctamente."
 
 #: includes/cli/class-customer-sub-commands.php:259
-#, fuzzy
 msgid "The customer could not be deleted."
-msgstr "No pudo borrarse la visita."
+msgstr "No pudo borrarse el cliente."
 
 #: includes/cli/class-customer-sub-commands.php:332
-#, fuzzy
 msgid "Number of customers: %d"
-msgstr "Número de visitas: %d"
+msgstr "Número de clientes: %d"
 
 #: includes/cli/class-payout-sub-commands.php:152
 msgid "No referrals were found matching your criteria. Please try again."
@@ -5127,7 +5086,7 @@ msgstr "Revisar solicitudes pendientes: %s"
 #: includes/emails/actions.php:75 includes/emails/actions.php:149
 #: includes/emails/actions.php:209
 msgid "To set your password, visit the following address:"
-msgstr ""
+msgstr "Para configurar tu contraseña visita la siguiente dirección:"
 
 #: includes/emails/actions.php:133 includes/emails/actions.php:299
 msgid "Congratulations %s!"
@@ -5175,10 +5134,11 @@ msgstr ""
 "init/admin_init haya sido alcanzado"
 
 #: includes/emails/class-affwp-emails.php:422
-#, fuzzy
 msgid ""
 "The display name of the affiliate, as set on the affiliate's user profile."
-msgstr "El nombre del usuario en la sitio web"
+msgstr ""
+"El nombre a mostrar del afiliado, como está configurado en el perfil de "
+"usuario del afiliado."
 
 #: includes/emails/class-affwp-emails.php:427
 msgid "The user name of the affiliate on the site"
@@ -5267,9 +5227,8 @@ msgstr "Activar la creación de referido de afiliado en este formulario"
 
 #: includes/integrations/class-caldera-forms.php:278
 #: includes/integrations/class-formidablepro.php:136
-#, fuzzy
 msgid "Select the referral type for this form."
-msgstr "Activar la creación de referido de afiliado en este formulario"
+msgstr "Elige el tipo de referido para este formulario."
 
 #: includes/integrations/class-contactform7.php:110
 msgid "Contact Form 7"
@@ -5296,9 +5255,8 @@ msgid "Enable referrals for specific Contact Form 7 forms"
 msgstr "Activar la creación de referido de afiliado en este formulario"
 
 #: includes/integrations/class-contactform7.php:162
-#, fuzzy
 msgid "Referral type for %s (Form ID: %d)"
-msgstr "Referido #%d para %s guardado para %s"
+msgstr "Tipo de referido para %s (ID del formulario: %d)"
 
 #: includes/integrations/class-contactform7.php:220
 msgid "Form ID: "
@@ -5308,9 +5266,8 @@ msgstr "ID del formulario: "
 #: includes/integrations/class-edd.php:442
 #: includes/integrations/class-jigoshop.php:215
 #: includes/integrations/class-woocommerce.php:233
-#, fuzzy
 msgid "Referral %1$s for %2$s recorded for %3$s"
-msgstr "Referido #%d para %s guardado para %s"
+msgstr "Referido %1$s para %2$s registrado para %3$s"
 
 #: includes/integrations/class-edd.php:572
 #: includes/integrations/class-pmp.php:255
@@ -5395,9 +5352,8 @@ msgstr ""
 
 #: includes/integrations/class-edd.php:756
 #: includes/integrations/class-edd.php:775
-#, fuzzy
 msgid "The referral rate for this %s category."
-msgstr "Introduce una tasa de referido para %s"
+msgstr "La tarifa de referido para esta categoría %s."
 
 #: includes/integrations/class-exchange.php:318
 msgid "Affiliate coupon?"
@@ -5608,26 +5564,24 @@ msgid ""
 "No opt-in platform has been configured. Please configure a platform in "
 "settings."
 msgstr ""
+"No se ha configurado ninguna plataforma de suscripción. Por favor, configura "
+"una plataforma en los ajustes."
 
 #: includes/integrations/class-opt-in.php:95
-#, fuzzy
 msgid "Please enter your first name"
 msgstr "Por favor, introduce tu nombre"
 
 #: includes/integrations/class-opt-in.php:99
-#, fuzzy
 msgid "Please enter your last name"
-msgstr "Por favor, introduce tu nombre"
+msgstr "Por favor, introduce tus apellidos"
 
 #: includes/integrations/class-opt-in.php:103
-#, fuzzy
 msgid "Please enter your email address"
-msgstr "Por favor, introduce tu nombre"
+msgstr "Por favor, introduce tu dirección de correo electrónico"
 
 #: includes/integrations/class-opt-in.php:107
-#, fuzzy
 msgid "Please enter a valid email address"
-msgstr "Por favor introduce una URL de web válida"
+msgstr "Por favor introduce una dirección de correo electrónico válida"
 
 #: includes/integrations/class-paypal.php:104
 msgid "Pending PayPal referral"
@@ -5678,9 +5632,8 @@ msgstr "Desabilitar referidos en este nivel de suscripción."
 
 #. translators: 1: Referral link, 2: Amount, 3: Affiliate Name
 #: includes/integrations/class-woocommerce.php:272
-#, fuzzy
 msgid "Referral %1$s updated. Amount %2$s recorded for %3$s"
-msgstr "Referido #%d para %s guardado para %s"
+msgstr "Referido %1$s actualizado. Cantidad de %2$s registrada para %3$s"
 
 #: includes/integrations/class-woocommerce.php:313
 #: includes/integrations/class-woocommerce.php:580
@@ -5688,30 +5641,25 @@ msgid "(Variation ID %d)"
 msgstr "(ID de variación %d)"
 
 #: includes/integrations/class-woocommerce.php:625
-#, fuzzy
 msgid ""
 "Configure affiliate rates for this product. These settings will be used to "
 "calculate affiliate earnings per-sale."
 msgstr ""
-"Estos ajustes serán usados para calcular las ganancias de los afiliados por "
-"venta. Deje en blanco para usar las tasas de afiliado por defecto."
+"Configura las tarifas de afiliado para este producto. Estos ajustes se "
+"usarán para calcular las ganancias de afiliado por cada venta."
 
 #: includes/integrations/class-woocommerce.php:629
-#, fuzzy
 msgid "Affiliate Rate Type"
-msgstr "Tasa del afiliado"
+msgstr "Tipo de tarifa de afiliado"
 
 #: includes/integrations/class-woocommerce.php:632
-#, fuzzy
 msgid "Earnings can be based on either a percentage or a flat rate amount."
 msgstr ""
-"Elige un tipo de tasa de referido. Los referidos pueden estar basados o en "
-"un porcentaje o en cantidad fija."
+"Las ganancias pueden estar basadas en porcentaje o en una cantidad fija."
 
 #: includes/integrations/class-woocommerce.php:638
-#, fuzzy
 msgid "Leave blank to use default affiliate rates."
-msgstr "Déjalo en blanco si se aprueba a este afiliado."
+msgstr "Déjalo en blanco para usar las tarifas de afiliado por defecto."
 
 #: includes/integrations/class-woocommerce.php:642
 msgid "Disable referrals"
@@ -5751,20 +5699,17 @@ msgstr "Muestra un enlace al área de afiliado en el menú de Mi cuenta."
 
 #: includes/integrations/class-woocommerce.php:1074
 #: includes/integrations/class-woocommerce.php:1094
-#, fuzzy
 msgid "The referral rate for this category."
-msgstr "Introduce una tasa de referido para %s"
+msgstr "La tarifa por referido para esta categoría."
 
 #: includes/integrations/class-woocommerce.php:1131
 #: includes/integrations/class-woocommerce.php:1180
-#, fuzzy
 msgid "Affiliate Referral"
-msgstr "Tasa del afiliado"
+msgstr "Referido del afiliado"
 
 #: includes/integrations/class-wpforms.php:50
-#, fuzzy
 msgid "Referral type"
-msgstr "Tasa de referido"
+msgstr "Tipo de referido"
 
 #: includes/integrations/extras/class-exchange-feature.php:27
 msgid ""
@@ -5797,90 +5742,86 @@ msgstr "Redirigiendo a Paypal…"
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:43
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:52
 msgid "%s is already subscribed to this list."
-msgstr ""
+msgstr "%s está ya suscrito a esta lista."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:114
-#, fuzzy
 msgid "ActiveCampaign API URL"
-msgstr "Campaña más activa (%s)"
+msgstr "URL de la API de ActiveCampaign"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:116
 msgid "Enter your ActiveCampaign API URL."
-msgstr ""
+msgstr "Introduce la URL de la API de ActiveCampaing "
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:120
-#, fuzzy
 msgid "ActiveCampaign API Key"
-msgstr "Campaña más activa (%s)"
+msgstr "Clave API de ActiveCampaign"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:122
 msgid "Enter your ActiveCampaign API key."
-msgstr ""
+msgstr "Introduce tu clave API de ActiveCampaign."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:126
-#, fuzzy
 msgid "ActiveCampaign List ID"
-msgstr "Campaña más activa (%s)"
+msgstr "ID de la lista de ActiveCampaign"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-activecampaign.php:128
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:140
 msgid "Enter the ID of the list you wish to subscribe contacts to."
 msgstr ""
+"Introduce el ID de la lista a la que quieras suscribir a tus contactos."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-convertkit.php:61
-#, fuzzy
 msgid "ConvertKit API Key"
-msgstr "Generar nuevas claves API"
+msgstr "Clave API de ConvertKit"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-convertkit.php:63
 msgid "Enter your ConvertKit API key."
-msgstr ""
+msgstr "Introduce tu clave API de ConvertKit."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-convertkit.php:67
-#, fuzzy
 msgid "ConvertKit Form ID"
-msgstr "Contact Form 7"
+msgstr "ID del formulario de ConvertKit"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-convertkit.php:69
 msgid "Enter the ID of the form you wish to subscribe contacts to."
 msgstr ""
+"Introduce el ID del formulario al que quieras suscribir a tus contactos."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:132
 msgid "MailChimp API Key"
-msgstr ""
+msgstr "Clave API de MailChimp"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:134
 msgid "Enter your MailChimp API key."
-msgstr ""
+msgstr "Introduce tu clave API de MailChimp."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:138
 msgid "MailChimp List ID"
-msgstr ""
+msgstr "ID de lista de MailChimp"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:144
 msgid "Double Opt-In"
-msgstr ""
+msgstr "Doble aceptación"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php:146
 msgid ""
 "Should subscribers need to verify their subscription through a double opt-in "
 "email?"
 msgstr ""
+"¿Deberían los suscriptores tener que verificar su suscripción mediante una "
+"doble aceptación por correo electrónico?"
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-registry.php:88
-#, fuzzy
 msgid "A platform class must be specified."
-msgstr "Debe especificarse una clase de proceso por lotes."
+msgstr "Debe especificarse una clase para la plataforma."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-registry.php:92
-#, fuzzy
 msgid "A platform file must be specified."
-msgstr "Debe especificarse una clase de proceso por lotes."
+msgstr "Debe especificarse un archivo de la plataforma."
 
 #: includes/integrations/opt-in-platforms/class-opt-in-platform-registry.php:96
-#, fuzzy
 msgid "A platform label must be specified."
-msgstr "Debe especificarse una clase de proceso por lotes."
+msgstr "Debe especificarse una etiqueta para la plataforma."
 
 #: includes/misc-functions.php:26
 msgid "US Dollars"
@@ -5904,7 +5845,7 @@ msgstr "Taka Bangladesí"
 
 #: includes/misc-functions.php:31
 msgid "Bitcoin"
-msgstr ""
+msgstr "Bitcoin"
 
 #: includes/misc-functions.php:32
 msgid "Brazilian Real"
@@ -6351,13 +6292,12 @@ msgstr ""
 "El área de afiliados esta disponible para afiliados registrados unicamente."
 
 #: templates/opt-in.php:9
-#, fuzzy
 msgid "You have subscribed successfully."
-msgstr "El pago #%d se ha actualizado correctamente."
+msgstr "Te has suscrito correctamente."
 
 #: templates/opt-in.php:39
 msgid "Subscribe"
-msgstr ""
+msgstr "Suscribir"
 
 #: templates/register.php:56
 msgid "Register a new affiliate account"
@@ -6409,10 +6349,9 @@ msgid "URL"
 msgstr "URL"
 
 #: includes/admin/overview/metaboxes/class-metabox-overview-highest-converting-urls.php:58
-#, fuzzy
 msgctxt "Conversions column table header"
 msgid "Conversions"
-msgstr "Tasa de conversiones"
+msgstr "Conversiones"
 
 #: includes/admin/overview/metaboxes/class-metabox-overview-most-valuable.php:74
 #: includes/admin/overview/metaboxes/class-metabox-overview-recent-referral-visits.php:66
