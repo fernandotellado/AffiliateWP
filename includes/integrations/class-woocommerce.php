@@ -187,7 +187,15 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 			}
 
 			$description = $this->get_referral_description();
-			$visit_id    = affiliate_wp()->tracking->get_visit_id();
+
+			if ( empty( $description ) ) {
+
+				$this->log( 'Referral not created due to empty description.' );
+
+				return;
+			}
+
+			$visit_id = affiliate_wp()->tracking->get_visit_id();
 
 			if ( $existing ) {
 
@@ -631,7 +639,7 @@ class Affiliate_WP_WooCommerce extends Affiliate_WP_Base {
 				woocommerce_wp_checkbox( array(
 					'id'          => '_affwp_woocommerce_referrals_disabled',
 					'label'       => __( 'Disable referrals', 'affiliate-wp' ),
-					'description' => __( 'This will prevent orders of this product from generating referral commissions for affiliates.', 'affiliate-wp' ),
+					'description' => __( 'This will prevent this product from generating referral commissions for affiliates.', 'affiliate-wp' ),
 					'cbvalue'     => 1
 				) );
 
